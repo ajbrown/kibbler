@@ -91,8 +91,8 @@ log4j = {
 }
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'bigbird.User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'bigbird.UserRole'
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
 grails.plugins.springsecurity.userLookup.usernamePropertyName = "email"
-grails.plugins.springsecurity.authority.className = 'bigbird.Role'
+grails.plugins.springsecurity.authority.className = 'kibbler.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"

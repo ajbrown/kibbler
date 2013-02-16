@@ -2,9 +2,9 @@ grails {
     mongo {
         host = "localhost"
         port = 27017
-        //username = "bigbird"
-        //password = "bigbird"
-        databaseName = "bigbird"
+        //username = "kibbler"
+        //password = "kibbler"
+        databaseName = "kibbler"
     }
 }
 // environment specific settings

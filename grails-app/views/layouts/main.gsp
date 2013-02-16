@@ -53,7 +53,6 @@
                     Logged in as <a href="#" class="navbar-link"><sec:username/></a>
                 </p>
                 <ul class="nav pull-right">
-                    <ul 
                     <li><a href="#dashboard">Dashboard</a></li>
                     <li><a href="#help">Help</a></li>
                 </ul>
