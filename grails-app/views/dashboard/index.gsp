@@ -13,14 +13,15 @@
     <li><a href="#organization" data-toggle="tab">Organization</a></li>
 </ul>
 
-<div class="tab-content container">
+<div class="tab-content">
 
     <div class="tab-pane active row" id="pets">
         <div class="span3" style="outline: 1px solid black;">
             <ul class="nav nav-list nav-stacked" id="pets-list-nav">
                 <li>
-                    <a href="#" data-bind="click: pets.showCreateModal"><i class="icon-plus"></i> Add
-                New</a></a>
+                    <a href="#" data-bind="click: pets.showCreateModal">
+                        <i class="icon-plus"></i> Add New
+                    </a>
                 </li>
                 <!-- ko foreach: pets.sortedList -->
                 <li data-bind="attr: { 'data-id': id }">
@@ -29,9 +30,71 @@
                 <!-- /ko -->
             </ul>
         </div>
-        <div class="span9" style="outline: 1px solid black;">
-            Home
-        </div>
+        <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
+
+            <div class="row">
+                <div class="span9">
+                    <h1 data-bind="text: givenName"></h1>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="span4">
+                    <a class="btn btn-mini" href="#">Upload Photo</a>
+
+                    <form id="status-info-form" data-bind="attr: { action: $root.pets.activeUrl }">
+                        <fieldset>
+                            <legend data-bind="text: type + ', ' + sex"></legend>
+                            <label>Status</label>
+                            <select name="pet-status" id="pet-status">
+                                <option value="adopted">Adopted</option>
+                            </select>
+
+                            <label class="checkbox">
+                                <input type="checkbox" name="heartworm"
+                                       data-bind="checked: vitals.heartworm, autosave: { field: 'vitals'}">
+                                Heartworm
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" name="vitals.housebroken"
+                                       data-bind="checked: vitals.housebroken, autosave: { field: 'vitals' }">
+                                Housebroken
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" name="vitals.microchipped"
+                                       data-bind="checked: vitals.microchipped, autosave: { field: 'vitals' }">
+                                Microchipped
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" name="vitals.neutered"
+                                       data-bind="checked: vitals.neutered, autosave: { field: 'vitals' }">
+                                <span data-bind="text: sex == 'male' ? 'Neutered' : 'Spayed'">Spayed/Neutered</span>
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" name="specialNeeds"
+                                       data-bind="checked: vitals.specialNeeds">
+                                Specials
+                            </label>
+
+                            <label>Notes</label>
+                            <textarea name="notes"
+                                      data-bind="value: notes, autosave: { trigger: 'keypress', delay: 5000 }">
+                                      </textarea>
+
+                        </fieldset>
+                    </form>
+                </div>
+                <div class="span5" style="outline: 1px solid blue;">
+                    <label for="pet-description"> Description </label><br/>
+                    <textarea
+                            id="pet-description"
+                            name="description"
+                            class="stretch-width"
+                            data-bind="value: description, autosave: description"></textarea>
+                </div>
+            </div>
+
+        </section>
     </div>
 
     <div class="tab-pane" id="people">
@@ -117,7 +180,12 @@
 
 <r:require module="reveal"/>
 <r:script>
-$(function() {
+
+(function() {
+
+    var queueAutosave = function( group ) {
+
+    }
 
     var OrganizationsViewModel = function() {
         var self = this;
@@ -159,6 +227,10 @@ $(function() {
 
         this.list       = ko.observableArray();
         this.active     = ko.observable();
+        this.activeUrl  = ko.computed( function() {
+            var active = self.active();
+            return SERVER_URL + '/pets' + ( active ? '/' + active.id : '');
+        }, this );
 
         this.createName  = ko.observable();
         this.createType  = ko.observable();
@@ -207,9 +279,7 @@ $(function() {
         //Construction
         $.get('<g:createLink controller="pets" action="index"/>', function( data ) {
             self.list( data.data );
-            self.active(null);
         });
-
     };
 
     var DashboardViewModel = function() {
@@ -235,7 +305,9 @@ $(function() {
 
     ko.applyBindings( new DashboardViewModel() );
 
-});
+
+
+})();
 </r:script>
 
 </body>

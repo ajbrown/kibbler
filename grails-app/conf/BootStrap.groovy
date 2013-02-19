@@ -2,6 +2,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import grails.converters.JSON
 import kibbler.Organization
+import kibbler.PetVitals
 import kibbler.Species
 import kibbler.User
 import com.fasterxml.jackson.databind.ObjectMapper

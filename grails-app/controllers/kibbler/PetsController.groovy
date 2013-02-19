@@ -1,5 +1,6 @@
 package kibbler
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 
 class PetsController {
@@ -7,6 +8,7 @@ class PetsController {
     def springSecurityService
     def organizationService
     def petService
+    ObjectMapper objectMapper
 
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
@@ -22,6 +24,45 @@ class PetsController {
                 resp.data = pets
                 render resp as JSON
             }
+        }
+    }
+
+    def view() {
+        def resp = new JSONResponseEnvelope( status: 200 )
+        def pet = petService.read( params.id )
+
+
+        withFormat{
+            json{
+                resp.data = pet
+                render resp as JSON
+            }
+        }
+    }
+
+    def update() {
+        def pet = petService.read( params.id )
+        def user = springSecurityService.currentUser as User
+        def resp = new JSONResponseEnvelope( status: 201 )
+
+        //make sure the pet belongs to one of the user's organizations.
+        if( !user.belongsTo( pet.organization ) ) {
+            response.sendError( 403, "You're not authorized to access this resource." )
+        }
+
+        def fields = objectMapper.readValue( request.inputStream, Map.class )
+        def saved = petService.updateFields( fields, pet, user )
+
+        if( !saved ) {
+            resp.status = 400
+            resp.errors = pet.errors.allErrors
+            resp.data = pet
+        } else {
+            resp.data = saved
+        }
+
+        withFormat{
+            json{ render resp as JSON }
         }
     }
 

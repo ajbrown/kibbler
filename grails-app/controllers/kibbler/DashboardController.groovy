@@ -8,7 +8,14 @@ class DashboardController {
     def index() {
 
         [
-                createPet: new CreatePetCommand()
+                createPet: new CreatePetCommand(),
+                config: [
+                        vitalProperties: PetVitals.properties
+                ]
         ]
+    }
+
+    def config() {
+
     }
 }

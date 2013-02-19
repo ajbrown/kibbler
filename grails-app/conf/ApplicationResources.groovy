@@ -21,6 +21,7 @@ modules = {
 
     application {
         dependsOn 'jquery,knockout'
+        resource url:'js/knockout.bindings.js'
         resource url:'js/application.js'
     }
 }

@@ -20,7 +20,6 @@ class UserController {
 
                 render data as JSON
             }
-            html { [ userInstance: user ] }
         }
     }
 

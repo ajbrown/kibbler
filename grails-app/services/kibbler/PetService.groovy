@@ -17,4 +17,12 @@ class PetService {
     def readAllByOrg( Organization org ) {
         Pet.findAllByOrganization( org )
     }
+
+    def updateFields( Map fields, Pet pet, User user ) {
+        fields.each { key, value ->
+            pet[ key ] = value
+        }
+        pet.lastUpdatedBy = user
+        pet.save()
+    }
 }
