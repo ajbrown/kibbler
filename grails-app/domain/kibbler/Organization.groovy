@@ -10,7 +10,7 @@ class Organization {
     static hasMany = [
             pets: Pet,
             members: OrgRole,
-            contacts: Person
+            people: Person
     ]
 
     static constraints = {

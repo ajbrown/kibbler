@@ -6,8 +6,19 @@ class Person {
 
     ObjectId id
 
-    String firstName
-    String lastName
+    String name
+    String company
+    String address
+    String notes
+
+    String phone
+    String email
+
+    Boolean adopter
+    Boolean foster
+    Boolean available = true
+
+    Boolean doNotAdopt = false
 
     Date dateCreated
     User createdBy
@@ -20,5 +31,15 @@ class Person {
 
 
     static constraints = {
+        company nullable: true
+        address nullable: true
+        notes nullable: true
+        phone nullable: true
+        email nullable: true
+        adopter nullable: true
+        foster nullable: true
+
+        createdBy nullable: true
+        updatedBy nullable: true
     }
 }

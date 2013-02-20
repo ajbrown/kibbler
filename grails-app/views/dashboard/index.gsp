@@ -97,14 +97,29 @@
         </section>
     </div>
 
+    <!-- People Tab -->
+
     <div class="tab-pane" id="people">
-        <div class="span3" style="outline: 1px solid black;">
-            People
+        <div class="span3">
+            <ul class="nav nav-list nav-stacked" id="people-list-nav">
+                <li>
+                    <a href="#" data-bind="click: people.showCreate">
+                        <i class="icon-plus"></i> Add New
+                    </a>
+                </li>
+                <!-- ko foreach: people.list -->
+                <li data-bind="attr: { 'data-id': id }">
+                    <a href="#" data-bind="text: name, click: $root.people.setActive"></a>
+                </li>
+                <!-- /ko -->
+            </ul>
         </div>
-        <div class="span9" style="outline: 1px solid black;">
-            Home
-        </div>
+        <section class="span9 main-section" id="person-info-pane" data-bind="with: people.active()">
+            <h1>Test</h1>
+        </section>
     </div>
+
+    <!-- Organization Tab -->
 
     <div class="tab-pane" id="organization">
         <div class="row">
@@ -133,6 +148,32 @@
         <button class="btn btn-inverse"
            data-bind="enable: orgs.createOrgName().trim().length > 0, click: orgs.submitCreateOrg">Create</button>
     </form>
+</div>
+
+<div id="modal-create-person" class="reveal-modal">
+    <h1>Add a Contact</h1>
+
+    <form class="form">
+        <label class="">Name</label>
+        <input type="text" name="name" data-bind="value: people.createName"/>
+
+        <label class="checkbox">
+            <input type="checkbox" name="adopter" data-bind="value: people.createAdopter"> Adopter
+        </label>
+
+        <label class="checkbox">
+            <input type="checkbox" name="foster" data-bind="value: people.create"> Foster
+        </label>
+
+        <label data-bind="visible: !orgs.active()">
+            <select name="organizationId"
+                    data-bind="options: orgs.list, optionsValue: 'id', optionsText: 'name', value: people.createOrgId">
+            </select>
+        </label>
+
+        <button class="btn btn-primary" data-bind="click: people.create">Create</button>
+    </form>
+
 </div>
 
 <div id="modal-create-pet" class="reveal-modal">
@@ -219,6 +260,56 @@
 
     };
 
+    var PeopleViewModel = function() {
+        var self = this;
+
+        var createModalElem = $('#modal-create-person');
+        var peopleNav       = $('#people-list-nav');
+
+        this.active = ko.observable();
+        this.list   = ko.observableArray();
+
+        this.createName     = ko.observable();
+        this.createAdopter  = ko.observable();
+        this.createFoster   = ko.observable();
+        this.createOrgId    = ko.observable();
+
+        this.create = function() {
+            var submit = {
+                name: self.createName(),
+                adopter: self.createAdopter(),
+                foster:  self.createFoster(),
+                organizationId: self.createOrgId()
+            };
+
+            $.post( '<g:createLink controller="people" action="create"/>', submit, function( data ) {
+                if( data ) {
+                    self.list.push( data.data );
+                    self.setActive( data.data );
+                    createModalElem.trigger('reveal:close');
+                }
+            });
+        };
+
+        this.showCreate = function() {
+            self.createName('');
+            self.createAdopter('');
+            self.createFoster('');
+            self.createAdopter('');
+            createModalElem.reveal();
+        }
+
+        this.setActive = function( person, event ) {
+            self.active( person );
+            $( '[data-id]', peopleNav ).removeClass('active');
+            $( '[data-id="' + person.id + '"]', peopleNav ).addClass('active');
+        };
+
+        //Construct
+        $.getJSON( '<g:createLink controller="people" action="index"/>', function(data) { self.list(data.data); } );
+
+    };
+
     var PetsViewModel = function() {
         var self = this;
 
@@ -285,8 +376,10 @@
     var DashboardViewModel = function() {
         var self = this;
 
-        this.orgs = new OrganizationsViewModel();
-        this.pets = new PetsViewModel();
+        this.orgs   = new OrganizationsViewModel();
+        this.pets   = new PetsViewModel();
+        this.people = new PeopleViewModel();
+
         this.user = ko.observable();
 
         this.setUser = function( data ) {

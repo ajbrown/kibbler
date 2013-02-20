@@ -6,7 +6,6 @@ import grails.converters.JSON
 class UserController {
 
     def springSecurityService
-    ObjectMapper objectMapper
 
     def index() {
         def user = springSecurityService.getCurrentUser() as User

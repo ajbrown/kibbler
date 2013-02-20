@@ -1,0 +1,17 @@
+package kibbler
+
+
+
+import grails.test.mixin.*
+import org.junit.*
+
+/**
+ * See the API for {@link grails.test.mixin.domain.DomainClassUnitTestMixin} for usage instructions
+ */
+@TestFor(PetActivity)
+class PetActivityTests {
+
+    void testSomething() {
+       fail "Implement me"
+    }
+}
