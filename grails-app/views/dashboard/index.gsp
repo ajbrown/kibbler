@@ -16,7 +16,7 @@
 <div class="tab-content">
 
     <div class="tab-pane active row" id="pets">
-        <div class="span3" style="outline: 1px solid black;">
+        <div class="span3">
             <ul class="nav nav-list nav-stacked" id="pets-list-nav">
                 <li>
                     <a href="#" data-bind="click: pets.showCreateModal">
@@ -99,7 +99,7 @@
 
     <!-- People Tab -->
 
-    <div class="tab-pane" id="people">
+    <div class="tab-pane row" id="people">
         <div class="span3">
             <ul class="nav nav-list nav-stacked" id="people-list-nav">
                 <li>
@@ -115,7 +115,62 @@
             </ul>
         </div>
         <section class="span9 main-section" id="person-info-pane" data-bind="with: people.active()">
-            <h1>Test</h1>
+            <div class="row">
+                <h1 data-bind="text: name"></h1>
+            </div>
+            <div class="row">
+                <div class="span4">
+                    <span class="address" data-bind="text: address"></span>
+                    <span class="phone" data-bind="text: 'M: ' + phone"></span>
+                    <span class="email" data-bind-"text: 'E: ' + email"></span>
+                </div>
+                <div class="span5">
+                    <div class="row">
+                        <textarea class="span5" data-bind="value: notes"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="span3">
+
+                            <label class="checkbox">
+                                <input type="checkbox" name="adopter" data-bind="checked: adopter"/> adopter
+                                <a href="#" data-bind="visible: adopter">(show history)</a>
+                            </label>
+
+                            <label class="checkbox">
+                                <input type="checkbox" name="foster" data-bind="checked: foster"/> foster
+                                <a href="#" data-bind="visible: foster">(show history)</a>
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="span4">
+                    <label class="checkbox pull-right">
+                        <input type="checkbox" data-bind="checked: available"/> Available
+                    </label>
+                    <h4>Fostering <a href="#" class="small">(add)</a></h4>
+                    <table class="table-condensed">
+                        <tr>
+                            <th>Name</th>
+                            <th>Since</th>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="span5">
+                    <h4>History and Documentation  <a href="#" class="small">(add)</a></h4>
+                    <table class="table-condensed">
+                        <tr>
+                            <th>Event</th>
+                            <th>Add/Changed By</th>
+                            <th>Date</th>
+                            <th>Attachement</th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </section>
     </div>
 
