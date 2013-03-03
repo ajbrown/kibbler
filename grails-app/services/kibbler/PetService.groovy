@@ -14,7 +14,7 @@ class PetService {
         Pet.read( new ObjectId( id ) )
     }
 
-    def readAllByOrg( Organization org ) {
+    def readAllForOrg( Organization org ) {
         Pet.findAllByOrganization( org )
     }
 

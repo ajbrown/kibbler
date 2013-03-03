@@ -23,7 +23,7 @@
                         <i class="icon-plus"></i> Add New
                     </a>
                 </li>
-                <!-- ko foreach: pets.sortedList -->
+                <!-- ko foreach: pets.list() -->
                 <li data-bind="attr: { 'data-id': id }">
                     <a href="#" data-bind="text: givenName, click: $root.pets.setActive"></a>
                 </li>
@@ -31,6 +31,7 @@
             </ul>
         </div>
         <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
+            <form id="status-info-form" data-bind="attr: { action: $root.pets.activeUrl }">
 
             <div class="row">
                 <div class="span9">
@@ -42,9 +43,8 @@
                 <div class="span4">
                     <a class="btn btn-mini" href="#">Upload Photo</a>
 
-                    <form id="status-info-form" data-bind="attr: { action: $root.pets.activeUrl }">
                         <fieldset>
-                            <legend data-bind="text: type + ', ' + sex"></legend>
+                            <legend data-bind="text: type() + ', ' + sex()"></legend>
                             <label>Status</label>
                             <select name="pet-status" id="pet-status">
                                 <option value="adopted">Adopted</option>
@@ -78,22 +78,22 @@
 
                             <label>Notes</label>
                             <textarea name="notes"
-                                      data-bind="value: notes, autosave: { trigger: 'keypress', delay: 5000 }">
+                                      data-bind="value: notes, autosave: { field: 'notes' }">
                                       </textarea>
 
                         </fieldset>
-                    </form>
                 </div>
-                <div class="span5" style="outline: 1px solid blue;">
+                <div class="span5">
                     <label for="pet-description"> Description </label><br/>
                     <textarea
                             id="pet-description"
                             name="description"
                             class="stretch-width"
-                            data-bind="value: description, autosave: description"></textarea>
+                            data-bind="value: description, autosave: { event: 'keypress', field: 'description' }"></textarea>
                 </div>
             </div>
 
+            </form>
         </section>
     </div>
 
@@ -107,37 +107,43 @@
                         <i class="icon-plus"></i> Add New
                     </a>
                 </li>
-                <!-- ko foreach: people.list -->
-                <li data-bind="attr: { 'data-id': id }">
-                    <a href="#" data-bind="text: name, click: $root.people.setActive"></a>
+                <!-- ko foreach: people.list() -->
+                <li data-bind="attr: { 'data-id': id() }">
+                    <a href="#" data-bind="text: name(), click: $root.people.setActive"></a>
                 </li>
                 <!-- /ko -->
             </ul>
         </div>
         <section class="span9 main-section" id="person-info-pane" data-bind="with: people.active()">
+            <form id="person-info-form" data-bind="attr: { action: $root.people.activeUrl }">
             <div class="row">
-                <h1 data-bind="text: name"></h1>
+                <h2 data-bind="text: name()"></h2>
             </div>
             <div class="row">
                 <div class="span4">
-                    <span class="address" data-bind="text: address"></span>
-                    <span class="phone" data-bind="text: 'M: ' + phone"></span>
-                    <span class="email" data-bind-"text: 'E: ' + email"></span>
+                    <span class="address" data-bind="text: address()"></span>
+                    <span class="phone" data-bind="text: 'M: ' + phone()"></span>
+                    <span class="email" data-bind="text: 'E: ' + email()"></span>
                 </div>
                 <div class="span5">
                     <div class="row">
-                        <textarea class="span5" data-bind="value: notes"></textarea>
+                        <textarea class="span5" name="notes" data-bind="value: notes, autosave: 'notes'"
+                                  placeholder="notes"></textarea>
                     </div>
                     <div class="row">
                         <div class="span3">
 
                             <label class="checkbox">
-                                <input type="checkbox" name="adopter" data-bind="checked: adopter"/> adopter
+                                <input type="checkbox" name="adopter"
+                                       data-bind="checked: adopter, autosave: 'adopter'"/>
+                                adopter
                                 <a href="#" data-bind="visible: adopter">(show history)</a>
                             </label>
 
                             <label class="checkbox">
-                                <input type="checkbox" name="foster" data-bind="checked: foster"/> foster
+                                <input type="checkbox" name="foster"
+                                       value="1" data-bind="checked: foster, autosave: 'foster'"/>
+                                foster
                                 <a href="#" data-bind="visible: foster">(show history)</a>
                             </label>
 
@@ -148,7 +154,8 @@
             <div class="row">
                 <div class="span4">
                     <label class="checkbox pull-right">
-                        <input type="checkbox" data-bind="checked: available"/> Available
+                        <input type="checkbox" name="available" data-bind="checked: available, autosave: 'available'"/>
+                    Available
                     </label>
                     <h4>Fostering <a href="#" class="small">(add)</a></h4>
                     <table class="table-condensed">
@@ -171,6 +178,7 @@
                     </table>
                 </div>
             </div>
+            </form>
         </section>
     </div>
 
@@ -283,6 +291,8 @@
 
     }
 
+
+
     var OrganizationsViewModel = function() {
         var self = this;
         var createModalElem = $('#modal-create-org');
@@ -322,6 +332,10 @@
         var peopleNav       = $('#people-list-nav');
 
         this.active = ko.observable();
+        this.activeUrl  = ko.computed( function() {
+            var active = self.active();
+            return SERVER_URL + '/people' + ( active ? '/' + active.id() : '');
+        }, this );
         this.list   = ko.observableArray();
 
         this.createName     = ko.observable();
@@ -339,8 +353,9 @@
 
             $.post( '<g:createLink controller="people" action="create"/>', submit, function( data ) {
                 if( data ) {
-                    self.list.push( data.data );
-                    self.setActive( data.data );
+                    var person = ko.mapping.fromJS(data.data);
+                    self.list.push( person );
+                    self.setActive( person );
                     createModalElem.trigger('reveal:close');
                 }
             });
@@ -357,11 +372,13 @@
         this.setActive = function( person, event ) {
             self.active( person );
             $( '[data-id]', peopleNav ).removeClass('active');
-            $( '[data-id="' + person.id + '"]', peopleNav ).addClass('active');
+            $( '[data-id="' + person.id() + '"]', peopleNav ).addClass('active');
         };
 
         //Construct
-        $.getJSON( '<g:createLink controller="people" action="index"/>', function(data) { self.list(data.data); } );
+        $.getJSON( '<g:createLink controller="people" action="index"/>',
+                function(data) { self.list( ko.mapping.fromJS(data.data) ); }
+        );
 
     };
 
@@ -375,7 +392,7 @@
         this.active     = ko.observable();
         this.activeUrl  = ko.computed( function() {
             var active = self.active();
-            return SERVER_URL + '/pets' + ( active ? '/' + active.id : '');
+            return SERVER_URL + '/pets' + ( active ? '/' + active.id() : '');
         }, this );
 
         this.createName  = ko.observable();
@@ -394,8 +411,9 @@
 
             $.post( '<g:createLink controller="pets" action="create"/>', submit, function( data ) {
                 if( data ) {
-                    self.list.push( data.data );
-                    self.setActive( data.data );
+                    var pet = ko.mapping.fromJS( data.data );
+                    self.list.push( pet );
+                    self.setActive( pet );
                     createModalElem.trigger('reveal:close');
                 } else {
                     alert( 'There was an error creating your pet.  Please try again.' );
@@ -423,9 +441,9 @@
         };
 
         //Construction
-        $.get('<g:createLink controller="pets" action="index"/>', function( data ) {
-            self.list( data.data );
-        });
+        $.get('<g:createLink controller="pets" action="index"/>',
+            function(data) { self.list( ko.mapping.fromJS(data.data) ); }
+        );
     };
 
     var DashboardViewModel = function() {

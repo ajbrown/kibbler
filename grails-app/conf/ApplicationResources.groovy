@@ -2,6 +2,7 @@ modules = {
     knockout {
         dependsOn 'jquery'
         resource url: 'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.0.js'
+        resource url: '/js/sammy.js'
     }
 
     'styling' {
@@ -21,6 +22,7 @@ modules = {
 
     application {
         dependsOn 'jquery,knockout'
+        resource url:'js/knockout.mapping.js'
         resource url:'js/knockout.bindings.js'
         resource url:'js/application.js'
     }

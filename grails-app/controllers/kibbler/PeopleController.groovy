@@ -1,5 +1,6 @@
 package kibbler
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 
 class PeopleController {
@@ -7,6 +8,7 @@ class PeopleController {
     def springSecurityService
     def personService
     def organizationService
+    def objectMapper = new ObjectMapper()
 
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
@@ -18,6 +20,31 @@ class PeopleController {
                 resp.data = people
                 render resp as JSON
             }
+        }
+    }
+
+    def update() {
+        def person = personService.read( params.id )
+        def user   = springSecurityService.currentUser as User
+        def resp   = new JSONResponseEnvelope( status: 200 )
+
+        if( !user.belongsTo( person.organization ) ) {
+            response.sendError( 403, "You are not authorized to modify this person." )
+        }
+
+        def fields = objectMapper.readValue( request.inputStream, Map.class )
+        def saved  = personService.updateFields( fields, person, user )
+
+        if( !saved ) {
+            resp.status = 400
+            resp.errors = person.errors.allErrors
+            resp.data = person
+        } else {
+            resp.data = saved
+        }
+
+        withFormat{
+            json{ render resp as JSON }
         }
     }
 

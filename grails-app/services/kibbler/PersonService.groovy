@@ -16,12 +16,20 @@ class PersonService {
         saved
     }
 
-    def read( id ) {
+    def Person read( id ) {
         def key = id instanceof ObjectId ? id : new ObjectId( id )
         Person.read( key )
     }
 
     def readAllForOrg( Organization org ) {
         org.people
+    }
+
+    def updateFields( Map fields, Person person, User updater ) {
+        fields.each{ key, value ->
+            person[ key ] = value
+        }
+        person.lastUpdatedBy = updater
+        person.save()
     }
 }

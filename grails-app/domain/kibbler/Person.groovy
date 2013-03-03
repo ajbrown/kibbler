@@ -23,7 +23,7 @@ class Person {
     Date dateCreated
     User createdBy
     Date lastUpdated
-    User updatedBy
+    User lastUpdatedBy
 
     static belongsTo = [
             organization: Organization
@@ -40,6 +40,7 @@ class Person {
         foster nullable: true
 
         createdBy nullable: true
-        updatedBy nullable: true
+        lastUpdatedBy nullable: true
     }
+
 }

@@ -17,7 +17,7 @@ class PetsController {
         //Get all pets for all organizations this user belongs to.
         //TODO we may want to only return for the currently active organization
         // but for now we're developing in single organization mode anyway.
-        def pets = user.organizations.collectMany{ petService.readAllByOrg( it ) }
+        def pets = user.organizations.collectMany{ petService.readAllForOrg( it ) }
 
         withFormat{
             json{
@@ -27,7 +27,7 @@ class PetsController {
         }
     }
 
-    def view() {
+    def read() {
         def resp = new JSONResponseEnvelope( status: 200 )
         def pet = petService.read( params.id )
 
