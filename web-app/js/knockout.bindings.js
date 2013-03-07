@@ -34,7 +34,6 @@
                 var timeOutKey = href + config.field;
                 var func = function() {
                     delete __autosaveTimeouts[ timeOutKey ]
-                    console.log("running");
                     var data = {};
                     data[config.field] = ko.toJS( bindingContext.$data )[config.field];
                     $.ajax( href, {

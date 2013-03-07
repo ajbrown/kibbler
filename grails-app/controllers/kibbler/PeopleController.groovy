@@ -84,8 +84,8 @@ class PeopleController {
         }
     }
 
-    def view() {
-        def resp = JSONResponseEnvelope( status: 200 )
+    def read() {
+        def resp = new JSONResponseEnvelope( status: 200 )
         def person = personService.read( params.id )
 
         if( !person ) {

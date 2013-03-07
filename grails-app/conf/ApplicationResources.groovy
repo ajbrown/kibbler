@@ -20,8 +20,13 @@ modules = {
         resource url: '/js/reveal/reveal.css'
     }
 
+    sammy {
+        dependsOn 'jquery'
+        url: '/js/sammy.js'
+    }
+
     application {
-        dependsOn 'jquery,knockout'
+        dependsOn 'jquery,knockout,sammy'
         resource url:'js/knockout.mapping.js'
         resource url:'js/knockout.bindings.js'
         resource url:'js/application.js'

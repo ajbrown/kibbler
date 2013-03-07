@@ -25,7 +25,8 @@
                 </li>
                 <!-- ko foreach: pets.list() -->
                 <li data-bind="attr: { 'data-id': id }">
-                    <a href="#" data-bind="text: givenName, click: $root.pets.setActive"></a>
+                    <a href="#"
+                       data-bind="attr: { href: '#pets/' + id() }, text: givenName"></a>
                 </li>
                 <!-- /ko -->
             </ul>
@@ -35,7 +36,8 @@
 
             <div class="row">
                 <div class="span9">
-                    <h1 data-bind="text: givenName"></h1>
+                    <h2 data-bind="text: givenName"></h2>
+                    <span class="small">Species</span>
 
                 </div>
             </div>
@@ -46,9 +48,16 @@
                         <fieldset>
                             <legend data-bind="text: type() + ', ' + sex()"></legend>
                             <label>Status</label>
-                            <select name="pet-status" id="pet-status">
+                            <select name="pet-status" id="pet-status" data-bind="">
                                 <option value="adopted">Adopted</option>
                             </select>
+                            <div data-bind="visible: status() == 'adopted' || status() == 'fostered'">
+                                <label>to
+                                    <select>
+
+                                    </select>
+                                </label>
+                            </div>
 
                             <label class="checkbox">
                                 <input type="checkbox" name="heartworm"
@@ -73,7 +82,7 @@
                             <label class="checkbox">
                                 <input type="checkbox" name="specialNeeds"
                                        data-bind="checked: vitals.specialNeeds">
-                                Specials
+                                Special Needs
                             </label>
 
                             <label>Notes</label>
@@ -84,12 +93,16 @@
                         </fieldset>
                 </div>
                 <div class="span5">
-                    <label for="pet-description"> Description </label><br/>
-                    <textarea
-                            id="pet-description"
-                            name="description"
-                            class="stretch-width"
-                            data-bind="value: description, autosave: { event: 'keypress', field: 'description' }"></textarea>
+                    <div class="editable-text">
+                        <a href="#" class="pull-right">Edit</a>
+                        <label for="pet-description">Description </label>
+                        <textarea
+                                id="pet-description"
+                                name="description"
+                                class="stretch-width"
+                                data-bind="value: description, autosave: { event: 'keypress', field: 'description' }"></textarea>
+
+                    </div>
                 </div>
             </div>
 
@@ -108,8 +121,9 @@
                     </a>
                 </li>
                 <!-- ko foreach: people.list() -->
-                <li data-bind="attr: { 'data-id': id() }">
-                    <a href="#" data-bind="text: name(), click: $root.people.setActive"></a>
+                <li data-bind="attr: { 'data-id': id() }, css: { active: $data == $root.people.active }">
+                    <a href="#"
+                       data-bind="attr: { href: '#people/' + id() }, text: name()"></a>
                 </li>
                 <!-- /ko -->
             </ul>
@@ -287,12 +301,6 @@
 
 (function() {
 
-    var queueAutosave = function( group ) {
-
-    }
-
-
-
     var OrganizationsViewModel = function() {
         var self = this;
         var createModalElem = $('#modal-create-org');
@@ -332,11 +340,11 @@
         var peopleNav       = $('#people-list-nav');
 
         this.active = ko.observable();
-        this.activeUrl  = ko.computed( function() {
+        this.activeUrl = ko.computed( function() {
             var active = self.active();
             return SERVER_URL + '/people' + ( active ? '/' + active.id() : '');
         }, this );
-        this.list   = ko.observableArray();
+        this.list = ko.observableArray();
 
         this.createName     = ko.observable();
         this.createAdopter  = ko.observable();
@@ -370,6 +378,13 @@
         }
 
         this.setActive = function( person, event ) {
+            //If loading the active person by id, we must load it via ajax.
+            if( typeof person == "string" ) {
+                $.getJSON( SERVER_URL + '/people/' + person, function( data ) {
+                    self.setActive( ko.mapping.fromJS( data.data ) );
+                });
+                return;
+            }
             self.active( person );
             $( '[data-id]', peopleNav ).removeClass('active');
             $( '[data-id="' + person.id() + '"]', peopleNav ).addClass('active');
@@ -435,9 +450,17 @@
         };
 
         this.setActive = function( pet, event ) {
+            //If loading the active pet by id, we must load it via ajax.
+            if( typeof pet == "string" ) {
+                $.getJSON( SERVER_URL + '/pets/' + pet, function( data ) {
+                    self.setActive( ko.mapping.fromJS( data.data ) );
+                });
+                return;
+            }
+
             self.active( pet );
             $( '[data-id]', petsNav ).removeClass('active');
-            $( '[data-id="' + pet.id + '"]', petsNav ).addClass('active');
+            $( '[data-id="' + pet.id() + '"]', petsNav ).addClass('active');
         };
 
         //Construction
@@ -467,7 +490,19 @@
         //On Construction
         $.getJSON( '<g:createLink controller="user" action="index"/>', function(data) { self.setUser(data); } );
 
+        Sammy( function() {
+            this.get( "/kibbler/#pets/:pet", function() {
+                self.pets.setActive( this.params.pet )
+            });
+
+            this.get( "/kibbler/#people/:person", function() {
+                self.people.setActive( this.params.person )
+            });
+        }).run();
+
     };
+
+
 
     ko.applyBindings( new DashboardViewModel() );
 
