@@ -99,6 +99,7 @@ class PeopleController {
             response.status = 403
         }
 
+
         withFormat{
             json{
                 resp.data = person

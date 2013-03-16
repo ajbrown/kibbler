@@ -3,9 +3,11 @@
 <head>
   <title></title>
   <meta name="layout" content="main">
+  <r:require module="bootstrap-editable"/>
 </head>
 <body>
 
+<div class="row">
 
 <ul class="nav nav-tabs">
     <li class="active"><a href="#pets" data-toggle="tab">Pets</a></li>
@@ -16,98 +18,7 @@
 <div class="tab-content">
 
     <div class="tab-pane active row" id="pets">
-        <div class="span3">
-            <ul class="nav nav-list nav-stacked" id="pets-list-nav">
-                <li>
-                    <a href="#" data-bind="click: pets.showCreateModal">
-                        <i class="icon-plus"></i> Add New
-                    </a>
-                </li>
-                <!-- ko foreach: pets.list() -->
-                <li data-bind="attr: { 'data-id': id }">
-                    <a href="#"
-                       data-bind="attr: { href: '#pets/' + id() }, text: givenName"></a>
-                </li>
-                <!-- /ko -->
-            </ul>
-        </div>
-        <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
-            <form id="status-info-form" data-bind="attr: { action: $root.pets.activeUrl }">
-
-            <div class="row">
-                <div class="span9">
-                    <h2 data-bind="text: givenName"></h2>
-                    <span class="small">Species</span>
-
-                </div>
-            </div>
-            <div class="row">
-                <div class="span4">
-                    <a class="btn btn-mini" href="#">Upload Photo</a>
-
-                        <fieldset>
-                            <legend data-bind="text: type() + ', ' + sex()"></legend>
-                            <label>Status</label>
-                            <select name="pet-status" id="pet-status" data-bind="">
-                                <option value="adopted">Adopted</option>
-                            </select>
-                            <div data-bind="visible: status() == 'adopted' || status() == 'fostered'">
-                                <label>to
-                                    <select>
-
-                                    </select>
-                                </label>
-                            </div>
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="heartworm"
-                                       data-bind="checked: vitals.heartworm, autosave: { field: 'vitals'}">
-                                Heartworm
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" name="vitals.housebroken"
-                                       data-bind="checked: vitals.housebroken, autosave: { field: 'vitals' }">
-                                Housebroken
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" name="vitals.microchipped"
-                                       data-bind="checked: vitals.microchipped, autosave: { field: 'vitals' }">
-                                Microchipped
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" name="vitals.neutered"
-                                       data-bind="checked: vitals.neutered, autosave: { field: 'vitals' }">
-                                <span data-bind="text: sex == 'male' ? 'Neutered' : 'Spayed'">Spayed/Neutered</span>
-                            </label>
-                            <label class="checkbox">
-                                <input type="checkbox" name="specialNeeds"
-                                       data-bind="checked: vitals.specialNeeds">
-                                Special Needs
-                            </label>
-
-                            <label>Notes</label>
-                            <textarea name="notes"
-                                      data-bind="value: notes, autosave: { field: 'notes' }">
-                                      </textarea>
-
-                        </fieldset>
-                </div>
-                <div class="span5">
-                    <div class="editable-text">
-                        <a href="#" class="pull-right">Edit</a>
-                        <label for="pet-description">Description </label>
-                        <textarea
-                                id="pet-description"
-                                name="description"
-                                class="stretch-width"
-                                data-bind="value: description, autosave: { event: 'keypress', field: 'description' }"></textarea>
-
-                    </div>
-                </div>
-            </div>
-
-            </form>
-        </section>
+        <g:render template="pets-tab"/>
     </div>
 
     <!-- People Tab -->
@@ -296,6 +207,8 @@
 
 </div>
 
+</div>
+
 <r:require module="reveal"/>
 <r:script>
 
@@ -417,6 +330,16 @@
         this.listSortField     = ko.observable('givenName');
         this.listSortDirection = ko.observable('asc');
 
+        this.editBreed = function( pet, event) {
+            var $this = $(event.currentTarget);
+            $this.popover('show');
+
+        };
+
+        this.editName = function( pet, e ) {
+
+        }
+
         this.submitCreatePet = function() {
             var submit = {
                 name: self.createName(),
@@ -456,6 +379,28 @@
                     self.setActive( ko.mapping.fromJS( data.data ) );
                 });
                 return;
+            }
+
+            //add the type label computed
+            if( typeof pet.typeLabel == 'undefined' ) {
+                pet.typeLabel = ko.computed( function() {
+                    var sex   = this.sex();
+                    var breed = this.breed();
+                    if( !breed ) {
+                        breed = this.type();
+                    }
+
+                    return sex + ' ' + breed;
+                }, pet );
+            }
+
+            if( typeof pet.statusExtra == 'undefined' ) {
+                pet.statusExtra = ko.computed( function() {
+                    var status = this.status();
+                    if( status == 'adopted' || status == 'fostered' ) {
+                        return 'to Not Mike Vick'
+                    }
+                }, pet );
             }
 
             self.active( pet );
@@ -503,6 +448,14 @@
     };
 
 
+    $('.editable').popover({
+        html : true,
+        content: function() {
+            alert('HERE');
+            var elem = $(this).attr('data-popover');
+            return $('#' + elem ).html();
+        }
+    });
 
     ko.applyBindings( new DashboardViewModel() );
 

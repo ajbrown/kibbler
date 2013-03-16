@@ -5,6 +5,8 @@ import org.bson.types.ObjectId
 
 class Pet {
 
+    static final STATUS_OPTIONS = [ 'available','hold','fostered','adopted','deceased' ]
+
     ObjectId id
 
     String assignedId
@@ -16,7 +18,13 @@ class Pet {
     String sex
     Integer weight
 
-    PetVitals vitals = new PetVitals()
+    //Vitals
+    Boolean heartworm
+    Boolean housebroken
+    Boolean microchipped
+    String  microchipId
+    Boolean neutered
+    Boolean specialNeeds
 
     String status = 'available'
     String notes
@@ -43,7 +51,14 @@ class Pet {
         sex   nullable: true, inList: [ 'male','female' ]
         weight nullable: true
 
-        status inList: [ 'available','hold','fostered','adopted','deceased' ]
+        heartworm nullable: true
+        housebroken nullable: true
+        microchipped nullable: true
+        microchipId nullable: true
+        neutered nullable: true
+        specialNeeds nullable: true
+
+        status inList: STATUS_OPTIONS
 
         createdBy nullable: true
         lastUpdatedBy nullable: true

@@ -25,6 +25,12 @@ modules = {
         url: '/js/sammy.js'
     }
 
+    'bootstrap-editable' {
+        dependsOn 'jquery'
+        resource url: 'js/bootstrap-editable/js/bootstrap-editable.min.js'
+        resource url: 'js/bootstrap-editable/css/bootstrap-editable.css'
+    }
+
     application {
         dependsOn 'jquery,knockout,sammy'
         resource url:'js/knockout.mapping.js'

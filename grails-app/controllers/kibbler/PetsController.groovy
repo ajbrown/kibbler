@@ -53,6 +53,8 @@ class PetsController {
         def fields = objectMapper.readValue( request.inputStream, Map.class )
         def saved = petService.updateFields( fields, pet, user )
 
+        //TODO if saving failed due to optimistic locking, refresh and try again.
+
         if( !saved ) {
             resp.status = 400
             resp.errors = pet.errors.allErrors

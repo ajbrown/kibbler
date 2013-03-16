@@ -8,7 +8,12 @@ package kibbler
  * To change this template use File | Settings | File Templates.
  */
 enum Species {
-    DOG, CAT
+    DOG('Dog'), CAT('Cat')
 
+    String label
+
+    Species( String label ) {
+        this.label = label
+    }
 
 }

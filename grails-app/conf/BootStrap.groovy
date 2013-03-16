@@ -23,6 +23,7 @@ class BootStrap {
 
     }
     def destroy = {
+
     }
 
 
@@ -34,6 +35,6 @@ class BootStrap {
     def void configureJSONMarshaller() {
         JSON.registerObjectMarshaller( ObjectId, { it.toString() } )
 
-        JSON.registerObjectMarshaller( Species, { it.toString() } )
+        JSON.registerObjectMarshaller( Species, { it.label } )
     }
 }

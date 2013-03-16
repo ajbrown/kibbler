@@ -13,7 +13,7 @@
     var __autosaveTimeouts = {};
     var __autosaveDefaults = {
         event: 'change',
-        delay: 1000
+        delay: 600
     }
 
     ko.bindingHandlers.autosave = {
@@ -25,17 +25,17 @@
             } else if( typeof val == 'boolean' ) {
                 val = { field: $(elem).attr('name') };
             }
-            var config = $.extend( __autosaveDefaults, val );
+            var config = $.extend( {}, __autosaveDefaults, val );
 
             var eventFunc = function () {
                 var config = $.extend( __autosaveDefaults, val );
-                console.log( config );
                 var href = $(elem).parents( "form").attr('action');
                 var timeOutKey = href + config.field;
                 var func = function() {
                     delete __autosaveTimeouts[ timeOutKey ]
                     var data = {};
                     data[config.field] = ko.toJS( bindingContext.$data )[config.field];
+
                     $.ajax( href, {
                             async: true,
                             data: ko.toJSON( data),
