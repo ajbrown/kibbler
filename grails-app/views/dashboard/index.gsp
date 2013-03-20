@@ -330,6 +330,40 @@
         this.listSortField     = ko.observable('givenName');
         this.listSortDirection = ko.observable('asc');
 
+        this.adopt = function( pet, event ) {
+            $('#pet-adopt-modal').reveal();
+        }
+
+        this.submitAdopt = function() {
+            var form = $('form', '#pet-adopt-modal')
+            var vals = form.serializeArray();
+            var url  = form.attr('action');
+            var data = {}
+            for( var i in vals ) {
+                data[ vals[i].name ] = vals[i].value;
+            }
+            $.post( url, data, function( resp ) {
+                    if( resp.status > 200 && resp.status < 300 ) {
+                        self.setActive( ko.mapping.fromJS( resp.data) );
+                        $('#pet-adopt-modal').trigger('reveal:close');
+                    }
+            });
+        }
+
+        this.foster = function( pet, event ) {
+            alert('Fostering.');
+        }
+
+        this.reclaim = function( pet, event ) {
+            alert('Reclaiming.');
+        }
+
+        this.hold = function( pet, event ) {
+            $.post( SERVER_URL + '/pets/' + pet.id() + '/hold', function() {
+
+            });
+        }
+
         this.editBreed = function( pet, event) {
             var $this = $(event.currentTarget);
             $this.popover('show');
@@ -347,7 +381,7 @@
                 organizationId:  self.createOrgId()
             }
 
-            $.post( '<g:createLink controller="pets" action="create"/>', submit, function( data ) {
+            $.postJSON( '<g:createLink controller="pets" action="create"/>', submit, function( data ) {
                 if( data ) {
                     var pet = ko.mapping.fromJS( data.data );
                     self.list.push( pet );
@@ -387,6 +421,7 @@
                     var sex   = this.sex();
                     var breed = this.breed();
                     if( !breed ) {
+
                         breed = this.type();
                     }
 
@@ -394,12 +429,31 @@
                 }, pet );
             }
 
-            if( typeof pet.statusExtra == 'undefined' ) {
-                pet.statusExtra = ko.computed( function() {
+            if( typeof pet.statusLabel == 'undefined' ) {
+                pet.statusLabel = ko.computed( function() {
                     var status = this.status();
-                    if( status == 'adopted' || status == 'fostered' ) {
-                        return 'to Not Mike Vick'
+                    var label = '(';
+                    label += status.charAt(0).toUpperCase() + status.slice(1);
+
+                    if( status == 'adopted' ) {
+
+                        var adopter = this.adopter;
+                        console.log( adopter );
+                        if( adopter ) {
+                            label += ' to ' + adopter.id();
+                        }
+
+                    } else if( status == 'fostered' ) {
+
+                        var foster = this.foster();
+                        if( foster ) {
+                            label += ' to ' + this.foster();
+                        }
                     }
+
+                    label += ')';
+
+                    return label;
                 }, pet );
             }
 

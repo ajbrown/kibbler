@@ -8,6 +8,7 @@ class PetsController {
     def springSecurityService
     def organizationService
     def petService
+    def personService
     ObjectMapper objectMapper
 
     def index() {
@@ -105,7 +106,110 @@ class PetsController {
                 render jsonResponse as JSON
             }
         }
+    }
 
+    def adopt( AdoptPetCommand cmd ) {
+        cmd.clearErrors()
+        def user = springSecurityService.currentUser as User
+        def jsonResponse = new JSONResponseEnvelope( status: 201 )
+
+        if( cmd.validate() ) {
+            def pet = petService.read( params.id )
+            def adopter = personService.read( cmd.adopter )
+
+            //Make sure the pet exists
+            if( !pet ) {
+                //TODO return a 404 instead
+                throw new Exception( 'Could not find the specified pet' )
+            }
+
+            //Make sure the adopter exists.
+            if( !adopter ) {
+                //TODO better exceptions
+                throw new Exception( 'Adopter does not exist' )
+            }
+
+            if( !petService.adopt( pet, adopter, user ) ) {
+                response.status = 500
+                jsonResponse.errors = pet.errors.allErrors
+            }
+
+            jsonResponse.data = pet
+        }
+
+        withFormat{
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
+            }
+        }
+    }
+
+    def foster( FosterPetCommand cmd ) {
+        cmd.clearErrors()
+        def user = springSecurityService.currentUser as User
+        def jsonResponse = new JSONResponseEnvelope( status: 201 )
+
+        if( cmd.validate() ) {
+            def pet = petService.read( params.id )
+            def foster = personService.read( cmd.personId )
+
+            //Make sure the pet exists
+            if( !pet ) {
+                //TODO return a 404 instead
+                throw new Exception( 'Could not find the specified pet' )
+            }
+
+            //Make sure the foster exists.
+            if( !foster ) {
+                //TODO better exceptions
+                throw new Exception( 'Adopter does not exist' )
+            }
+
+            if( !petService.foster( pet, foster, user ) ) {
+                response.status = 500
+                jsonResponse.errors = pet.errors.allErrors
+            }
+
+            jsonResponse.data = pet
+        }
+
+        withFormat{
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
+            }
+        }
+    }
+
+    def hold( HoldPetCommand cmd ) {
+        cmd.clearErrors()
+        def user = springSecurityService.currentUser as User
+        def jsonResponse = new JSONResponseEnvelope( status: 201 )
+
+        if( cmd.validate() ) {
+            def pet = petService.read( params.id )
+
+            //Make sure the pet exists
+            if( !pet ) {
+                //TODO return a 404 instead
+                throw new Exception( 'Could not find the specified pet' )
+            }
+
+            if( !petService.hold( pet, user ) ) {
+                response.status = 500
+                jsonResponse.errors = pet.errors?.allErrors
+            }
+
+            jsonResponse.data = pet
+        }
+
+        withFormat{
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
+            }
+        }
     }
 }
 

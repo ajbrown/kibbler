@@ -1,6 +1,5 @@
 package kibbler
 
-import grails.converters.JSON
 import org.bson.types.ObjectId
 
 class Pet {
@@ -17,6 +16,10 @@ class Pet {
     String breed
     String sex
     Integer weight
+
+    //TODO these could probably be consildated. Think about it once we get further along in the prototype.
+    Person adopter
+    Person foster
 
     //Vitals
     Boolean heartworm
@@ -35,8 +38,7 @@ class Pet {
     User lastUpdatedBy
 
     static belongsTo = [ organization: Organization ]
-    static hasMany = [ photos: Photo ]
-    static embedded = [ 'vitals' ]
+    static hasMany = [ photos: Photo, adoptions: AdoptionRecord, fosterings: FosterRecord ]
 
     static mapping = {
         sort "givenName"
@@ -50,6 +52,15 @@ class Pet {
         breed nullable: true
         sex   nullable: true, inList: [ 'male','female' ]
         weight nullable: true
+
+        adopter nullable: true, validator:  { Person val, Pet obj ->
+            if( !val ) { return true }
+            val.organizationId == obj.organizationId ?: ['organization.mismatch']
+        }
+        foster  nullable: true, validator: { Person val, Pet obj ->
+            if( !val ) { return true }
+            val.organizationId == obj.organizationId ?: ['organization.mismatch']
+        }
 
         heartworm nullable: true
         housebroken nullable: true

@@ -16,11 +16,13 @@
 <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
     <form id="status-info-form" data-bind="attr: { action: $root.pets.activeUrl }" method="post">
 
+
         <div class="row">
             <div class="span9">
                 <legend class="caps">
-                    <small class="pull-right"
-                           data-popover="edit-pet-breed"
+                    <small class="pull-right" id="pet-status-label"
+                            data-bind="text: statusLabel"></small>
+                    <small class="pull-right" id="pet-type-label"
                            data-bind="text: typeLabel"></small>
                     <span class="editable"
                         data-bind="text: givenName"></span>
@@ -33,13 +35,34 @@
             <!-- Image and Description -->
 
             <div class="span4">
-                <div id="pet-status-line">
-                    <select name="status"
-                            data-bind="value: status, options: ['${kibbler.Pet.STATUS_OPTIONS.join("','")}'], autosave: true"
-                            id="pet-status">
-                    </select>
-                    <small data-bind="text: statusExtra"></small>
-                </div>
+
+            <ul class="nav nav-pills">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" id="change-status-menu-toggle"
+                       role="button" data-toggle="dropdown" href="#">Change Status <i class="icon-reorder"></i></a>
+                    <ul class="dropdown-menu">
+                        <li role="presentation">
+                            <a role="menuitem" href="#"
+                                    data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"
+                                >Adopt</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" href="#"
+                                    data-bind="text: status() != 'fostered' ? 'Foster' : 'Re-Foster', click: $root.pets.foster"
+                                >Foster</a>
+                        </li>
+                        <li role="presentation" data-bind="visible: status() != 'available'">
+                            <a role="menuitem"
+                                    data-bind="visible: status() != 'available', click: $root.pets.reclaim"
+                                    href="#">Reclaim</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
                 <div id="pet-photo-container">
                     <img
                             style="width: 200px;"
@@ -65,6 +88,7 @@
 
         <div class="row">
             <div class="span4">
+
 
                 <fieldset>
 
@@ -132,5 +156,20 @@
             <option value="DOG">Dog</option>
             <option value="CAT">Cat</option>
         </select>
+    </form>
+</div>
+
+<div id="pet-adopt-modal" class="reveal-modal">
+    <h3>Adopt</h3>
+    <form class="form-horizontal"  method="post"
+          data-bind="attr: { action: $root.pets.activeUrl() + '/adopt' }">
+        <label>Adopter</label>
+        <select name="adopter" data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
+            <option></option>
+            <option>Stacey Hensley</option>
+            <option>David Michael</option>
+            <option>Not A.J. Brown</option>
+        </select>
+        <button type="submit" class="btn btn-primary" data-bind="click: $root.pets.submitAdopt">Submit</button>
     </form>
 </div>

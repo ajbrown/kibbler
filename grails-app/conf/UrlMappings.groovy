@@ -12,6 +12,8 @@ class UrlMappings {
             action = [GET: "read", POST: "update", PUT: "create", DELETE: "delete"]
         }
 
+        "/pets/$id/$action" ( controller: 'pets' )
+
 		"/" ( controller: "dashboard", action: "index" )
 		"500"(view:'/error')
 	}
