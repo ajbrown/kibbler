@@ -24,87 +24,7 @@
     <!-- People Tab -->
 
     <div class="tab-pane row" id="people">
-        <div class="span3">
-            <ul class="nav nav-list nav-stacked" id="people-list-nav">
-                <li>
-                    <a href="#" data-bind="click: people.showCreate">
-                        <i class="icon-plus"></i> Add New
-                    </a>
-                </li>
-                <!-- ko foreach: people.list() -->
-                <li data-bind="attr: { 'data-id': id() }, css: { active: $data == $root.people.active }">
-                    <a href="#"
-                       data-bind="attr: { href: '#people/' + id() }, text: name()"></a>
-                </li>
-                <!-- /ko -->
-            </ul>
-        </div>
-        <section class="span9 main-section" id="person-info-pane" data-bind="with: people.active()">
-            <form id="person-info-form" data-bind="attr: { action: $root.people.activeUrl }">
-            <div class="row">
-                <h2 data-bind="text: name()"></h2>
-            </div>
-            <div class="row">
-                <div class="span4">
-                    <span class="address" data-bind="text: address()"></span>
-                    <span class="phone" data-bind="text: 'M: ' + phone()"></span>
-                    <span class="email" data-bind="text: 'E: ' + email()"></span>
-                </div>
-                <div class="span5">
-                    <div class="row">
-                        <textarea class="span5" name="notes" data-bind="value: notes, autosave: 'notes'"
-                                  placeholder="notes"></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="span3">
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="adopter"
-                                       data-bind="checked: adopter, autosave: 'adopter'"/>
-                                adopter
-                                <a href="#" data-bind="visible: adopter">(show history)</a>
-                            </label>
-
-                            <label class="checkbox">
-                                <input type="checkbox" name="foster"
-                                       value="1" data-bind="checked: foster, autosave: 'foster'"/>
-                                foster
-                                <a href="#" data-bind="visible: foster">(show history)</a>
-                            </label>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="span4">
-                    <label class="checkbox pull-right">
-                        <input type="checkbox" name="available" data-bind="checked: available, autosave: 'available'"/>
-                    Available
-                    </label>
-                    <h4>Fostering <a href="#" class="small">(add)</a></h4>
-                    <table class="table-condensed">
-                        <tr>
-                            <th>Name</th>
-                            <th>Since</th>
-                        </tr>
-                    </table>
-
-                </div>
-                <div class="span5">
-                    <h4>History and Documentation  <a href="#" class="small">(add)</a></h4>
-                    <table class="table-condensed">
-                        <tr>
-                            <th>Event</th>
-                            <th>Add/Changed By</th>
-                            <th>Date</th>
-                            <th>Attachement</th>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            </form>
-        </section>
+        <g:render template="people-tab"/>
     </div>
 
     <!-- Organization Tab -->
@@ -298,6 +218,23 @@
                 });
                 return;
             }
+
+            if( typeof person.contact == 'undefined' ) {
+                person.contact = ko.computed( function() {
+                    var address = this.address();
+                    var company = this.company();
+                    var phone   = this.phone();
+                    var email   = this.email();
+                    var output  = ''
+                    output += company ? company + "<br/>\n" : "";
+                    output += address ? address.replace("\n", "<br/>\n") + "<br/>\n" : "";
+                    output += phone ? phone + "M: " + phone + "<br/>\n" : "";
+                    output += email ? email + "E: " + email + "<br/>\n" : "";
+
+                    return output;
+                }, person );
+            }
+
             self.active( person );
             $( '[data-id]', peopleNav ).removeClass('active');
             $( '[data-id="' + person.id() + '"]', peopleNav ).addClass('active');
