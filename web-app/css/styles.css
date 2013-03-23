@@ -10,6 +10,14 @@
     cursor: text;
 }
 
+.editable-text label {
+    font-weight: bold;
+}
+
+.editable-text label small {
+    font-weight: lighter;
+}
+
 #pet-status {
     text-transform: capitalize;
     font-weight: bolder;
@@ -21,3 +29,11 @@
     margin-left: 10px;
 }
 
+.edit-button {
+    font-size: 0.75em;
+    text-transform: uppercase;
+}
+
+.edit-button:hover {
+    font-weight: bolder;
+}

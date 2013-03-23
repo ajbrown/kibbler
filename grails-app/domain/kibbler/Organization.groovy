@@ -17,6 +17,12 @@ class Organization {
 
     }
 
+    static mapping = {
+        sort "name"
+        people sort: "name"
+        pets sort: "name"
+    }
+
     def Set<User> getMemberAccounts() {
         members*.user
     }

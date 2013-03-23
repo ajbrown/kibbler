@@ -22,7 +22,10 @@ class PersonService {
     }
 
     def readAllForOrg( Organization org ) {
-        org.people
+        Person.createCriteria().list {
+            eq "organization", org
+            order "name"
+        }
     }
 
     def updateFields( Map fields, Person person, User updater ) {

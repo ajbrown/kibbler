@@ -6,7 +6,7 @@
             </a>
         </li>
         <!-- ko foreach: pets.list() -->
-        <li data-bind="attr: { 'data-id': id }">
+        <li data-bind="attr: { 'data-id': id }, css: { active: id() == $root.pets.activeId() }">
             <a href="#"
                data-bind="attr: { href: '#pets/' + id() }, text: givenName"></a>
         </li>

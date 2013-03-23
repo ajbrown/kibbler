@@ -9,7 +9,7 @@
 
 <div class="row">
 
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs" id="tabs">
     <li class="active"><a href="#pets" data-toggle="tab">Pets</a></li>
     <li><a href="#people" data-toggle="tab">People</a></li>
     <li><a href="#organization" data-toggle="tab">Organization</a></li>
@@ -173,10 +173,19 @@
         var peopleNav       = $('#people-list-nav');
 
         this.active = ko.observable();
+
         this.activeUrl = ko.computed( function() {
             var active = self.active();
             return SERVER_URL + '/people' + ( active ? '/' + active.id() : '');
         }, this );
+
+        this.activeId  = ko.computed( function() {
+            var active = this.active();
+            if( active ) {
+                return active.id();
+            }
+        }, self );
+
         this.list = ko.observableArray();
 
         this.createName     = ko.observable();
@@ -202,6 +211,10 @@
             });
         };
 
+        this.editAddress = function() {
+            $('#person-edit-address-modal').reveal();
+        }
+
         this.showCreate = function() {
             self.createName('');
             self.createAdopter('');
@@ -219,17 +232,11 @@
                 return;
             }
 
-            if( typeof person.contact == 'undefined' ) {
-                person.contact = ko.computed( function() {
+            if( typeof person.addressFormatted == 'undefined' ) {
+                person.addressFormatted = ko.computed( function() {
                     var address = this.address();
-                    var company = this.company();
-                    var phone   = this.phone();
-                    var email   = this.email();
                     var output  = ''
-                    output += company ? company + "<br/>\n" : "";
                     output += address ? address.replace("\n", "<br/>\n") + "<br/>\n" : "";
-                    output += phone ? phone + "M: " + phone + "<br/>\n" : "";
-                    output += email ? email + "E: " + email + "<br/>\n" : "";
 
                     return output;
                 }, person );
@@ -259,6 +266,13 @@
             var active = self.active();
             return SERVER_URL + '/pets' + ( active ? '/' + active.id() : '');
         }, this );
+
+        this.activeId  = ko.computed( function() {
+            var active = this.active();
+            if( active ) {
+                return active.id();
+            }
+        }, self );
 
         this.createName  = ko.observable();
         this.createType  = ko.observable();
@@ -428,10 +442,12 @@
 
         Sammy( function() {
             this.get( "/kibbler/#pets/:pet", function() {
+                $('#pets').tab('show')
                 self.pets.setActive( this.params.pet )
             });
 
             this.get( "/kibbler/#people/:person", function() {
+                $('#tabs a[href="#people"]').tab('show')
                 self.people.setActive( this.params.person )
             });
         }).run();
@@ -442,7 +458,6 @@
     $('.editable').popover({
         html : true,
         content: function() {
-            alert('HERE');
             var elem = $(this).attr('data-popover');
             return $('#' + elem ).html();
         }

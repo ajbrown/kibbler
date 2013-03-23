@@ -17,6 +17,7 @@ class Person {
     Boolean adopter
     Boolean foster
     Boolean available = true
+    User linkedAccount
 
     Boolean doNotAdopt = false
 
@@ -32,6 +33,9 @@ class Person {
             organization: Organization
     ]
 
+    static mapping = {
+        sort "name"
+    }
 
     static constraints = {
         company nullable: true
@@ -41,6 +45,9 @@ class Person {
         email nullable: true
         adopter nullable: true
         foster nullable: true
+        linkedAccount nullable: true, validator: { value, Person obj ->
+
+        }
 
         createdBy nullable: true
         lastUpdatedBy nullable: true

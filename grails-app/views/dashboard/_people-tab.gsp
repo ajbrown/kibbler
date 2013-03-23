@@ -1,3 +1,5 @@
+<r:require module="font-awesome"/>
+
 <div class="span3">
     <ul class="nav nav-list nav-stacked" id="people-list-nav">
         <li>
@@ -6,7 +8,7 @@
             </a>
         </li>
         <!-- ko foreach: people.list() -->
-        <li data-bind="attr: { 'data-id': id() }, css: { active: $data == $root.people.active }">
+        <li data-bind="attr: { 'data-id': id() }, css: { active: $data.id() == $root.people.activeId() }">
             <a href="#"
                data-bind="attr: { href: '#people/' + id() }, text: name()"></a>
         </li>
@@ -19,13 +21,13 @@
             <div class="span9">
                 <legend class="caps">
                     <label class="pull-right checkbox">
-                        <input type="checkbox" name="foster"> Foster
+                        <input type="checkbox" name="foster" data-bind="checked: foster, autosave: true"> Foster
                     </label>
                     <label class="pull-right checkbox">
-                        <input type="checkbox" name="foster"> Adopter
+                        <input type="checkbox" name="adopter" data-bind="checked: adopter, autosave: true"> Adopter
                     </label>
                     <label class="pull-right checkbox">
-                        <input type="checkbox" name="available"> Available
+                        <input type="checkbox" name="available" data-bind="checked: available"> Available
                     </label>
                     <span class="editable"
                           data-bind="text: name"></span>
@@ -37,15 +39,28 @@
 
         <div class="row">
             <div class="span4">
-                <div class="editable-text">
-                    <a href="#" id="person-contact-edit" class="pull-right">Edit</a>
-                    <address class="" data-bind="html: contact"></address>
+                <div>
+                    <a href="#" id="person-edit-address-button" data-bind="click: $root.people.editAddress"
+                       class="pull-right edit-button">Edit</a>
+                    <strong>Contact Info</strong>
                 </div>
+
+                    <!-- Contact Info -->
+                    <div data-bind="visible: company()" id="person-company-wrapper">
+                        <i class="icon-building"></i>&nbsp;<span id="person-company" data-bind="text: company"></span>
+                    </div>
+                    <address class="" data-bind="html: addressFormatted"></address>
+                    <div data-bind="visible: phone()" id="person-phone-wrapper">
+                        <i class="icon-phone">&nbsp;</i>&nbsp;<span id="person-phone" data-bind="text: phone"></span>
+                    </div>
+                    <div data-bind="visible: email()" id="person-email-wrapper">
+                            <i class="icon-envelope-alt">&nbsp;</i>&nbsp;<span id="person-email"
+                                                                       data-bind="text: email"></span>
+                    </div>
             </div>
             <div class="span5">
                 <div class="editable-text">
-                    <a href="#" class="pull-right">Edit</a>
-                    <label for="person-notes">Notes</label>
+                    <label for="person-notes">Notes <small>(Organization Visible)</small></label>
                     <textarea
                             id="person-notes"
                             name="notes"
@@ -60,10 +75,6 @@
         <div class="row">
             <div class="span4">
                 <div>
-                    <label class="checkbox pull-right">
-                        <input type="checkbox" name="available" data-bind="checked: available, autosave: 'available'"/>
-                        Available
-                    </label>
                     <strong>Fosters & Adoptions <a href="#" class="small">(add)</a></strong>
                 </div>
                 <table class="table-condensed">
@@ -86,5 +97,27 @@
                 </table>
             </div>
         </div>
+
+
+        <!-- Edit Address Modal -->
+        <div class="reveal-modal" id="person-edit-address-modal">
+            <legend data-bind="text: 'Edit ' + name() + '\'s Contact Info'">Edit Contact Info</legend>
+
+            <label>Company Name</label>
+            <input type="text" name="company" data-bind="value: company, autosave: true"/>
+
+            <label>Address</label>
+            <textarea name="address" data-bind="value: address, autosave: true"></textarea>
+
+            <label>Phone</label>
+            <input type="text" name="phone" data-bind="value: phone, autosave: true"/>
+
+            <label>E-mail</label>
+            <input type="text" name="email" data-bind="value: email, autosave: true"/>
+
+            <button type="button" class="btn">Done.</button>
+        </div>
+
     </form>
+
 </section>
