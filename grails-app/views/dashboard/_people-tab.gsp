@@ -16,19 +16,26 @@
     </ul>
 </div>
 <section class="span9 main-section" id="person-info-pane" data-bind="with: people.active()">
-    <form id="person-info-form" data-bind="attr: { action: $root.people.activeUrl }">
+    <form id="person-info-form" data-bind="attr: { action: url }">
         <div class="row">
             <div class="span9">
                 <legend class="caps">
-                    <label class="pull-right checkbox">
-                        <input type="checkbox" name="foster" data-bind="checked: foster, autosave: true"> Foster
-                    </label>
-                    <label class="pull-right checkbox">
-                        <input type="checkbox" name="adopter" data-bind="checked: adopter, autosave: true"> Adopter
-                    </label>
-                    <label class="pull-right checkbox">
-                        <input type="checkbox" name="available" data-bind="checked: available"> Available
-                    </label>
+
+                    <div class="btn-group pull-right">
+                        <button type="button"
+                                class="btn btn-mini"
+                                data-bind="css: { active: adopter() }, click: toggleAdopter"
+                                autocomplete="off">Adopter</button>
+                        <button type="button"
+                                class="btn btn-mini"
+                                data-bind="css: { active: foster() }, click: toggleFoster"
+                                autocomplete="off">Foster</button>
+                        <button type="button"
+                                class="btn btn-mini"
+                                data-bind="css: { active: teamMember() }, click: toggleTeamMember"
+                                autocomplete="off">Team Member</button>
+                    </div>
+
                     <span class="editable"
                           data-bind="text: name"></span>
 

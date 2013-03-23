@@ -14,7 +14,7 @@
     </ul>
 </div>
 <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
-    <form id="status-info-form" data-bind="attr: { action: $root.pets.activeUrl }" method="post">
+    <form id="status-info-form" data-bind="attr: { action: url }" method="post">
 
 
         <div class="row">
@@ -162,7 +162,7 @@
 <div id="pet-adopt-modal" class="reveal-modal">
     <h3>Adopt</h3>
     <form class="form-horizontal"  method="post"
-          data-bind="attr: { action: $root.pets.activeUrl() + '/adopt' }">
+          data-bind="attr: { action: $root.pets.url + '/adopt' }">
         <label>Adopter</label>
         <select name="adopter" data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
             <option></option>

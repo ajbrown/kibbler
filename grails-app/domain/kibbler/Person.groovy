@@ -14,12 +14,12 @@ class Person {
     String phone
     String email
 
-    Boolean adopter
-    Boolean foster
+    Boolean adopter = false
+    Boolean foster = false
     Boolean available = true
+    Boolean doNotAdopt = false
     User linkedAccount
 
-    Boolean doNotAdopt = false
 
     Date dateCreated
     User createdBy
@@ -46,7 +46,7 @@ class Person {
         adopter nullable: true
         foster nullable: true
         linkedAccount nullable: true, validator: { value, Person obj ->
-
+            ( !value || obj.organization in obj.linkedAccount.organizations ) ?: ['organization.mismatch']
         }
 
         createdBy nullable: true

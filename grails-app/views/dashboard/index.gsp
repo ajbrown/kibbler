@@ -174,11 +174,6 @@
 
         this.active = ko.observable();
 
-        this.activeUrl = ko.computed( function() {
-            var active = self.active();
-            return SERVER_URL + '/people' + ( active ? '/' + active.id() : '');
-        }, this );
-
         this.activeId  = ko.computed( function() {
             var active = this.active();
             if( active ) {
@@ -232,17 +227,9 @@
                 return;
             }
 
-            if( typeof person.addressFormatted == 'undefined' ) {
-                person.addressFormatted = ko.computed( function() {
-                    var address = this.address();
-                    var output  = ''
-                    output += address ? address.replace("\n", "<br/>\n") + "<br/>\n" : "";
-
-                    return output;
-                }, person );
-            }
-
+            person = $.extend( person, new PersonWrapper( person ) );
             self.active( person );
+
             $( '[data-id]', peopleNav ).removeClass('active');
             $( '[data-id="' + person.id() + '"]', peopleNav ).addClass('active');
         };
@@ -262,10 +249,6 @@
 
         this.list       = ko.observableArray();
         this.active     = ko.observable();
-        this.activeUrl  = ko.computed( function() {
-            var active = self.active();
-            return SERVER_URL + '/pets' + ( active ? '/' + active.id() : '');
-        }, this );
 
         this.activeId  = ko.computed( function() {
             var active = this.active();
@@ -366,48 +349,7 @@
                 return;
             }
 
-            //add the type label computed
-            if( typeof pet.typeLabel == 'undefined' ) {
-                pet.typeLabel = ko.computed( function() {
-                    var sex   = this.sex();
-                    var breed = this.breed();
-                    if( !breed ) {
-
-                        breed = this.type();
-                    }
-
-                    return sex + ' ' + breed;
-                }, pet );
-            }
-
-            if( typeof pet.statusLabel == 'undefined' ) {
-                pet.statusLabel = ko.computed( function() {
-                    var status = this.status();
-                    var label = '(';
-                    label += status.charAt(0).toUpperCase() + status.slice(1);
-
-                    if( status == 'adopted' ) {
-
-                        var adopter = this.adopter;
-                        console.log( adopter );
-                        if( adopter ) {
-                            label += ' to ' + adopter.id();
-                        }
-
-                    } else if( status == 'fostered' ) {
-
-                        var foster = this.foster();
-                        if( foster ) {
-                            label += ' to ' + this.foster();
-                        }
-                    }
-
-                    label += ')';
-
-                    return label;
-                }, pet );
-            }
-
+            pet = $.extend( pet, new PetWrapper( pet ) );
             self.active( pet );
             $( '[data-id]', petsNav ).removeClass('active');
             $( '[data-id="' + pet.id() + '"]', petsNav ).addClass('active');
