@@ -21,23 +21,28 @@
             <div class="span9">
                 <legend class="caps">
 
+                    <div class="btn-group pull-right" style="margin-left: 25px;">
+                        <a class="btn btn-mini"
+                           data-bind="css: { 'btn-danger': doNotAdopt(), active: doNotAdopt() }, click: toggleDoNotAdopt">Do Not Adopt</a>
+                    </div>
+
                     <div class="btn-group pull-right">
                         <button type="button"
                                 class="btn btn-mini"
-                                data-bind="css: { active: adopter() }, click: toggleAdopter"
+                                data-bind="css: { active: adopter() }, click: toggleAdopter, disable : doNotAdopt"
                                 autocomplete="off">Adopter</button>
                         <button type="button"
                                 class="btn btn-mini"
-                                data-bind="css: { active: foster() }, click: toggleFoster"
+                                data-bind="css: { active: foster() }, click: toggleFoster, disable: doNotAdopt"
                                 autocomplete="off">Foster</button>
                         <button type="button"
                                 class="btn btn-mini"
-                                data-bind="css: { active: teamMember() }, click: toggleTeamMember"
+                                data-bind="css: { active: teamMember() }, click: toggleTeamMember, disable: doNotAdopt"
                                 autocomplete="off">Team Member</button>
                     </div>
 
                     <span class="editable"
-                          data-bind="text: name"></span>
+                          data-bind="text: name, css: { 'warning' : doNotAdopt() }"></span>
 
                 </legend>
 
@@ -82,14 +87,30 @@
         <div class="row">
             <div class="span4">
                 <div>
-                    <strong>Fosters & Adoptions <a href="#" class="small">(add)</a></strong>
+                    <strong>Fostering <a href="#" class="small">(add)</a></strong>
                 </div>
-                <table class="table-condensed">
-                    <tr>
-                        <th>Name</th>
-                        <th>Since</th>
-                    </tr>
-                </table>
+                <small data-bind="visible: !fostering() || fostering().length == 0"> None </small>
+
+                <!-- ko foreach: fostering -->
+                <div>
+                    <a href="#"
+                       data-bind="click: $parent.removeFoster"><i class="icon-remove"></i></a>&nbsp;
+                    <span data-bind="text: givenName()"></span>
+                </div>
+                <!-- /ko -->
+
+                <div>
+                    <strong>Adopted <a href="#" class="small">(add)</a></strong>
+                </div>
+                <small data-bind="visible: !adopted() || adopted().length == 0"> None </small>
+
+                <!-- ko foreach: adopted -->
+                <div>
+                    <a href="#"
+                       data-bind="click: $parent.removeAdoption"><i class="icon-remove"></i></a>&nbsp;
+                    <span data-bind="text: givenName()"></span>
+                </div>
+                <!-- /ko -->
 
             </div>
             <div class="span5">

@@ -72,6 +72,13 @@ class PetService {
         pet.save()
     }
 
+    def reclaim( Pet pet, User updater = null ) {
+        pet.adopter = null
+        pet.foster  = null
+        pet.status  = 'available'
+        pet.lastUpdatedBy = updater
+        pet.save()
+    }
 
     def hold( Pet pet, User creator = null ) {
         pet.adopter = null
@@ -80,4 +87,6 @@ class PetService {
         pet.lastUpdatedBy = creator
         pet.save()
     }
+
+
 }

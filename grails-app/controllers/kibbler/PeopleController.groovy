@@ -107,4 +107,47 @@ class PeopleController {
             }
         }
     }
+
+    def ban() {
+        def user = springSecurityService.currentUser as User
+        def resp = new JSONResponseEnvelope( status: 200 )
+        def person = personService.read( params.id )
+        if( !person ) {
+            response.status = 404
+        }
+
+        def banned = personService.ban( person, user )
+        if( !banned ) {
+            response.status = 500
+        }
+
+        withFormat{
+            json{
+                resp.data = banned
+                render resp as JSON
+            }
+        }
+    }
+
+    def invite() {
+        def user = springSecurityService.currentUser as User
+        def resp = new JSONResponseEnvelope( status: 200 )
+        def person = personService.read( params.id )
+        if( !person ) {
+            response.status = 404
+        }
+
+        def invited = personService.makeTeamMember( person, user )
+        if( !invited ) {
+            response.status = 500
+        }
+
+        withFormat{
+            json{
+                resp.data = invited
+                resp.status = response.status
+                render resp as JSON
+            }
+        }
+    }
 }

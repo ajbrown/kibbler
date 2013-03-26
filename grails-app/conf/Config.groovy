@@ -60,6 +60,9 @@ grails.exceptionresolver.params.exclude = ['password','j_password']
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
 
+
+grails.converters.json.default.deep = true
+
 environments {
     development {
         grails.logging.jul.usebridge = true
@@ -91,6 +94,9 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+
+    debug 'org.codehaus.groovy.grails.orm',
+          'org.grails.datastore.gorm.mongo'
 }
 
 // Added by the Spring Security Core plugin:

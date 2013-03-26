@@ -9,14 +9,19 @@ class User {
     ObjectId id
 	String email
 	String password
-	boolean enabled = true
-	boolean accountExpired  = false
-	boolean accountLocked   = false
-	boolean passwordExpired = false
+    String activationCode
+
+    Boolean activated = true
+	Boolean enabled = true
+	Boolean accountExpired  = false
+	Boolean accountLocked   = false
+	Boolean passwordExpired = false
 
 	static constraints = {
-		email blank: false, unique: true
-		password blank: false
+        email blank: false, unique: true
+        password nullable: true
+        activated nullable: true
+        activationCode nullable: true
 	}
 
 	static mapping = {
@@ -52,6 +57,12 @@ class User {
 	}
 
 	protected void encodePassword() {
-		password = springSecurityService.encodePassword(password)
+		if( password ) {
+            password = springSecurityService.encodePassword(password)
+        }
 	}
+
+    static generateActivationCode() {
+        System.currentTimeMillis().encodeAsMD5().substring(4).toLowerCase()
+    }
 }

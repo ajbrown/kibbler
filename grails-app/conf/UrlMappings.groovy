@@ -13,6 +13,7 @@ class UrlMappings {
         }
 
         "/pets/$id/$action" ( controller: 'pets' )
+        "/people/$id/$action" ( controller: 'people' )
 
 		"/" ( controller: "dashboard", action: "index" )
 		"500"(view:'/error')

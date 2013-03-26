@@ -22,7 +22,12 @@ window.PersonWrapper = function( person ) {
     };
 
     this.teamMember = ko.computed( function() {
-        var linkedAccount = this.linkedAccount();
+        var linkedAccount
+        if( typeof this.linkedAccount == 'function') {
+            linkedAccount = this.linkedAccount()
+        } else {
+            linkedAccount = this.linkedAccount;
+        }
         return linkedAccount ? true : false;
     }, person );
 
@@ -47,18 +52,51 @@ window.PersonWrapper = function( person ) {
         this.update( { adopter: !adopter } );
     }
 
+    this.toggleDoNotAdopt = function( p, e ) {
+        var doNotAdopt = p.doNotAdopt();
+
+        if( !doNotAdopt ) {
+            var cont = confirm( 'Are you sure you want to add do this blah blah blah' );
+            if( !cont ) {
+                return
+            }
+
+            //TODO submit the do not adopt request, and update the adoption related fields.
+        }
+
+        this.update( { doNotAdopt: !doNotAdopt } );
+        this.doNotAdopt( !doNotAdopt );
+    }
+
     this.toggleTeamMember = function( p, e ) {
         var teamMember = this.teamMember();
         var name = this.name() || 'this person';
         if( teamMember ) {
             var doit = confirm( 'Yo dawg, you sure you wanna remove ' + name + ' from the organization?  You can\'t undo it brah.' );
             if( doit ) {
-                alert( 'K I removed' );
+                alert( 'K removed' );
             }
         } else {
             alert( 'Ayo, lets add this braj to da organization.' );
+            $.ajax( this.url + '/invite', {
+                type: 'POST',
+                contentType: 'application/json',
+                async: true,
+                success: function(resp) { p.linkedAccount( ko.mapping.toJS(resp.data.linkedAccount) ) }
+            } );
         }
     };
+
+    this.removeAdoption = function( id ) {
+        alert( 'Removing adoption ' + id );
+    }
+
+    this.removeFoster = function( id ) {
+
+        //TODO the reclaim event needs to be a consistent write.  Only
+        $.ajax( SERVER_URL + '/pets/')
+    }
+
 }
 
 window.PetWrapper = function( pet ) {
@@ -79,7 +117,6 @@ window.PetWrapper = function( pet ) {
         var sex   = this.sex();
         var breed = this.breed();
         if( !breed ) {
-
             breed = this.type();
         }
 

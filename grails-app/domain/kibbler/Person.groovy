@@ -17,9 +17,10 @@ class Person {
     Boolean adopter = false
     Boolean foster = false
     Boolean available = true
-    Boolean doNotAdopt = false
-    User linkedAccount
 
+    Boolean doNotAdopt = false
+
+    User linkedAccount
 
     Date dateCreated
     User createdBy
@@ -27,6 +28,7 @@ class Person {
     User lastUpdatedBy
 
     static hasMany = [ fostering: Pet, adopted: Pet ]
+
     static mappedBy = [ fostering: "foster", adopted: "adopter" ]
 
     static belongsTo = [
@@ -35,6 +37,7 @@ class Person {
 
     static mapping = {
         sort "name"
+        linkedAccount cascade: 'none'
     }
 
     static constraints = {
@@ -43,14 +46,32 @@ class Person {
         notes nullable: true
         phone nullable: true
         email nullable: true
-        adopter nullable: true
-        foster nullable: true
-        linkedAccount nullable: true, validator: { value, Person obj ->
-            ( !value || obj.organization in obj.linkedAccount.organizations ) ?: ['organization.mismatch']
-        }
+
+        doNotAdopt nullable: true, validator: { value, obj ->
+            value && obj.linkedAccount ? ['person.doNotAdopt.isTeamMember'] : true }
+        adopter nullable : true, validator: { value, obj ->
+            value && obj.doNotAdopt ? ['person.adopter.doNotAdopt.listed']: true }
+        foster nullable: true, validator: { value, obj ->
+            value && obj.doNotAdopt ? ['person.foster.doNotAdopt.listed'] : true }
+        available nullable: true, validator: { value, obj ->
+            value && obj.doNotAdopt ? ['person.available.listed'] :  true }
+
+        linkedAccount nullable: true
 
         createdBy nullable: true
         lastUpdatedBy nullable: true
     }
 
+    /**
+     * When a person is set to do not adopt, they're also removed as an available foster or adopter.
+     * @param doNotAdopt
+     */
+    void setDoNotAdopt(Boolean doNotAdopt) {
+        this.doNotAdopt = doNotAdopt
+        if( doNotAdopt ) {
+            this.adopter = false
+            this.foster = false
+            this.available = false
+        }
+    }
 }

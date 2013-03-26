@@ -211,6 +211,13 @@ class PetsController {
             }
         }
     }
+
+    def reclaim() {
+        def user = springSecurityService.currentUser as User
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
+
+
+    }
 }
 
 

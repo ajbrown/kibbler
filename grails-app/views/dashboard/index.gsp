@@ -29,15 +29,8 @@
 
     <!-- Organization Tab -->
 
-    <div class="tab-pane" id="organization">
-        <div class="row">
-            <div class="span3" style="outline: 1px solid black;">
-                Organization
-            </div>
-            <div class="span9" style="outline: 1px solid black;">
-                Home
-            </div>
-        </div>
+    <div class="tab-pane row" id="organization">
+        <g:render template="organization-tab"/>
     </div>
 
 </div>

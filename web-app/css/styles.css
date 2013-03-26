@@ -10,6 +10,11 @@
     cursor: text;
 }
 
+.warning {
+    color: #BB0000;
+    text-decoration: line-through;
+}
+
 .editable-text label {
     font-weight: bold;
 }
