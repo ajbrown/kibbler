@@ -46,6 +46,26 @@ class OrganizationService {
     }
 
     /**
+     *
+     * Add a financial transaction.
+     *
+     * @param trx
+     * @param recorder the person recording the transaction.  Note that this can different thatn the person that the
+     * transaction belongs to.  If I enter a transaction on someone elses behalf, I am the recorder
+     */
+    def addTransaction( Transaction trx, User recorder = null ) {
+        trx.createdBy = recorder
+        trx.save( failOnError: true )
+    }
+
+    def listTransactions( Organization org ) {
+        Transaction.createCriteria().list{
+            eq "organization", org
+            order "dateCreated", "desc"
+        }
+    }
+
+    /**
      * List all of the organizations a user is a member of.
      * @param user
      * @return

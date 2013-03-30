@@ -8,6 +8,12 @@ if (typeof jQuery !== 'undefined') {
 	})(jQuery);
 }
 
+window.FinanceCategory = function( name, type, scope ) {
+    this.name = name;
+    this.type = type;
+    this.scope = scope;
+}
+
 window.PersonWrapper = function( person ) {
     this.url = SERVER_URL + '/people/' + person.id();
 

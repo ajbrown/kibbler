@@ -120,6 +120,7 @@
 
 </div>
 
+
 </div>
 
 <r:require module="reveal"/>
@@ -131,9 +132,40 @@
         var self = this;
         var createModalElem = $('#modal-create-org');
 
-        this.active = ko.observableArray();
+        var newTransObj = { selected: ko.observable(), amount: ko.observable('0.00'), pet: ko.observable() };
+
+        this.active = ko.observable();
         this.list = ko.observableArray();
         this.createOrgName = ko.observable('');
+
+        this.newEntryData = ko.observable( newTransObj );
+
+        this.submitNewEntry = function( newEntry, e ) {
+            var entryData = self.newEntryData();
+            var data = {
+                    organizationId: self.active().id(),
+                    category: entryData.selected().name,
+                    amount: entryData.amount() * (entryData.selected().type == '-' ? -1 : 1),
+                    pet: typeof entryData.pet != 'undefined' ? entryData.pet.id() : null
+                };
+
+            var conf = {
+                type: 'POST',
+                data: data,
+                success: function( data ) {
+                    self.active().transactions.push( data.data );
+                }
+            };
+            $.ajax( SERVER_URL + '/organization/' + self.active().id() + '/transactions', conf );
+            $('#modal-org-add-finance').trigger('reveal:close');
+        };
+
+        this.financeCategories = ko.observableArray([
+            new FinanceCategory( 'Donation', '+', 'organization' ),
+            new FinanceCategory( 'Vet Bill', '-', 'pet' ),
+            new FinanceCategory( 'Other (Expense)', '-', 'organization' ),
+            new FinanceCategory( 'Other (Income)', '+', 'organization' )
+        ]);
 
         self.submitCreateOrg = function() {
             var name = self.createOrgName().trim();
@@ -150,6 +182,11 @@
                     alert( 'There was an error creating the organization.  Please try again.');
                 }
             });
+        };
+
+        self.newEntry = function( org, event ) {
+            self.newEntryData( newTransObj );
+            $('#modal-org-add-finance').reveal();
         };
 
         self.showCreateModal = function() {
@@ -368,7 +405,8 @@
             if( !data.organizations || data.organizations.length == 0 ) {
                 self.orgs.showCreateModal();
             } else {
-                self.orgs.list( data.organizations );
+                self.orgs.list( ko.mapping.fromJS( data.organizations ) );
+                self.orgs.active( ko.mapping.fromJS( data.organizations[0] ) )
             }
         }
 
