@@ -27,6 +27,24 @@
                 <a href="#" data-bind="click: $root.orgs.newEntry" class="pull-right">New Entry</a>
                 <label>Finance</label>
 
+                <table id="org-transactions-table" class="table table-striped table-condensed table-hover">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Event</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: transactions">
+                        <tr>
+                            <td data-field="amount"
+                                data-bind="text: (amountCents / 100).toMoney(), css: { moneyNegative: amountCents < 0 }"></td>
+                            <td data-field="category" data-bind="text: category"></td>
+                            <td data-field="date"     data-bind="text: prettyDate( dateCreated )"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
             </div>
         </div>
     </form>

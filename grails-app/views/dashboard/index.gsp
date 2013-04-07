@@ -10,14 +10,14 @@
 <div class="row">
 
 <ul class="nav nav-tabs" id="tabs">
-    <li class="active"><a href="#pets" data-toggle="tab">Pets</a></li>
+    <li><a href="#pets" data-toggle="tab">Pets</a></li>
     <li><a href="#people" data-toggle="tab">People</a></li>
     <li><a href="#organization" data-toggle="tab">Organization</a></li>
 </ul>
 
 <div class="tab-content">
 
-    <div class="tab-pane active row" id="pets">
+    <div class="tab-pane row" id="pets">
         <g:render template="pets-tab"/>
     </div>
 
@@ -128,6 +128,10 @@
 
 (function() {
 
+    $('a[data-toggle="tab"]').on( 'shown', function(e) {
+        location.href = $(e.target).attr('href');
+    });
+
     var OrganizationsViewModel = function() {
         var self = this;
         var createModalElem = $('#modal-create-org');
@@ -183,6 +187,15 @@
                 }
             });
         };
+
+        self.setActive = function( org ) {
+            $.getJSON( SERVER_URL + '/organization/' + org.id() + '/transactions', function( data ) {
+                org.transactions = ko.observableArray( data.data );
+                console.log( org );
+                self.active( org );
+            });
+
+        }
 
         self.newEntry = function( org, event ) {
             self.newEntryData( newTransObj );
@@ -406,7 +419,7 @@
                 self.orgs.showCreateModal();
             } else {
                 self.orgs.list( ko.mapping.fromJS( data.organizations ) );
-                self.orgs.active( ko.mapping.fromJS( data.organizations[0] ) )
+                self.orgs.setActive( ko.mapping.fromJS( data.organizations[0] ) )
             }
         }
 
@@ -414,15 +427,30 @@
         $.getJSON( '<g:createLink controller="user" action="index"/>', function(data) { self.setUser(data); } );
 
         Sammy( function() {
+
+            this.get( "/kibbler/#pets", function() {
+                $('#tabs a[href="#pets"]').tab('show')
+                console.log('PETS');
+            } );
             this.get( "/kibbler/#pets/:pet", function() {
                 $('#pets').tab('show')
                 self.pets.setActive( this.params.pet )
             });
 
+            this.get( "/kibbler/#people", function() {
+                $('#tabs a[href="#people"]').tab('show')
+            } );
+
             this.get( "/kibbler/#people/:person", function() {
+                console.log('PEOPLE');
                 $('#tabs a[href="#people"]').tab('show')
                 self.people.setActive( this.params.person )
             });
+
+            this.get( "/kibbler/#organization", function() {
+                $('#tabs a[href="#organization"]').tab('show')
+            } );
+
         }).run();
 
     };

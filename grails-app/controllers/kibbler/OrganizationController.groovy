@@ -75,7 +75,7 @@ class OrganizationController {
         withFormat {
             json {
                 resp.status = response.status
-                resp as JSON
+                render resp as JSON
             }
         }
     }

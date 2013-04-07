@@ -42,3 +42,11 @@
 .edit-button:hover {
     font-weight: bolder;
 }
+
+.moneyNegative {
+    color: red;
+}
+
+#org-transactions-table {
+    font-size: 0.75em;
+}

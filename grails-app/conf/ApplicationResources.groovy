@@ -35,6 +35,7 @@ modules = {
         dependsOn 'jquery,knockout,sammy'
         resource url:'js/knockout.mapping.js'
         resource url:'js/knockout.bindings.js'
+        resource url: 'js/pretty.js'
         resource url:'js/application.js'
     }
 }

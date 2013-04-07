@@ -4,6 +4,11 @@ class UrlMappings {
 
         "/login/$action?"( controller: "login" )
 
+        "/organization/$id/transactions" {
+            controller = "organization"
+            action = [POST: "addTransaction", GET: "listTransactions"]
+        }
+
         "/$controller/create"( action: "create" )
         "/$controller" ( action: "index" )
         "/$controller/index" ( action: "index" )
@@ -15,10 +20,6 @@ class UrlMappings {
         "/pets/$id/$action" ( controller: 'pets' )
         "/people/$id/$action" ( controller: 'people' )
 
-        "/organization/$id/transactions" {
-            controller = "organization"
-            action = [POST: "addTransaction", GET: "listTransactions"]
-        }
 
 		"/" ( controller: "dashboard", action: "index" )
 		"500"(view:'/error')

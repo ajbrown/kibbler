@@ -16,7 +16,6 @@ class UserController {
                 data.id = user.id.toString()
                 data.email = user.email
                 data.organizations = user.organizations.collect{ [ id: it.id.toString(), name: it.name ] }
-
                 render data as JSON
             }
         }
