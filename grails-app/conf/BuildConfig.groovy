@@ -55,6 +55,9 @@ grails.project.dependency.resolution = {
         //runtime ":yui-minify-resources:0.1.4"
         runtime ":twitter-bootstrap:2.2.2"
 
+        compile ':heroku:1.0.1'
+        compile ':cloud-support:1.0.8'
+
         compile ":font-awesome-resources:3.0"
         compile ":jquery-ui:1.8.24"
         compile ":mongodb:1.1.0.GA"

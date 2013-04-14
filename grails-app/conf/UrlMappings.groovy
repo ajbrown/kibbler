@@ -2,6 +2,7 @@ class UrlMappings {
 
 	static mappings = {
 
+        "/" ( controller: "dashboard", action: "index" )
         "/login/$action?"( controller: "login" )
 
         "/organization/$id/transactions" {
@@ -27,7 +28,6 @@ class UrlMappings {
         "/people/$id/$action" ( controller: 'people' )
 
 
-		"/" ( controller: "dashboard", action: "index" )
 		"500"(view:'/error')
 	}
 }
