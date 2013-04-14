@@ -14,19 +14,13 @@ environments {
     test {
     }
     production {
-        dataSource {
-            dbCreate = "update"
-            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
-            pooled = true
-            properties {
-               maxActive = -1
-               minEvictableIdleTimeMillis=1800000
-               timeBetweenEvictionRunsMillis=1800000
-               numTestsPerEvictionRun=3
-               testOnBorrow=true
-               testWhileIdle=true
-               testOnReturn=true
-               validationQuery="SELECT 1"
+        grails {
+            mongo {
+                host = "ds047197.mongolab.com"
+                port = 47197
+                username = "kibblerapp"
+                password = "kibbler2013"
+                databaseName = "heroku_app11534347"
             }
         }
     }

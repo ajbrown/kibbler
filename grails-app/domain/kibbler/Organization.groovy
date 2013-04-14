@@ -7,6 +7,8 @@ class Organization {
     ObjectId id
     String name
 
+    Integer adoptionFeeCents
+
     static hasMany = [
             pets: Pet,
             members: OrgRole,
@@ -15,7 +17,7 @@ class Organization {
     ]
 
     static constraints = {
-
+        adoptionFeeCents nullable: true
     }
 
     static mapping = {

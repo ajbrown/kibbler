@@ -26,6 +26,8 @@ class Pet {
     Boolean housebroken
     Boolean microchipped
     String  microchipId
+    String color
+
     Boolean neutered
     Boolean specialNeeds
 
@@ -52,6 +54,7 @@ class Pet {
         breed nullable: true
         sex   nullable: true, inList: [ 'male','female' ]
         weight nullable: true
+        color nullable: true
 
         adopter nullable: true, validator:  { Person val, Pet obj ->
             if( !val ) { return true }

@@ -43,6 +43,7 @@ grails.project.dependency.resolution = {
 
         // runtime 'mysql:mysql-connector-java:5.1.20'
 
+        compile 'org.xhtmlrenderer:core-renderer:R8'
         compile 'com.fasterxml.jackson.core:jackson-databind:2.1.2'
     }
 
@@ -59,6 +60,7 @@ grails.project.dependency.resolution = {
         compile ":mongodb:1.1.0.GA"
         compile ':cache:1.0.1'
         compile ":fields:1.3"
+        compile ":rendering:0.4.3"
 
         compile ":spock:0.6"
 

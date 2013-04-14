@@ -31,6 +31,10 @@ modules = {
         resource url: 'js/bootstrap-editable/css/bootstrap-editable.css'
     }
 
+    googleJs {
+        url: 'https://www.google.com/jsapi'
+    }
+
     application {
         dependsOn 'jquery,knockout,sammy'
         resource url:'js/knockout.mapping.js'
