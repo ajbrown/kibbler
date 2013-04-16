@@ -95,8 +95,16 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
+    info 'grails.app'
+
     debug 'org.codehaus.groovy.grails.orm',
           'org.grails.datastore.gorm.mongo'
+
+    environments {
+        production {
+            root { info "stdout" }
+        }
+    }
 }
 
 // Added by the Spring Security Core plugin:
