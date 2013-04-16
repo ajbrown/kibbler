@@ -19,6 +19,10 @@ class BootStrap {
         def aj     = new User( email: 'aj@synklabs.com', password: '123456').save()
         def david  = new User( email: 'david@synklabs.com', password: '123456' ).save()
 
+        //Make sure the two users are created.
+        def users = User.count()
+        log.info "There are ${users} users in the system."
+
     }
     def destroy = {
 
