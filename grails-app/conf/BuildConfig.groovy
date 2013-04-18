@@ -60,12 +60,12 @@ grails.project.dependency.resolution = {
 
         compile ":font-awesome-resources:3.0"
         compile ":jquery-ui:1.8.24"
-        compile ":mongodb:1.1.0.GA"
+        compile ":mongodb:1.2.0"
         compile ':cache:1.0.1'
         compile ":fields:1.3"
         compile ":rendering:0.4.3"
 
-        compile ":spock:0.6"
+        test ":spock:0.6"
 
         build ":tomcat:$grailsVersion"
 
