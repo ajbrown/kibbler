@@ -207,6 +207,14 @@
             createModalElem.reveal();
         }
 
+        self.displayContractTerms = function() {
+            jQuery.get( SERVER_URL + '/organization/' + self.active().id() + '/terms-text', function( text ) {
+                jQuery( '#contract-terms' ).val( text );
+                jQuery( '#contract-info').show();
+            } );
+            return true;
+        };
+
     };
 
     var PeopleViewModel = function() {
@@ -311,7 +319,8 @@
             $('#pet-adopt-modal').reveal();
         }
 
-        this.submitAdopt = function() {
+        this.submitAdopt = function( d ) {
+            console.log( d );
             var form = $('form', '#pet-adopt-modal')
             var vals = form.serializeArray();
             var url  = form.attr('action');
@@ -320,6 +329,7 @@
                 data[ vals[i].name ] = vals[i].value;
             }
             $.post( url, data, function( resp ) {
+                    console.log( resp );
                     if( resp.status > 200 && resp.status < 300 ) {
                         self.setActive( ko.mapping.fromJS( resp.data) );
                         $('#pet-adopt-modal').trigger('reveal:close');
@@ -433,6 +443,7 @@
                 console.log('PETS');
             } );
             this.get( "/kibbler/#pets/:pet", function() {
+                console.log('PETS (Single)')
                 $('#pets').tab('show')
                 self.pets.setActive( this.params.pet )
             });

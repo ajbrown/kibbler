@@ -42,6 +42,8 @@ window.FinanceCategory = function( name, type, scope ) {
 }
 
 window.PersonWrapper = function( person ) {
+    var it = person;
+
     this.url = SERVER_URL + '/people/' + person.id();
 
     this.update = function( data ) {
@@ -120,16 +122,27 @@ window.PersonWrapper = function( person ) {
         }
     };
 
-    this.removeAdoption = function( id ) {
-        alert( 'Removing adoption ' + id );
+    this.removeAdoption = function( pet, e ) {
+        var url = SERVER_URL + '/pets/' + pet.id() + '/reclaim';
+
+        $.ajax( url, {
+            type: 'POST',
+            contentType: 'application/json',
+            async: true,
+            success: function( resp ) { it.adopted.remove( pet ); }
+        });
     }
 
-    this.removeFoster = function( id ) {
+    this.removeFoster = function( pet, e ) {
+        var url = SERVER_URL + '/pets/' + pet.id() + '/reclaim';
 
-        //TODO the reclaim event needs to be a consistent write.  Only
-        $.ajax( SERVER_URL + '/pets/')
+        $.ajax( url, {
+            type: 'POST',
+            contentType: 'application/json',
+            async: true,
+            success: function( resp ) { it.fostering.remove( pet ); }
+        });
     }
-
 }
 
 window.PetWrapper = function( pet ) {

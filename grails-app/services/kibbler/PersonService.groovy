@@ -71,4 +71,6 @@ class PersonService {
         organizationService.addUserToOrganization( person.organization, user, granter )
         person.save()
     }
+
+    def listAdoptions
 }

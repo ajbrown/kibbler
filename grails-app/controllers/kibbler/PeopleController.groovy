@@ -10,6 +10,28 @@ class PeopleController {
     def organizationService
     def objectMapper = new ObjectMapper()
 
+    def beforeInterceptor = {
+
+        def skipActions = ['index','create']
+
+        if( params.action in skipActions ) {
+            return true
+        }
+
+        def person = personService.read( params.id )
+        if( !person ) {
+            response.sendError( 404, 'The specified person was not found.' )
+            return false
+        }
+
+        def user = springSecurityService.currentUser as User
+        if( !user.belongsTo( person.organization ) ) {
+            response.sendError( 403, "You do not have access to this params.person." )
+        }
+
+        params.person = person
+    }
+
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
         def user = springSecurityService.currentUser as User
@@ -24,21 +46,15 @@ class PeopleController {
     }
 
     def update() {
-        def person = personService.read( params.id )
-        def user   = springSecurityService.currentUser as User
         def resp   = new JSONResponseEnvelope( status: 200 )
 
-        if( !user.belongsTo( person.organization ) ) {
-            response.sendError( 403, "You are not authorized to modify this person." )
-        }
-
         def fields = objectMapper.readValue( request.inputStream, Map.class )
-        def saved  = personService.updateFields( fields, person, user )
+        def saved  = personService.updateFields( fields, params.params.person, currentUser() )
 
         if( !saved ) {
             resp.status = 400
-            resp.errors = person.errors.allErrors
-            resp.data = person
+            resp.errors = params.person.errors.allErrors
+            resp.data = params.person
         } else {
             resp.data = saved
         }
@@ -64,11 +80,11 @@ class PeopleController {
 
         if( cmd.validate() ) {
             def person = new Person( name: cmd.name, adopter: cmd.adopter, foster: cmd.foster )
-            if( personService.create( person, org, user ) ) {
+            if( personService.create( params.person, org, user ) ) {
                 resp.data = person
             } else {
                 resp.status = 400
-                resp.errors.addAll person.errors.allErrors
+                resp.errors.addAll params.person.errors.allErrors
             }
 
         } else {
@@ -86,37 +102,19 @@ class PeopleController {
 
     def read() {
         def resp = new JSONResponseEnvelope( status: 200 )
-        def person = personService.read( params.id )
-
-        if( !person ) {
-            response.status = 404
-        }
-
-        def user = springSecurityService.currentUser as User
-
-        //make sure the person belongs to one of the user's organizations
-        if( ! user.belongsTo( person.organization ) ) {
-            response.status = 403
-        }
-
 
         withFormat{
             json{
-                resp.data = person
+                resp.data = params.person
                 render resp as JSON
             }
         }
     }
 
     def ban() {
-        def user = springSecurityService.currentUser as User
         def resp = new JSONResponseEnvelope( status: 200 )
-        def person = personService.read( params.id )
-        if( !person ) {
-            response.status = 404
-        }
+        def banned = personService.ban( params.person, currentUser() )
 
-        def banned = personService.ban( person, user )
         if( !banned ) {
             response.status = 500
         }
@@ -130,14 +128,8 @@ class PeopleController {
     }
 
     def invite() {
-        def user = springSecurityService.currentUser as User
         def resp = new JSONResponseEnvelope( status: 200 )
-        def person = personService.read( params.id )
-        if( !person ) {
-            response.status = 404
-        }
-
-        def invited = personService.makeTeamMember( person, user )
+        def invited = personService.makeTeamMember( params.person, currentUser() )
         if( !invited ) {
             response.status = 500
         }

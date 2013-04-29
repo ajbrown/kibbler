@@ -73,6 +73,7 @@ class PetService {
     }
 
     def reclaim( Pet pet, User updater = null ) {
+
         pet.adopter = null
         pet.foster  = null
         pet.status  = 'available'

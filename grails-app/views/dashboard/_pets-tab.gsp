@@ -143,33 +143,56 @@
         </div>
 
     </form>
+
+    <div id="edit-pet-breed" style="display: none;">
+        <form class="form-horizontal">
+            <select name="sex" data-bind="value: sex">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+            </select>
+            <select name="species" data-bind="value: type">
+                <option value="DOG">Dog</option>
+                <option value="CAT">Cat</option>
+            </select>
+        </form>
+    </div>
+
+    <div id="pet-adopt-modal" class="reveal-modal">
+        <h3>Adopt</h3>
+        <form class="form-horizontal" method="post"
+              data-bind="attr: { action: url + '/adopt' }">
+            <label>Adopter</label>
+            <select name="adopter" data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
+            </select>
+
+            <label class="checkbox">
+                Adopt With Contract
+                <input type="checkbox" name="contract" data-bind="click: $root.orgs.displayContractTerms"/>
+            </label>
+
+            <div id="contract-info" style="display:none;">
+                <h4>Contract Terms</h4>
+                <textarea id="contract-terms" name="contract-terms"></textarea>
+
+                <p class="small">
+                    By typing your full name in the box below, you acknowledge that you agree to the terms of the
+                    contract.
+                </p>
+
+                <label for="name">Print your name</label>
+                <input type="text" name="name" id="name" class="name"/>
+            </div>
+
+            <hr/>
+
+            <button type="submit" class="btn btn-primary" data-bind="click: $root.pets.submitAdopt">Submit</button>
+        </form>
+    </div>
 </section>
 
-
-<div id="edit-pet-breed" style="display: none;">
-    <form class="form-horizontal">
-        <select name="sex" data-bind="value: pets.active.sex">
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-        </select>
-        <select name="species" data-bind="value: pets.active.species">
-            <option value="DOG">Dog</option>
-            <option value="CAT">Cat</option>
-        </select>
-    </form>
-</div>
-
-<div id="pet-adopt-modal" class="reveal-modal">
-    <h3>Adopt</h3>
-    <form class="form-horizontal"  method="post"
-          data-bind="attr: { action: $root.pets.url + '/adopt' }">
-        <label>Adopter</label>
-        <select name="adopter" data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
-            <option></option>
-            <option>Stacey Hensley</option>
-            <option>David Michael</option>
-            <option>Not A.J. Brown</option>
-        </select>
-        <button type="submit" class="btn btn-primary" data-bind="click: $root.pets.submitAdopt">Submit</button>
-    </form>
-</div>
+<r:require module="signaturePad"/>
+<r:script>
+    (function() {
+        $('.sigPad').signaturePad();
+    })();
+</r:script>

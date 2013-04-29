@@ -5,11 +5,32 @@ import grails.converters.JSON
 
 class PetsController {
 
-    def springSecurityService
     def organizationService
     def petService
     def personService
+    def springSecurityService
     ObjectMapper objectMapper
+
+    def beforeInterceptor = {
+        def skipActions = ['index','create']
+
+        if( params.action in skipActions ) {
+            return true
+        }
+
+        def pet = petService.read( params.id )
+
+        if( !pet ) {
+            response.sendError( 404, 'The specified pet was not found.' )
+            return false
+        }
+
+        if( !springSecurityService.currentUser.belongsTo( pet.organization ) ) {
+            response.sendError( 403, "You do not have access to this pet." )
+        }
+
+        params.pet = pet
+    }
 
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
@@ -30,29 +51,21 @@ class PetsController {
 
     def read() {
         def resp = new JSONResponseEnvelope( status: 200 )
-        def pet = petService.read( params.id )
-
 
         withFormat{
             json{
-                resp.data = pet
+                resp.data = params.pet
                 render resp as JSON
             }
         }
     }
 
     def update() {
-        def pet = petService.read( params.id )
         def user = springSecurityService.currentUser as User
         def resp = new JSONResponseEnvelope( status: 201 )
 
-        //make sure the pet belongs to one of the user's organizations.
-        if( !user.belongsTo( pet.organization ) ) {
-            response.sendError( 403, "You're not authorized to access this resource." )
-        }
-
         def fields = objectMapper.readValue( request.inputStream, Map.class )
-        def saved = petService.updateFields( fields, pet, user )
+        def saved = petService.updateFields( fields, params.pet, user )
 
         //TODO if saving failed due to optimistic locking, refresh and try again.
 
@@ -114,14 +127,7 @@ class PetsController {
         def jsonResponse = new JSONResponseEnvelope( status: 201 )
 
         if( cmd.validate() ) {
-            def pet = petService.read( params.id )
             def adopter = personService.read( cmd.adopter )
-
-            //Make sure the pet exists
-            if( !pet ) {
-                //TODO return a 404 instead
-                throw new Exception( 'Could not find the specified pet' )
-            }
 
             //Make sure the adopter exists.
             if( !adopter ) {
@@ -129,12 +135,12 @@ class PetsController {
                 throw new Exception( 'Adopter does not exist' )
             }
 
-            if( !petService.adopt( pet, adopter, user ) ) {
+            if( !petService.adopt( params.pet, adopter, user ) ) {
                 response.status = 500
-                jsonResponse.errors = pet.errors.allErrors
+                jsonResponse.errors = params.pet.errors.allErrors
             }
 
-            jsonResponse.data = pet
+            jsonResponse.data = params.pet
         }
 
         withFormat{
@@ -151,14 +157,7 @@ class PetsController {
         def jsonResponse = new JSONResponseEnvelope( status: 201 )
 
         if( cmd.validate() ) {
-            def pet = petService.read( params.id )
             def foster = personService.read( cmd.personId )
-
-            //Make sure the pet exists
-            if( !pet ) {
-                //TODO return a 404 instead
-                throw new Exception( 'Could not find the specified pet' )
-            }
 
             //Make sure the foster exists.
             if( !foster ) {
@@ -166,7 +165,7 @@ class PetsController {
                 throw new Exception( 'Adopter does not exist' )
             }
 
-            if( !petService.foster( pet, foster, user ) ) {
+            if( !petService.foster( params.pet, foster, user ) ) {
                 response.status = 500
                 jsonResponse.errors = pet.errors.allErrors
             }
@@ -188,20 +187,18 @@ class PetsController {
         def jsonResponse = new JSONResponseEnvelope( status: 201 )
 
         if( cmd.validate() ) {
-            def pet = petService.read( params.id )
-
             //Make sure the pet exists
-            if( !pet ) {
+            if( !params.pet ) {
                 //TODO return a 404 instead
                 throw new Exception( 'Could not find the specified pet' )
             }
 
-            if( !petService.hold( pet, user ) ) {
+            if( !petService.hold( params.pet, user ) ) {
                 response.status = 500
-                jsonResponse.errors = pet.errors?.allErrors
+                jsonResponse.errors = params.pet.errors?.allErrors
             }
 
-            jsonResponse.data = pet
+            jsonResponse.data = params.pet
         }
 
         withFormat{
@@ -216,7 +213,16 @@ class PetsController {
         def user = springSecurityService.currentUser as User
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
+        def response = petService.reclaim( params.pet, user )
 
+        jsonResponse.data = response
+
+        withFormat {
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
+            }
+        }
     }
 }
 
