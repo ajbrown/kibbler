@@ -162,7 +162,8 @@
         <form class="form-horizontal" method="post"
               data-bind="attr: { action: url + '/adopt' }">
             <label>Adopter</label>
-            <select name="adopter" data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
+            <select name="adopter"
+                    data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
             </select>
 
             <label class="checkbox">

@@ -191,7 +191,6 @@
         self.setActive = function( org ) {
             $.getJSON( SERVER_URL + '/organization/' + org.id() + '/transactions', function( data ) {
                 org.transactions = ko.observableArray( data.data );
-                console.log( org );
                 self.active( org );
             });
 
@@ -234,6 +233,21 @@
 
         this.list = ko.observableArray();
 
+        this.listAdopters = ko.computed( function() {
+            console.log( "List", self.list() );
+
+            console.log( "Listing adopters" );
+            ko.utils.arrayFilter( self.list(), function( it ) {
+                console.log( it );
+                return it.adopter() && !it.doNotAdopt();
+            } );
+        }, this );
+
+        this.listFosters = ko.computed( function() {
+            ko.utils.arrayFilter( this.list(), function( it ) {
+            return it.foster() && !it.doNotAdopt(); } );
+        }, this );
+
         this.createName     = ko.observable();
         this.createAdopter  = ko.observable();
         this.createFoster   = ko.observable();
@@ -249,6 +263,7 @@
 
             $.post( '<g:createLink controller="people" action="create"/>', submit, function( data ) {
                 if( data ) {
+                    AppService.preCache( 'people', data.data );
                     var person = ko.mapping.fromJS(data.data);
                     self.list.push( person );
                     self.setActive( person );
@@ -274,6 +289,7 @@
             if( typeof person == "string" ) {
                 $.getJSON( SERVER_URL + '/people/' + person, function( data ) {
                     self.setActive( ko.mapping.fromJS( data.data ) );
+                    AppService.preCache( 'people', data.data );
                 });
                 return;
             }
@@ -281,6 +297,7 @@
             person = $.extend( person, new PersonWrapper( person ) );
             self.active( person );
 
+            $( '#tabs a[href="#people"]').tab( 'show' );
             $( '[data-id]', peopleNav ).removeClass('active');
             $( '[data-id="' + person.id() + '"]', peopleNav ).addClass('active');
         };
@@ -320,7 +337,6 @@
         }
 
         this.submitAdopt = function( d ) {
-            console.log( d );
             var form = $('form', '#pet-adopt-modal')
             var vals = form.serializeArray();
             var url  = form.attr('action');
@@ -329,7 +345,6 @@
                 data[ vals[i].name ] = vals[i].value;
             }
             $.post( url, data, function( resp ) {
-                    console.log( resp );
                     if( resp.status > 200 && resp.status < 300 ) {
                         self.setActive( ko.mapping.fromJS( resp.data) );
                         $('#pet-adopt-modal').trigger('reveal:close');
@@ -397,6 +412,7 @@
             //If loading the active pet by id, we must load it via ajax.
             if( typeof pet == "string" ) {
                 $.getJSON( SERVER_URL + '/pets/' + pet, function( data ) {
+                    AppService.preCache( 'pets', data.data );
                     self.setActive( ko.mapping.fromJS( data.data ) );
                 });
                 return;
@@ -404,8 +420,10 @@
 
             pet = $.extend( pet, new PetWrapper( pet ) );
             self.active( pet );
+            $( '#tabs a[href="#pets"]').tab( 'show' );
             $( '[data-id]', petsNav ).removeClass('active');
             $( '[data-id="' + pet.id() + '"]', petsNav ).addClass('active');
+            $( '')
         };
 
         //Construction
@@ -433,20 +451,22 @@
             }
         }
 
+
         //On Construction
         $.getJSON( '<g:createLink controller="user" action="index"/>', function(data) { self.setUser(data); } );
 
         Sammy( function() {
 
-            this.get( "/kibbler/#pets", function() {
-                $('#tabs a[href="#pets"]').tab('show')
-                console.log('PETS');
-            } );
             this.get( "/kibbler/#pets/:pet", function() {
-                console.log('PETS (Single)')
                 $('#pets').tab('show')
+                console.log('pet');
                 self.pets.setActive( this.params.pet )
             });
+
+            this.get( "/kibbler/#pets", function() {
+                $('#tabs a[href="#pets"]').tab('show')
+                console.log('pets single');
+            } );
 
             this.get( "/kibbler/#people", function() {
                 $('#tabs a[href="#people"]').tab('show')

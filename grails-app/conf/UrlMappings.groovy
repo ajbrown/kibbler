@@ -10,6 +10,11 @@ class UrlMappings {
             action = [POST: "addTransaction", GET: "listTransactions"]
         }
 
+        "/organization/$id/terms-text" {
+            controller = "organization"
+            action = "termsText"
+        }
+
         "/organization/$orgId/documents/$action" {
             controller = 'documents'
         }

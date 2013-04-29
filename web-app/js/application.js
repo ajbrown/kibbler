@@ -24,7 +24,6 @@ Number.prototype.toMoney = function(decimals, decimal_sep, thousands_sep)
     return (negative ? '(' : '') + (j ? i.substr(0, j) + t : '') + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : '') + (negative ? ')' : '');
 }
 
-
 if (typeof jQuery !== 'undefined') {
 	(function($) {
 		$('#spinner').ajaxStart(function() {
@@ -175,10 +174,9 @@ window.PetWrapper = function( pet ) {
         label += status.charAt(0).toUpperCase() + status.slice(1);
 
         if( status == 'adopted' ) {
-
-            var adopter = this.adopter;
+            var adopter = AppService.readCache( 'people', this.adopter.id() );
             if( adopter ) {
-                label += ' to ' + adopter.id();
+                label += ' to ' + adopter.name;
             }
 
         } else if( status == 'fostered' ) {
@@ -194,3 +192,51 @@ window.PetWrapper = function( pet ) {
         return label;
     }, pet );
 }
+
+window.AppService = (function() {
+
+    var models = ['people','pets','organizations'];
+
+    this.readCache = function( what, id, ttl ) {
+        if( $.inArray( what, models ) == -1 ) {
+            throw new Error( what + ' is not a valid cachable model.' );
+        }
+
+        var key = what + ":" + id;
+
+        ttl = ttl || 60000 * 15;    //15 minute default ttl
+        var val = $.jStorage.get( key );
+        var url = SERVER_URL + '/' + what + '/' + id;
+        if( !val ) {
+            var resp = JSON.parse($.ajax( { type: 'GET', url: url, async: false, dataType: 'json' }).responseText);
+            if( resp && resp.status == 200 ) {
+                val = resp.data;
+                $.jStorage.set( key, val, {TTL: ttl} );
+            }
+        }
+        return val;
+    }
+
+    this.preCache = function( what, obj, ttl ) {
+        if( $.inArray( what, models ) == -1 ) {
+            throw new Error( what + ' is not a valid cachable model.' );
+        }
+
+        ttl = ttl || 60000 * 15;    //15 minute default ttl
+        $.jStorage.set( what + ":" + obj.id, obj, {TTL: ttl} );
+    }
+
+    this.unCache = function( what, id ) {
+        if( $.inArray( what, models ) == -1 ) {
+            throw new Error( what + ' is not a valid cachable model.' );
+        }
+
+        $.jStorage.deleteKey( what + ":" + id );
+    }
+
+    return {
+        readCache : this.readCache,
+        preCache : this.preCache,
+        unCache : this.unCache
+    }
+}());

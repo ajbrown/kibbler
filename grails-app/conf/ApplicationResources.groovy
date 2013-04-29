@@ -35,8 +35,29 @@ modules = {
         url: 'https://www.google.com/jsapi'
     }
 
+    signaturePad {
+        dependsOn 'jquery'
+        resource url: '/js/signature-pad/jquery.signaturepad.min.js', disposition: 'head'
+        resource url: '/js/signature-pad/jquery.signaturepad.css'
+    }
+
+    jStorage {
+        dependsOn 'jquery'
+        resource url: '/js/jstorage.min.js'
+    }
+
+    personService {
+        dependsOn 'jStorage'
+        resource url: '/js/service.person.js'
+    }
+
+    petService {
+        dependsOn 'jStorage'
+        resource url: '/js/service.pet.js'
+    }
+
     application {
-        dependsOn 'jquery,knockout,sammy'
+        dependsOn 'jquery,knockout,sammy,jStorage'
         resource url:'js/knockout.mapping.js'
         resource url:'js/knockout.bindings.js'
         resource url: 'js/pretty.js'
