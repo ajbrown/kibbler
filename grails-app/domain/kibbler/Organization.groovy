@@ -16,6 +16,10 @@ class Organization {
             transactions: Transaction
     ]
 
+    static hasOne = [
+
+    ]
+
     static constraints = {
         adoptionFeeCents nullable: true
     }

@@ -6,6 +6,7 @@ class PersonService {
 
     def userService
     def organizationService
+    def eventService
 
     def create( Person person, Organization org, User creator = null ) {
         person.createdBy = creator
@@ -35,6 +36,8 @@ class PersonService {
         fields.each{ key, value ->
             person[ key ] = value
         }
+
+        eventService.create( EventType.)
         person.lastUpdatedBy = updater
         person.save()
     }

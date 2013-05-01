@@ -80,6 +80,22 @@ class OrganizationController {
         }
     }
 
+    def termsText() {
+        def org = organizationService.read( params.id )
+        def template = organizationService.readAdoptionContractTemplate( org )
+        if( !org || !template ) {
+            response.status = 404
+        }
+
+        def termsText = ""
+        def padding = template.terms.size() > 9 ? 2 : 1
+        template.terms.eachWithIndex{ it, index ->
+            termsText += "${(index+1).toString().padLeft(padding)}) ${it}\n\n"
+        }
+
+        render termsText
+    }
+
     def addTransaction( AddTransactionCommand cmd ) {
         cmd.clearErrors()
 

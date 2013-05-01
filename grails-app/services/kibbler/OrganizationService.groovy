@@ -4,6 +4,8 @@ import org.bson.types.ObjectId
 
 class OrganizationService {
 
+    def eventService
+
     /**
      * Load an Organization.
      * @param id
@@ -33,7 +35,7 @@ class OrganizationService {
      * @param addedBy
      * @return
      */
-    def addUserToOrganization( Organization org, User added, User addedBy = null, String role = 'user' ) {
+    def void addUserToOrganization( Organization org, User added, User addedBy = null, String role = 'user' ) {
         def exists = org.members.find{ it.user == added }
 
         if( !exists ) {
@@ -43,6 +45,8 @@ class OrganizationService {
             exists.role = role
             exists.save( failOnError: true )
         }
+
+        eventService.create( EventType.ORG_ADD_USER, org, addedBy, [added])
     }
 
     /**
@@ -72,6 +76,10 @@ class OrganizationService {
      */
     def listUserOrganizations( User user ) {
         user.organizations
+    }
+
+    def readAdoptionContractTemplate( Organization org ) {
+        AdoptionContractTemplate.findByOrganization( org )
     }
 
 }

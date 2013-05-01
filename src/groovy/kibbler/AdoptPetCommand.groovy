@@ -12,4 +12,5 @@ import grails.validation.Validateable
 @Validateable
 class AdoptPetCommand {
     String adopter
+    String signature
 }

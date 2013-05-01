@@ -58,9 +58,10 @@ grails.project.dependency.resolution = {
         compile ':heroku:1.0.1'
         compile ':cloud-support:1.0.8'
 
+        //compile ":amazon-s3:0.8.2"
         compile ":font-awesome-resources:3.0"
         compile ":jquery-ui:1.8.24"
-        compile ":mongodb:1.2.0"
+        compile ":mongodb:1.1.0.GA"
         compile ':cache:1.0.1'
         compile ":fields:1.3"
         compile ":rendering:0.4.3"
