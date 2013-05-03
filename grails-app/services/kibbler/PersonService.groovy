@@ -8,6 +8,13 @@ class PersonService {
     def organizationService
     def eventService
 
+    /**
+     * Create a new person.
+     * @param person
+     * @param org
+     * @param creator
+     * @return
+     */
     def create( Person person, Organization org, User creator = null ) {
         person.createdBy = creator
         person.organization = org
@@ -15,16 +22,28 @@ class PersonService {
         if( saved ) {
             org.addToPeople( person )
             org.save()
+
+            eventService.create( EventType.PERSON_CREATE, person, creator )
         }
 
         saved
     }
 
+    /**
+     * Read a single person by ID.
+     * @param id
+     * @return
+     */
     def Person read( id ) {
         def key = id instanceof ObjectId ? id : new ObjectId( id )
         Person.read( key )
     }
 
+    /**
+     * Read all people in an organization.
+     * @param org
+     * @return
+     */
     def readAllForOrg( Organization org ) {
         Person.createCriteria().list {
             eq "organization", org
@@ -32,14 +51,24 @@ class PersonService {
         }
     }
 
+    /**
+     * Update the specified fields of a person.
+     * @param fields
+     * @param person
+     * @param updater
+     * @return
+     */
     def updateFields( Map fields, Person person, User updater ) {
         fields.each{ key, value ->
             person[ key ] = value
         }
 
-        eventService.create( EventType.)
         person.lastUpdatedBy = updater
-        person.save()
+        def saved = person.save()
+        if( saved ) {
+            eventService.create( EventType.PERSON_UPDATE, person, updater )
+        }
+        saved
     }
 
     /**
@@ -51,7 +80,12 @@ class PersonService {
     def ban( Person person, User bannedBy = null ) {
         person.doNotAdopt = true
         person.lastUpdatedBy = bannedBy
-        person.save()
+
+        def saved = person.save()
+        if( saved ) {
+            eventService.create( EventType.PERSON_ADD_DONOTADOPT, person, bannedBy )
+        }
+        saved
     }
 
     /**
@@ -72,8 +106,11 @@ class PersonService {
 
         person.linkedAccount = user
         organizationService.addUserToOrganization( person.organization, user, granter )
-        person.save()
-    }
+        def saved = person.save()
+        if( saved ) {
+            eventService.create( EventType.ORG_ADD_PERSON, person, granter )
+        }
 
-    def listAdoptions
+        saved
+    }
 }

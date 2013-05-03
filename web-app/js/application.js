@@ -197,6 +197,8 @@ window.AppService = (function() {
 
     var models = ['people','pets','organizations'];
 
+    this.activeOrg = null;
+
     this.readCache = function( what, id, ttl ) {
         if( $.inArray( what, models ) == -1 ) {
             throw new Error( what + ' is not a valid cachable model.' );

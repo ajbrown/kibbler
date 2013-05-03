@@ -4,10 +4,16 @@ import org.bson.types.ObjectId
 
 class PetService {
 
+    def eventService
+
     def Pet create( Organization org, Pet pet, User creator = null ) {
         pet.organization = org
         pet.createdBy = creator
-        pet.save()
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_ADD, pet, creator )
+        }
+        saved
     }
 
     def Pet read( String id ) {
@@ -23,7 +29,12 @@ class PetService {
             pet[ key ] = value
         }
         pet.lastUpdatedBy = user
-        pet.save()
+        def saved = pet.save()
+
+        if( saved ) {
+            eventService.create( EventType.PET_UPDATE, pet, user, [fields] )
+        }
+        saved
     }
 
     /**
@@ -47,7 +58,12 @@ class PetService {
         pet.foster = null
         pet.status = 'adopted'
         pet.lastUpdatedBy = creator
-        pet.save()
+
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_ADOPT, pet, creator, [adopter, record] )
+        }
+        saved
     }
 
     /**
@@ -69,25 +85,50 @@ class PetService {
         pet.foster = foster
         pet.status = 'foster'
         pet.lastUpdatedBy = creator
-        pet.save()
+
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_FOSTER, pet, creator, [foster, record] )
+        }
+        saved
     }
 
+    /**
+     * Reclaim a pet, removing the pet from their current foster or adopter.
+     * @param pet
+     * @param updater
+     * @return
+     */
     def reclaim( Pet pet, User updater = null ) {
 
         pet.adopter = null
         pet.foster  = null
         pet.status  = 'available'
         pet.lastUpdatedBy = updater
-        pet.save()
+
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_RECLAIM, pet, updater )
+        }
+        saved
     }
 
+    /**
+     * Place the pet on hold, so it cannot be adopted or fostered.
+     * @param pet
+     * @param creator
+     * @return
+     */
     def hold( Pet pet, User creator = null ) {
         pet.adopter = null
         pet.foster  = null
         pet.status  = 'hold'
         pet.lastUpdatedBy = creator
-        pet.save()
+
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_HOLD, pet, creator )
+        }
+        saved
     }
-
-
 }

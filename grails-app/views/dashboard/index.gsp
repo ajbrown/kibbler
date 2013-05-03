@@ -192,6 +192,7 @@
             $.getJSON( SERVER_URL + '/organization/' + org.id() + '/transactions', function( data ) {
                 org.transactions = ko.observableArray( data.data );
                 self.active( org );
+                AppService.activeOrg = org.id();
             });
 
         }
@@ -380,10 +381,10 @@
             var submit = {
                 name: self.createName(),
                 type: self.createType(),
-                organizationId:  self.createOrgId()
-            }
+                organizationId:  AppService.activeOrg
+            };
 
-            $.postJSON( '<g:createLink controller="pets" action="create"/>', submit, function( data ) {
+            $.post( '<g:createLink controller="pets" action="create"/>', submit, function( data ) {
                 if( data ) {
                     var pet = ko.mapping.fromJS( data.data );
                     self.list.push( pet );

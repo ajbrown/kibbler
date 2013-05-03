@@ -24,7 +24,12 @@ class OrganizationService {
     def createOrganization( String name, User creator ) {
         def org = new Organization( name: name )
         org.addToMembers( [ role: 'admin', user: creator ] )
-        org.save()
+
+        def saved = org.save()
+        if( saved ) {
+            eventService.create( EventType.ORG_CREATED, org, creator )
+        }
+        saved
     }
 
     /**
@@ -38,15 +43,19 @@ class OrganizationService {
     def void addUserToOrganization( Organization org, User added, User addedBy = null, String role = 'user' ) {
         def exists = org.members.find{ it.user == added }
 
+        def saved
+
         if( !exists ) {
             org.addToMembers( new OrgRole( role: role, user: added, createdBy: addedBy ) )
-            org.save( failOnError: true )
+            saved = org.save( failOnError: true )
         } else if( exists.role != role ) {
             exists.role = role
-            exists.save( failOnError: true )
+            saved = exists.save( failOnError: true )
         }
 
-        eventService.create( EventType.ORG_ADD_USER, org, addedBy, [added])
+        if( saved ) {
+            eventService.create( EventType.ORG_ADD_PERSON, org, addedBy, [added])
+        }
     }
 
     /**
@@ -59,12 +68,29 @@ class OrganizationService {
      */
     def addTransaction( Transaction trx, User recorder = null ) {
         trx.createdBy = recorder
-        trx.save( failOnError: true )
+        def saved = trx.save( failOnError: true )
+        if( saved ) {
+            //Determine the EventType based on the transaction amount, and whether or not it was tied to a pet.
+            def et = trx.amountCents > 0 ? EventType.ORG_TRANSACTION_REVENUE : EventType.ORG_TRANSACTION_EXPENSE
+            if( trx.pet ) { et = EventType.ORG_TRANSACTION_PET_EXPENSE }
+
+            eventService.create( et, trx.organization, recorder )
+        }
+
+        saved
     }
 
-    def listTransactions( Organization org ) {
+    /**
+     * List all transactions for an organization
+     * @param org
+     * @return
+     */
+    def listTransactions( Organization org, int limitDays = 30 ) {
         Transaction.createCriteria().list{
             eq "organization", org
+            if( limitDays >= 0 ) {
+                gte "dateCreated", (new Date().clearTime()) - limitDays
+            }
             order "dateCreated", "desc"
         }
     }

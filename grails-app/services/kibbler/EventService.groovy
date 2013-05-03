@@ -17,8 +17,14 @@ class EventService {
      * @param args
      * @return
      */
-    def create( EventType et, Organization org, Person person, Object[] args ) {
-        def event = new Event( organization: org, person: person, args: args, messageCode: et.code )
+    def create( EventType et, Person subject, User actor, Object[] args = null ) {
+        def event = new Event(
+                organization: subject.organization,
+                actor: actor,
+                subject: subject,
+                args: args,
+                type: et
+        )
         event.save()
     }
 
@@ -30,12 +36,15 @@ class EventService {
      * @param args
      * @return
      */
-    def create( EventType et, Organization org, User person, Object[] args ) {
-        def userPerson = Person.findByOrganizationAndLinkedAccount( org, person )
-        if( !userPerson ) {
-            throw new Exception( 'Could not find linked account for user.' )
-        }
-        create( et, org, userPerson, args )
+    def create( EventType et, Pet subject, User actor, Object[] args = null ) {
+        def event = new Event(
+                organization: subject.organization,
+                subject: subject,
+                actor: actor,
+                args: args,
+                type: et
+        )
+        event.save()
     }
 
     /**
@@ -46,8 +55,14 @@ class EventService {
      * @param args
      * @return
      */
-    def create( EventType et, Person person, Pet pet, Object[] args  ) {
-        def event = new Event( organization: person.organization, person: pet, args: args, messageCode: et.code )
+    def create( EventType et, Organization subject, User actor, Object[] args = null  ) {
+        def event = new Event(
+                organization: subject,
+                subject: subject,
+                actor: actor,
+                args: args,
+                type: et
+        )
         event.save()
     }
 
@@ -69,9 +84,9 @@ class EventService {
      */
     @Cacheable('event-translations')
     def String translateMessage( Event event, Locale locale ) {
-        def args = [ event.organization, event.person, event.pet ]
+        def args = [ event.subject, event.actor ]
         args.addAll event.args
-        messageSource.getMessage( event.messageCode, args.toArray(), locale )
+        messageSource.getMessage( event.type.code, args.toArray(), locale )
     }
 
     /**

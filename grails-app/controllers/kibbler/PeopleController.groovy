@@ -49,7 +49,7 @@ class PeopleController {
         def resp   = new JSONResponseEnvelope( status: 200 )
 
         def fields = objectMapper.readValue( request.inputStream, Map.class )
-        def saved  = personService.updateFields( fields, params.params.person, currentUser() )
+        def saved  = personService.updateFields( fields, params.person, springSecurityService.currentUser )
 
         if( !saved ) {
             resp.status = 400
@@ -113,7 +113,7 @@ class PeopleController {
 
     def ban() {
         def resp = new JSONResponseEnvelope( status: 200 )
-        def banned = personService.ban( params.person, currentUser() )
+        def banned = personService.ban( params.person, springSecurityService.currentUser )
 
         if( !banned ) {
             response.status = 500
@@ -129,7 +129,7 @@ class PeopleController {
 
     def invite() {
         def resp = new JSONResponseEnvelope( status: 200 )
-        def invited = personService.makeTeamMember( params.person, currentUser() )
+        def invited = personService.makeTeamMember( params.person, springSecurityService.currentUser )
         if( !invited ) {
             response.status = 500
         }

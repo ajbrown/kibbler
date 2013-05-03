@@ -1,5 +1,6 @@
 package kibbler
 
+import grails.plugin.cache.Cacheable
 import org.bson.types.ObjectId
 
 class UserService {
@@ -23,8 +24,9 @@ class UserService {
         }
 
         def user = new User( email: email, activated: false )
-        user.save( flush: true )
-        user
+        def saved = user.save( flush: true )
+
+        saved
     }
 
     def findByEmail( String email ) {

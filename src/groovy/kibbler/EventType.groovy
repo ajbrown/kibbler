@@ -1,19 +1,20 @@
 package kibbler
 
 /**
- * Created with IntelliJ IDEA.
- * User: ajbrown
- * Date: 4/30/13
- * Time: 10:18 PM
- * To change this template use File | Settings | File Templates.
+ * EventTypes are categories of events stored as an Event object.
  */
 enum EventType {
-    ORG_ADD_USER('events.organization.addUser'),
+    ORG_ADD_PERSON('events.organization.addUser'),
+    ORG_CREATED('events.organization.create'),
+    ORG_TRANSACTION_REVENUE('events.organization.addRevenue'),
+    ORG_TRANSACTION_EXPENSE('events.organization.addExpense'),
+    ORG_TRANSACTION_PET_EXPENSE('events.organization.addPetExpense'),
     PET_UPDATE('events.pet.update'),
     PET_ADOPT('events.pet.adopt'),
     PET_RECLAIM('events.pet.reclaim'),
     PET_FOSTER('events.pet.foster'),
     PET_ADD('events.pet.add'),
+    PET_HOLD('events.pet.hold'),
     PERSON_UPDATE('events.person.update'),
     PERSON_CREATE('events.person.create'),
     PERSON_REMOVE('events.person.remove'),

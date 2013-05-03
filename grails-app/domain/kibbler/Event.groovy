@@ -1,24 +1,28 @@
 package kibbler
 
+import org.bson.types.ObjectId
+
 /**
- * Created with IntelliJ IDEA.
- * User: ajbrown
- * Date: 4/30/13
- * Time: 12:29 AM
- * To change this template use File | Settings | File Templates.
  */
 class Event {
+    ObjectId id
+
+    def subject
     Organization organization
-    Person person
-    Pet pet
-    String messageCode
+    EventType type
+    User actor
     List args
 
     Date dateCreated
 
     static mapping = {
-        messageCode index: true
+        type index: true
         sort "dateCreated"
         order "desc"
+    }
+
+    static constraints = {
+        args nullable: true
+        actor nullable: true
     }
 }

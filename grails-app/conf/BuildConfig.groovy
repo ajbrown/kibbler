@@ -45,6 +45,7 @@ grails.project.dependency.resolution = {
 
         compile 'org.xhtmlrenderer:core-renderer:R8'
         compile 'com.fasterxml.jackson.core:jackson-databind:2.1.2'
+        test "org.spockframework:spock-grails-support:0.7-groovy-2.0"
     }
 
     plugins {
@@ -66,7 +67,9 @@ grails.project.dependency.resolution = {
         compile ":fields:1.3"
         compile ":rendering:0.4.3"
 
-        test ":spock:0.6"
+        test(":spock:0.7") {
+            exclude "spock-grails-support"
+        }
 
         build ":tomcat:$grailsVersion"
 
