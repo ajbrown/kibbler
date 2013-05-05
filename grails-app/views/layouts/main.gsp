@@ -57,6 +57,19 @@
                     <li><a href="#help">Help</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
+            <div class="navbar-text dropdown pull-right" id="org-options">
+                <a href="#" data-toggle="dropdown" data-bind="visible: orgs.active()">
+                    <i class="icon-group"></i>
+                    <span id="org-label"></span>
+                    <i class="icon-double-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" data-bind="foreach: orgs.list()">
+                    <li data-bind="css: { disabled : $data == $root.orgs.active }">
+                        <a tabindex="-1" href="#"
+                           data-bind="text: name, attr: { href: '#organization/' + id() }"></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

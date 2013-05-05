@@ -193,6 +193,7 @@
                 org.transactions = ko.observableArray( data.data );
                 self.active( org );
                 AppService.activeOrg = org.id();
+                $('#org-label').text( org.name() );
             });
 
         }
