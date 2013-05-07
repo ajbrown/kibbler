@@ -148,7 +148,7 @@ class PeopleController {
     def history() {
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
-        def events = eventService.listByPet( params.person, params.days ?: 30 )
+        def events = eventService.listByPerson( params.person, params.days ?: 30 )
         jsonResponse.data = events.collect{
             [ event: it, message: eventService.translateMessage( it, request.locale ) ]
         }

@@ -1,5 +1,6 @@
 package kibbler
 
+import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
 import org.springframework.web.servlet.support.RequestContextUtils
 
@@ -17,6 +18,7 @@ class EventService {
      * @param args
      * @return
      */
+    @CachePut( value='last-event', key='#subject' )
     def create( EventType et, Person subject, User actor, List args = null ) {
         def newArgs = [subject.id, subject.class, actor.id ] + args
         def event = new Event(
@@ -30,6 +32,8 @@ class EventService {
     }
 
     /**
+     * Create an event for a pet.  Duplicate events (same actor and action within a few minutes of eachother) will be
+     * swallowed.
      *
      * @param et
      * @param org
@@ -37,26 +41,45 @@ class EventService {
      * @param args
      * @return
      */
+    @CachePut( value='last-event', key='#subject' )
     def create( EventType et, Pet subject, User actor, List args = null ) {
+        Event event
         def newArgs = ([subject.id, subject.class, actor.id] + args)
-        def event = new Event(
-                organization: subject.organization,
-                pet: subject,
-                actor: actor,
-                args: newArgs,
-                type: et
-        )
+
+        //Prevent duplicate events. When a pet is updated multiple times by the same user,
+        // we'll combine the fields they updated rather than creating multiple events.
+
+        def lastEvent = lastEvent( subject )
+        def cuttOff = System.currentTimeMillis() - (60 * 15 * 1000) //15 minutes ago
+        if( lastEvent?.actor == actor && lastEvent?.type == et && lastEvent?.dateCreated?.time >= cuttOff ) {
+            event = lastEvent
+
+            //Append to the fields that were updated
+            if( EventType.PET_UPDATE ) {
+                event.args[3] += args[0]
+            }
+        } else {
+            event = new Event(
+                    organization: subject.organization,
+                    pet: subject,
+                    actor: actor,
+                    args: newArgs,
+                    type: et
+            )
+        }
+
         event.save( failOnError: true )
     }
 
     /**
-     *
+     * Create an event for an organization.
      * @param et
      * @param person
      * @param pet
      * @param args
      * @return
      */
+    @CachePut( value='last-event', key='#subject' )
     def create( EventType et, Organization subject, User actor, List args = null  ) {
         def newArgs = [subject.id, subject.class, actor.id] + args
         def event = new Event(
@@ -149,5 +172,15 @@ class EventService {
             order "dateCreated", "desc"
             cache true
         }
+    }
+
+    @Cacheable('last-event')
+    def lastEvent( Pet pet ) {
+        Event.findByPet( pet, [sort: 'dateCreated', order: 'desc'] )
+    }
+
+    @Cacheable('last-event')
+    def lastEvent( Person person ) {
+        Event.findByPerson( person, [sort: 'dateCreated', order: 'desc'] )
     }
 }
