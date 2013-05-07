@@ -36,6 +36,8 @@ class Person {
     ]
 
     static mapping = {
+        organization index: true
+
         sort "name"
         linkedAccount cascade: 'none'
     }

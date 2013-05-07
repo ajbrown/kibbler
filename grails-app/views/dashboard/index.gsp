@@ -196,6 +196,7 @@
                 $('#org-label').text( org.name() );
             });
 
+
         }
 
         self.newEntry = function( org, event ) {
@@ -297,6 +298,8 @@
             }
 
             person = $.extend( person, new PersonWrapper( person ) );
+            person.populateHistory( 30 );
+
             self.active( person );
 
             $( '#tabs a[href="#people"]').tab( 'show' );
@@ -421,11 +424,13 @@
             }
 
             pet = $.extend( pet, new PetWrapper( pet ) );
+            pet.populateHistory( 30 );
+
             self.active( pet );
+
             $( '#tabs a[href="#pets"]').tab( 'show' );
             $( '[data-id]', petsNav ).removeClass('active');
             $( '[data-id="' + pet.id() + '"]', petsNav ).addClass('active');
-            $( '')
         };
 
         //Construction

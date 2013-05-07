@@ -9,6 +9,8 @@ class PetsController {
     def petService
     def personService
     def springSecurityService
+    def eventService
+
     ObjectMapper objectMapper
 
     def beforeInterceptor = {
@@ -216,6 +218,22 @@ class PetsController {
         def response = petService.reclaim( params.pet, user )
 
         jsonResponse.data = response
+
+        withFormat {
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
+            }
+        }
+    }
+
+    def history() {
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
+
+        def events = eventService.listByPet( params.pet, params.days ?: 30 )
+        jsonResponse.data = events.collect{
+            [ event: it, message: eventService.translateMessage( it, request.locale ) ]
+        }
 
         withFormat {
             json{

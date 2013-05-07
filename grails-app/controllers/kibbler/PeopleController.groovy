@@ -8,6 +8,8 @@ class PeopleController {
     def springSecurityService
     def personService
     def organizationService
+    def eventService
+
     def objectMapper = new ObjectMapper()
 
     def beforeInterceptor = {
@@ -139,6 +141,22 @@ class PeopleController {
                 resp.data = invited
                 resp.status = response.status
                 render resp as JSON
+            }
+        }
+    }
+
+    def history() {
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
+
+        def events = eventService.listByPet( params.person, params.days ?: 30 )
+        jsonResponse.data = events.collect{
+            [ event: it, message: eventService.translateMessage( it, request.locale ) ]
+        }
+
+        withFormat {
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
             }
         }
     }

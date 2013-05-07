@@ -18,7 +18,7 @@ class User {
 	Boolean passwordExpired = false
 
 	static constraints = {
-        email blank: false, unique: true
+        email blank: false, unique: true, index: [unique: true]
         password nullable: true
         activated nullable: true
         activationCode nullable: true

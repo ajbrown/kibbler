@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import grails.converters.JSON
 import grails.util.Environment
 import kibbler.AdoptionContractTemplate
+import kibbler.EventType
 import kibbler.Organization
 import kibbler.Species
 import kibbler.User
@@ -29,6 +30,10 @@ class BootStrap {
         //Make sure the two users are created.
         def users = User.count()
         log.info "There are ${users} users in the system."
+
+        JSON.registerObjectMarshaller( EventType ) {
+            return it.toString()
+        }
 
     }
     def destroy = {

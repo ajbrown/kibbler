@@ -142,6 +142,33 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="span4">
+
+            </div>
+            <div class="span5">
+                <div class="editable-text">
+                    <a href="#" class="pull-right"><span data-bind="text: historyDays">30</span>
+                        days <i class="icon-calendar"></i></a>
+                    <label>History</label>
+                    <table class="table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: history">
+                            <tr>
+                                <td data-bind="text: message"></td>
+                                <td data-bind="text: event.dateCreated"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </form>
 
     <div id="edit-pet-breed" style="display: none;">

@@ -42,8 +42,12 @@ window.FinanceCategory = function( name, type, scope ) {
 
 window.PersonWrapper = function( person ) {
     var it = person;
+    var self = this;
 
     this.url = SERVER_URL + '/people/' + person.id();
+
+    this.historyDays = ko.observable( 30 );
+    this.historyDays = ko.observable();
 
     this.update = function( data ) {
         $.ajax( this.url, {
@@ -54,6 +58,16 @@ window.PersonWrapper = function( person ) {
             type: 'POST'
         });
     };
+
+    this.populateHistory = function( days ) {
+        var limitDays = days || 30;
+        $.getJSON( this.url + '/history', function( data ) {
+            if( data.status == 200 ) {
+                self.historyDays( days );
+                self.historyDays( data.data );
+            }
+        } );
+    }
 
     this.teamMember = ko.computed( function() {
         var linkedAccount
@@ -145,7 +159,7 @@ window.PersonWrapper = function( person ) {
 }
 
 window.PetWrapper = function( pet ) {
-
+    var self = this;
     this.url = SERVER_URL + '/pets/' + pet.id();
 
     this.update = function( data ) {
@@ -156,6 +170,20 @@ window.PetWrapper = function( pet ) {
             dataType: 'json',
             type: 'POST'
         });
+    };
+
+    this.historyDays = ko.observable();
+    this.history = ko.observable();
+
+    this.populateHistory = function( days ) {
+        var limitDays = days || 30;
+        $.getJSON( this.url + '/history', function( data ) {
+            if( data.status == 200 ) {
+                self.historyDays( days );
+                self.history( data.data );
+            }
+            console.log( self.history() );
+        } );
     };
 
     this.typeLabel = ko.computed( function() {

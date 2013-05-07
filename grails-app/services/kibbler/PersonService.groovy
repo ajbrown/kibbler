@@ -29,6 +29,10 @@ class PersonService {
         saved
     }
 
+    def Person findForAccount( User user, Organization org ) {
+        Person.findByLinkedAccountAndOrganization( user, org )
+    }
+
     /**
      * Read a single person by ID.
      * @param id

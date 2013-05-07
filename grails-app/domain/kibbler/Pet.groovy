@@ -43,6 +43,7 @@ class Pet {
     static hasMany = [ photos: Photo, adoptions: AdoptionRecord, fosterings: FosterRecord ]
 
     static mapping = {
+        organization index: true
         sort "givenName"
     }
 

@@ -31,7 +31,11 @@ class Transaction {
     }
 
     static mapping = {
-        order dateCreated: "desc"
+        organization index: true
+        dateCreated index: true
+
+        sort "dateCreated"
+        order "desc"
     }
 
     def beforeValidate() {

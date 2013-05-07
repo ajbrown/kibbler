@@ -17,15 +17,16 @@ class EventService {
      * @param args
      * @return
      */
-    def create( EventType et, Person subject, User actor, Object[] args = null ) {
+    def create( EventType et, Person subject, User actor, List args = null ) {
+        def newArgs = [subject.id, subject.class, actor.id ] + args
         def event = new Event(
                 organization: subject.organization,
                 actor: actor,
-                subject: subject,
-                args: args,
+                person: subject,
+                args: newArgs,
                 type: et
         )
-        event.save()
+        event.save( failOnError: true )
     }
 
     /**
@@ -36,15 +37,16 @@ class EventService {
      * @param args
      * @return
      */
-    def create( EventType et, Pet subject, User actor, Object[] args = null ) {
+    def create( EventType et, Pet subject, User actor, List args = null ) {
+        def newArgs = ([subject.id, subject.class, actor.id] + args)
         def event = new Event(
                 organization: subject.organization,
-                subject: subject,
+                pet: subject,
                 actor: actor,
-                args: args,
+                args: newArgs,
                 type: et
         )
-        event.save()
+        event.save( failOnError: true )
     }
 
     /**
@@ -55,15 +57,15 @@ class EventService {
      * @param args
      * @return
      */
-    def create( EventType et, Organization subject, User actor, Object[] args = null  ) {
+    def create( EventType et, Organization subject, User actor, List args = null  ) {
+        def newArgs = [subject.id, subject.class, actor.id] + args
         def event = new Event(
                 organization: subject,
-                subject: subject,
                 actor: actor,
-                args: args,
+                args: newArgs,
                 type: et
         )
-        event.save()
+        event.save( failOnError: true )
     }
 
     /**
@@ -84,9 +86,7 @@ class EventService {
      */
     @Cacheable('event-translations')
     def String translateMessage( Event event, Locale locale ) {
-        def args = [ event.subject, event.actor ]
-        args.addAll event.args
-        messageSource.getMessage( event.type.code, args.toArray(), locale )
+        messageSource.getMessage( event.type.code, event.args.toArray(), locale )
     }
 
     /**
@@ -97,13 +97,14 @@ class EventService {
      * @return
      */
     def listByOrganization( Organization org, int limitDays = 30 ) {
+        limitDays = limitDays ?: 30
+
         Event.createCriteria().list() {
             eq "organization", org
             if( limitDays >= 0 ) {
-                lte "dateCreated", ((new Date().clearTime()) - limitDays)
+                gte "dateCreated", ((new Date().clearTime()) - limitDays)
             }
             order "dateCreated", "desc"
-            readOnly true
             cache true
         }
     }
@@ -116,13 +117,15 @@ class EventService {
      * @return
      */
     def listByPerson( Person person, int limitDays = 30 ) {
+        limitDays = limitDays ?: 30
+
         Event.createCriteria().list() {
             eq "person", person
+            eq "hidden", false
             if( limitDays >= 0 ) {
-                lte "dateCreated", ((new Date().clearTime()) - limitDays)
+                gte "dateCreated", ((new Date().clearTime()) - limitDays)
             }
             order "dateCreated", "desc"
-            readOnly true
             cache true
         }
     }
@@ -135,13 +138,15 @@ class EventService {
      * @return
      */
     def listByPet( Pet pet, int limitDays = 30 ) {
+        limitDays = limitDays ?: 30
+
         Event.createCriteria().list() {
             eq "pet", pet
+            eq "hidden", false
             if( limitDays >= 0 ) {
-                lte "dateCreated", ((new Date().clearTime()) - limitDays)
+                gte "dateCreated", ((new Date().clearTime()) - limitDays)
             }
             order "dateCreated", "desc"
-            readOnly true
             cache true
         }
     }
