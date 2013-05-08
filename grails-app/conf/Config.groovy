@@ -113,3 +113,6 @@ grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserR
 grails.plugins.springsecurity.userLookup.usernamePropertyName = "email"
 grails.plugins.springsecurity.authority.className = 'kibbler.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
+
+//DatabaseSession plugin does not work correctly with Mongo
+grails.plugin.databasesession.enabled = false
