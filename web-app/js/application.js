@@ -201,16 +201,13 @@ window.PetWrapper = function( pet ) {
         label += status.charAt(0).toUpperCase() + status.slice(1);
 
         if( status == 'adopted' ) {
-            var adopter = AppService.readCache( 'people', this.adopter.id() );
-            if( adopter ) {
-                label += ' to ' + adopter.name;
+            if( this.adopter ) {
+                label += AppService.translateMsgReferences( ' to [person:' + this.adopter.id() + ']', true );
             }
 
         } else if( status == 'fostered' ) {
-
-            var foster = this.foster();
-            if( foster ) {
-                label += ' to ' + this.foster();
+            if( this.foster ) {
+                label += AppService.translateMsgReferences( ' to [person:' + this.foster.id() + ']', true );
             }
         }
 

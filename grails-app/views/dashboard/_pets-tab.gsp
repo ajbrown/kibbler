@@ -21,7 +21,7 @@
             <div class="span9">
                 <legend class="caps">
                     <small class="pull-right" id="pet-status-label"
-                            data-bind="text: statusLabel"></small>
+                            data-bind="html: statusLabel"></small>
                     <small class="pull-right" id="pet-type-label"
                            data-bind="text: typeLabel"></small>
                     <span class="editable"
