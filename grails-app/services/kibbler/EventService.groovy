@@ -20,7 +20,8 @@ class EventService {
      */
     @CachePut( value='last-event', key='#subject' )
     def create( EventType et, Person subject, User actor, List args = null ) {
-        def newArgs = [subject.id, subject.class, actor.id ] + args
+        def userPerson = Person.findByLinkedAccountAndOrganization( actor, subject.organization )
+        def newArgs = [subject.id, subject.class, userPerson?.id ] + args
         def event = new Event(
                 organization: subject.organization,
                 actor: actor,
@@ -44,7 +45,8 @@ class EventService {
     @CachePut( value='last-event', key='#subject' )
     def create( EventType et, Pet subject, User actor, List args = null ) {
         Event event
-        def newArgs = ([subject.id, subject.class, actor.id] + args)
+        def userPerson = Person.findByLinkedAccountAndOrganization( actor, subject.organization )
+        def newArgs = ([subject.id, subject.class, userPerson.id] + args)
 
         //Prevent duplicate events. When a pet is updated multiple times by the same user,
         // we'll combine the fields they updated rather than creating multiple events.
@@ -81,7 +83,9 @@ class EventService {
      */
     @CachePut( value='last-event', key='#subject' )
     def create( EventType et, Organization subject, User actor, List args = null  ) {
-        def newArgs = [subject.id, subject.class, actor.id] + args
+        def userPerson = Person.findByLinkedAccountAndOrganization( actor, subject )
+
+        def newArgs = [subject.id, subject.class, userPerson.id] + args
         def event = new Event(
                 organization: subject,
                 actor: actor,

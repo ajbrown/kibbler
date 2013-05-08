@@ -152,16 +152,10 @@
                         days <i class="icon-calendar"></i></a>
                     <label>History</label>
                     <table class="table-condensed table-striped">
-                        <thead>
-                            <tr>
-                                <th>Event</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
                         <tbody data-bind="foreach: history">
                             <tr>
-                                <td data-bind="text: message"></td>
-                                <td data-bind="text: event.dateCreated"></td>
+                                <td data-bind="html: AppService.translateMsgReferences( message, true )"></td>
+                                <td data-bind="text: jQuery.timeago( event.dateCreated )"></td>
                             </tr>
                         </tbody>
                     </table>

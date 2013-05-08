@@ -182,7 +182,6 @@ window.PetWrapper = function( pet ) {
                 self.historyDays( days );
                 self.history( data.data );
             }
-            console.log( self.history() );
         } );
     };
 
@@ -264,9 +263,60 @@ window.AppService = (function() {
         $.jStorage.deleteKey( what + ":" + id );
     }
 
+    this.formatDate = function( date ) {
+
+    };
+
+    /**
+     * Turns object references in message strings into a user friendly reference to the object.
+     * For example [user:abcd1234ef12bcd] will be turned into
+     * <span class="ref-label user-label" data-ref-type="user" data-ref-type="abcd1234ef12bcd">John Smith</span>".  If the second
+     * link parameter equals true, <a> will be used instead of <span>
+     * @param msg
+     */
+    this.translateMsgReferences = function( msg, link ) {
+        var refs = msg.match(/\[\w+\:[0-9a-f]{24}\]/g);
+        var tag = link ? 'a' : 'span';
+
+        for( var i in refs ) {
+            var args, type, id, what;
+
+            args = refs[i].split(':');
+            type = args[0].substring(1);
+            id   = args[1].substring(0,24);
+
+            switch( type ) {
+                case 'pet':          what = 'pets';          break;
+                case 'person':       what = 'people';        break;
+                case 'organization': what = 'organizations'; break;
+            }
+
+            var obj = self.readCache( what, id );
+
+            var url = '#' + what + '/' + id;
+            var translated = link ? '<a href="' + url + '" ' : '<span';
+            translated += ' class="ref-label ref-' + type + '-label"';
+            translated += ' data-ref-type="' + type + '" data-ref-id="' + id + '">';
+
+            var name;
+
+            switch( type ) {
+                case 'pet':             name = obj.givenName;   break;
+                case 'person':          name = obj.name;        break;
+                case 'organization':    name = obj.name;        break;
+            }
+
+            translated += name + '</' + tag + '>';
+            msg = msg.replace( refs[i], translated );
+        }
+
+        return msg;
+    }
+
     return {
         readCache : this.readCache,
         preCache : this.preCache,
-        unCache : this.unCache
+        unCache : this.unCache,
+        translateMsgReferences: this.translateMsgReferences
     }
 }());

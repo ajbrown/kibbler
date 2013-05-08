@@ -82,11 +82,11 @@ class PeopleController {
 
         if( cmd.validate() ) {
             def person = new Person( name: cmd.name, adopter: cmd.adopter, foster: cmd.foster )
-            if( personService.create( params.person, org, user ) ) {
+            if( personService.create( person, org, user ) ) {
                 resp.data = person
             } else {
                 resp.status = 400
-                resp.errors.addAll params.person.errors.allErrors
+                resp.errors.addAll person.errors.allErrors
             }
 
         } else {

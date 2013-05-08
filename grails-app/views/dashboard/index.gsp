@@ -66,12 +66,6 @@
             <input type="checkbox" name="foster" data-bind="value: people.create"> Foster
         </label>
 
-        <label data-bind="visible: !orgs.active()">
-            <select name="organizationId"
-                    data-bind="options: orgs.list, optionsValue: 'id', optionsText: 'name', value: people.createOrgId">
-            </select>
-        </label>
-
         <button class="btn btn-primary" data-bind="click: people.create">Create</button>
     </form>
 
@@ -237,11 +231,7 @@
         this.list = ko.observableArray();
 
         this.listAdopters = ko.computed( function() {
-            console.log( "List", self.list() );
-
-            console.log( "Listing adopters" );
             ko.utils.arrayFilter( self.list(), function( it ) {
-                console.log( it );
                 return it.adopter() && !it.doNotAdopt();
             } );
         }, this );
@@ -261,7 +251,7 @@
                 name: self.createName(),
                 adopter: self.createAdopter(),
                 foster:  self.createFoster(),
-                organizationId: self.createOrgId()
+                organizationId: AppService.activeOrg
             };
 
             $.post( '<g:createLink controller="people" action="create"/>', submit, function( data ) {
@@ -466,13 +456,11 @@
 
             this.get( "/kibbler/#pets/:pet", function() {
                 $('#pets').tab('show')
-                console.log('pet');
                 self.pets.setActive( this.params.pet )
             });
 
             this.get( "/kibbler/#pets", function() {
                 $('#tabs a[href="#pets"]').tab('show')
-                console.log('pets single');
             } );
 
             this.get( "/kibbler/#people", function() {
@@ -480,7 +468,6 @@
             } );
 
             this.get( "/kibbler/#people/:person", function() {
-                console.log('PEOPLE');
                 $('#tabs a[href="#people"]').tab('show')
                 self.people.setActive( this.params.person )
             });
