@@ -52,8 +52,8 @@ grails.project.dependency.resolution = {
         runtime ":jquery:1.8.3"
         runtime ":resources:1.1.6"
         runtime ":zipped-resources:1.0"
-        //runtime ":cached-resources:1.0"
-        //runtime ":yui-minify-resources:0.1.4"
+        runtime ":cached-resources:1.0"
+        runtime ":yui-minify-resources:0.1.4"
         runtime ":twitter-bootstrap:2.2.2"
 
         compile ':heroku:1.0.1'

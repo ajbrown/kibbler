@@ -107,6 +107,10 @@ log4j = {
     }
 }
 
+//Resources configuration
+grails.resources.mappers.yuijsminify.js.noMunge = true
+
+
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
