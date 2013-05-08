@@ -1,8 +1,10 @@
 package kibbler
 
 import org.bson.types.ObjectId
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 
-class User {
+class User implements UserDetails {
 
 	transient springSecurityService
 
@@ -42,7 +44,7 @@ class User {
         OrgRole.findAllByUser( this )*.organization
     }
 
-	Set<Role> getAuthorities() {
+	Set<GrantedAuthority> getAuthorities() {
 		UserRole.findAllByUser(this).collect { it.role } as Set
 	}
 
@@ -64,5 +66,25 @@ class User {
 
     static generateActivationCode() {
         System.currentTimeMillis().encodeAsMD5().substring(4).toLowerCase()
+    }
+
+    String getUsername() {
+        email
+    }
+
+    boolean isAccountNonExpired() {
+        !accountExpired
+    }
+
+    boolean isAccountNonLocked() {
+        !accountLocked
+    }
+
+    boolean isCredentialsNonExpired() {
+        !passwordExpired
+    }
+
+    boolean isEnabled() {
+        enabled
     }
 }
