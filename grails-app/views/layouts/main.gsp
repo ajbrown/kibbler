@@ -21,6 +21,7 @@
 
     <script>
         var SERVER_URL = '<g:createLink absolute="true" uri=""/>';
+        var SERVER_PATH = '<g:createLink uri=""/>'
     </script>
     <r:require modules="bootstrap,styling,knockout"/>
 

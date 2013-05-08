@@ -454,25 +454,25 @@
 
         Sammy( function() {
 
-            this.get( SERVER_URL + "/#pets/:pet", function() {
+            this.get( SERVER_PATH + "/#pets/:pet", function() {
                 $('#pets').tab('show')
                 self.pets.setActive( this.params.pet )
             });
 
-            this.get( SERVER_URL + "/#pets", function() {
+            this.get( SERVER_PATH + "/#pets", function() {
                 $('#tabs a[href="#pets"]').tab('show')
             } );
 
-            this.get( SERVER_URL + "/#people", function() {
+            this.get( SERVER_PATH + "/#people", function() {
                 $('#tabs a[href="#people"]').tab('show')
             } );
 
-            this.get( SERVER_URL + "/#people/:person", function() {
+            this.get( SERVER_PATH + "/#people/:person", function() {
                 $('#tabs a[href="#people"]').tab('show')
                 self.people.setActive( this.params.person )
             });
 
-            this.get( SERVER_URL + "/#organization", function() {
+            this.get( SERVER_PATH + "/#organization", function() {
                 $('#tabs a[href="#organization"]').tab('show')
             } );
 
