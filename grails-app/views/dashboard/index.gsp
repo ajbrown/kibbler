@@ -228,19 +228,42 @@
             }
         }, self );
 
+        this.filterFosters     = ko.observable( false );
+        this.filterAdopters    = ko.observable( false );
+        this.filterDoNotAdopt  = ko.observable( false );
+
         this.list = ko.observableArray();
 
+
         this.listAdopters = ko.computed( function() {
-            ko.utils.arrayFilter( self.list(), function( it ) {
-                return it.adopter() && !it.doNotAdopt();
-            } );
+            return ko.utils.arrayFilter( self.list(), function( person ) {
+                return person.adopter() && !person.doNotAdopt();
+            });
         }, this );
 
         this.listFosters = ko.computed( function() {
-            ko.utils.arrayFilter( this.list(), function( it ) {
-            return it.foster() && !it.doNotAdopt(); } );
-        }, this );
+            return ko.utils.arrayFilter( self.list(), function( person ) {
+                return person.foster() && !person.doNotAdopt();
+            });
+        });
 
+        this.listFiltered = ko.computed( function() {
+            var list = self.list();
+            var adopters = self.filterAdopters();
+            var fosters  = self.filterFosters();
+            var doNotAdopts = self.filterDoNotAdopt();
+
+            return ko.utils.arrayFilter( list, function( person ) {
+                //if no filters are on, display everything
+                if( !adopters && !fosters && !doNotAdopts ) { return true; }
+
+                var keep = false;
+                keep = keep || (adopters && person.adopter());
+                keep = keep || (fosters && person.foster());
+                keep = keep || (doNotAdopts && person.doNotAdopt());
+                return keep;
+            } );
+        });
         this.createName     = ko.observable();
         this.createAdopter  = ko.observable();
         this.createFoster   = ko.observable();
@@ -299,7 +322,14 @@
 
         //Construct
         $.getJSON( '<g:createLink controller="people" action="index"/>',
-                function(data) { self.list( ko.mapping.fromJS(data.data) ); }
+                function(data) {
+                    var items = [];
+                    for( var i in data.data ) {
+                        items.push( ko.mapping.fromJS( data.data[i] ) );
+                    }
+
+                    ko.utils.arrayPushAll( self.list, items );
+                }
         );
 
     };

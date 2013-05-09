@@ -67,6 +67,7 @@ environments {
     development {
         grails.logging.jul.usebridge = true
         grails.resources.debug = true
+        cache.headers.enabled = false
     }
 
     production {

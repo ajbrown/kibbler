@@ -70,7 +70,7 @@ class PersonService {
         person.lastUpdatedBy = updater
         def saved = person.save()
         if( saved ) {
-            eventService.create( EventType.PERSON_UPDATE, person, updater )
+            eventService.create( EventType.PERSON_UPDATE, person, updater, [fields] )
         }
         saved
     }

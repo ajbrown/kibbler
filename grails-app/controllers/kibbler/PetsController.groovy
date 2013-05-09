@@ -52,6 +52,8 @@ class PetsController {
     }
 
     def read() {
+        lastModified params.pet.lastUpdated
+
         def resp = new JSONResponseEnvelope( status: 200 )
 
         withFormat{
@@ -231,6 +233,11 @@ class PetsController {
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
         def events = eventService.listByPet( params.pet, params.days ?: 30 )
+
+        if( events ) {
+            lastModified events.first().dateCreated
+        }
+
         jsonResponse.data = events.collect{
             [ event: it, message: eventService.translateMessage( it, request.locale ) ]
         }

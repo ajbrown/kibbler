@@ -6,6 +6,7 @@ import grails.plugins.springsecurity.Secured
 class DashboardController {
 
     def index() {
+        cache validFor: 60 * 15
 
         [
                 createPet: new CreatePetCommand(),

@@ -1,21 +1,33 @@
 package kibbler
 
+import grails.plugin.cache.CacheEvict
+import grails.plugin.cache.CacheEvict
+import grails.plugin.cache.CachePut
+import grails.plugin.cache.Cacheable
 import org.bson.types.ObjectId
+import org.springframework.cache.CacheManager
 
 class PetService {
 
     def eventService
 
-    def Pet create( Organization org, Pet pet, User creator = null ) {
-        pet.organization = org
-        pet.createdBy = creator
-        def saved = pet.save()
-        if( saved ) {
-            eventService.create( EventType.PET_ADD, pet, creator )
+    /**
+     * Remove pets from the cache.  Allows referencing the object either by String id, ObjectId, or by Pet instance.
+     * @param obj
+     */
+    static determineCacheKey( obj ) {
+        def key
+        if( obj instanceof ObjectId ) {
+            key = obj.toString()
+        } else if( obj instanceof String ) {
+            key = obj
+        } else if( obj instanceof Pet ) {
+            key = obj.id.toString()
         }
-        saved
+        key
     }
 
+    @Cacheable('pets')
     def Pet read( String id ) {
         Pet.read( new ObjectId( id ) )
     }
@@ -24,6 +36,7 @@ class PetService {
         Pet.findAllByOrganization( org )
     }
 
+    @CacheEvict( value='pets', key='#root.args[1].id.toString()' )
     def updateFields( Map fields, Pet pet, User user ) {
         fields.each { key, value ->
             pet[ key ] = value
@@ -45,6 +58,7 @@ class PetService {
      * @param adopter
      * @param creator
      */
+    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def adopt( Pet pet, Person adopter, User creator = null ) {
 
         def record = new AdoptionRecord( organization: pet.organization, pet: pet, adopter: adopter,  createdBy: creator )
@@ -74,6 +88,7 @@ class PetService {
      * @param creator
      * @return
      */
+    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def foster( Pet pet, Person foster, User creator = null ) {
         def record = new FosterRecord( pet: pet, foster: foster, createdBy: creator )
         if( !record.save() ) {
@@ -99,6 +114,7 @@ class PetService {
      * @param updater
      * @return
      */
+    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def reclaim( Pet pet, User updater = null ) {
 
         pet.adopter = null
@@ -119,6 +135,7 @@ class PetService {
      * @param creator
      * @return
      */
+    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def hold( Pet pet, User creator = null ) {
         pet.adopter = null
         pet.foster  = null

@@ -8,7 +8,8 @@
         <!-- ko foreach: pets.list() -->
         <li data-bind="attr: { 'data-id': id }, css: { active: id() == $root.pets.activeId() }">
             <a href="#"
-               data-bind="attr: { href: '#pets/' + id() }, text: givenName"></a>
+               data-bind="
+                    attr: { href: '#pets/' + id() }, text: givenName"></a>
         </li>
         <!-- /ko -->
     </ul>
@@ -184,7 +185,7 @@
               data-bind="attr: { action: url + '/adopt' }">
             <label>Adopter</label>
             <select name="adopter"
-                    data-bind="options: $root.people.list(), optionsText: 'name', optionsValue: 'id'">
+                    data-bind="options: $root.people.listAdopters(), optionsText: 'name', optionsValue: 'id'">
             </select>
 
             <label class="checkbox">

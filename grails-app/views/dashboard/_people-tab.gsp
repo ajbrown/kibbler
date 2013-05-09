@@ -2,15 +2,24 @@
 
 <div class="span3">
     <ul class="nav nav-list nav-stacked" id="people-list-nav">
-        <li>
+        <li class="small">
             <a href="#" data-bind="click: people.showCreate">
                 <i class="icon-plus"></i> Add New
             </a>
         </li>
-        <!-- ko foreach: people.list() -->
+
+        <li><label class="checkbox"><input type="checkbox" data-bind="checked: people.filterFosters"/> Fosters</label></li>
+        <li><label class="checkbox"><input type="checkbox" data-bind="checked: people.filterAdopters"/> Adopters</label></li>
+        <li><label class="checkbox"><input type="checkbox" data-bind="checked: people.filterDoNotAdopt"/> Do Not Adopt</label></li>
+        <li class="divider"></li>
+
+        <!-- ko foreach: people.listFiltered() -->
         <li data-bind="attr: { 'data-id': id() }, css: { active: $data.id() == $root.people.activeId() }">
             <a href="#"
-               data-bind="attr: { href: '#people/' + id() }, text: name()"></a>
+               data-bind="
+                    attr: { href: '#people/' + id() },
+                    css: { donotadopt: doNotAdopt(), foster: foster(), adopter: adopter() },
+                    text: name()"></a>
         </li>
         <!-- /ko -->
     </ul>

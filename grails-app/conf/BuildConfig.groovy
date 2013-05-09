@@ -67,6 +67,8 @@ grails.project.dependency.resolution = {
         compile ":fields:1.3"
         compile ":rendering:0.4.3"
 
+        compile ":cache-headers:1.1.5"
+
         test(":spock:0.7") {
             exclude "spock-grails-support"
         }

@@ -65,6 +65,15 @@ class Person {
     }
 
     /**
+     * If there's a linked account for this person, and the linked account belongs to this person's organization,
+     * they are a team member.
+     * @return
+     */
+    boolean isTeamMember() {
+        return this.linkedAccount?.belongsTo( this.organization )
+    }
+
+    /**
      * When a person is set to do not adopt, they're also removed as an available foster or adopter.
      * @param doNotAdopt
      */

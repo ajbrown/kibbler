@@ -103,6 +103,7 @@ class PeopleController {
     }
 
     def read() {
+        lastModified params.person.lastUpdated
         def resp = new JSONResponseEnvelope( status: 200 )
 
         withFormat{
@@ -149,6 +150,10 @@ class PeopleController {
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
         def events = eventService.listByPerson( params.person, params.days ?: 30 )
+        if( events ) {
+            lastModified events.first().dateCreated
+        }
+
         jsonResponse.data = events.collect{
             [ event: it, message: eventService.translateMessage( it, request.locale ) ]
         }
