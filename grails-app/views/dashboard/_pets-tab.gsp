@@ -211,6 +211,28 @@
             <button type="submit" class="btn btn-primary" data-bind="click: $root.pets.submitAdopt">Submit</button>
         </form>
     </div>
+    <div id="pet-foster-modal" class="reveal-modal">
+        <form class="form-horizontal" method="post"
+              data-bind="attr: { action: url + '/foster' }">
+            <fieldset>
+                <legend data-bind="text: 'Foster ' + name">Foster</legend>
+                <label><g:message code="pet.fostermodal.fosterId.label" default="Choose a foster"/></label>
+                <select name="fosterId"
+                        data-bind="options: $root.people.listFosters(), optionsText: 'name', optionsValue: 'id'">
+                </select>
+                <span class="help-block"><g:message code="pet.fostermodal.fosterId.help"/></span>
+
+                <hr/>
+
+                <a class="pull-right btn btn-cancel" data-bind="click: $('#pet-foster-modal').trigger('reveal:close')">
+                    <g:message code="pet.fostermodal.cancel.label" default="Cancel"/></a>
+                <button type="submit" class="btn btn-primary" data-bind="click: $root.pets.submitFoster">
+                    <g:message code="pet.fostermodal.submit.label" default="Apply"/>
+            </button>
+
+            </fieldset>
+        </form>
+    </div>
 </section>
 
 <r:require module="signaturePad"/>

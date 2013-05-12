@@ -91,14 +91,14 @@ class PetService {
     @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def foster( Pet pet, Person foster, User creator = null ) {
         def record = new FosterRecord( pet: pet, foster: foster, createdBy: creator )
-        if( !record.save() ) {
+        if( !record.save( failOnError: true ) ) {
             //TODO better exception handling
             throw new Exception( 'Could not create fostering record, aborting fostering' )
         }
 
         pet.adopter = null
         pet.foster = foster
-        pet.status = 'foster'
+        pet.status = 'fostered'
         pet.lastUpdatedBy = creator
 
         def saved = pet.save()

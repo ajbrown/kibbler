@@ -158,23 +158,23 @@ class PetsController {
     def foster( FosterPetCommand cmd ) {
         cmd.clearErrors()
         def user = springSecurityService.currentUser as User
-        def jsonResponse = new JSONResponseEnvelope( status: 201 )
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
         if( cmd.validate() ) {
-            def foster = personService.read( cmd.personId )
+            def foster = personService.read( cmd.fosterId )
 
             //Make sure the foster exists.
             if( !foster ) {
                 //TODO better exceptions
-                throw new Exception( 'Adopter does not exist' )
+                throw new Exception( 'Foster does not exist' )
             }
 
             if( !petService.foster( params.pet, foster, user ) ) {
-                response.status = 500
-                jsonResponse.errors = pet.errors.allErrors
+                jsonResponse.status = 500
+                jsonResponse.errors = params.pet.errors.allErrors
             }
 
-            jsonResponse.data = pet
+            jsonResponse.data = params.pet
         }
 
         withFormat{
@@ -198,7 +198,7 @@ class PetsController {
             }
 
             if( !petService.hold( params.pet, user ) ) {
-                response.status = 500
+                jsonResponse.status = 500
                 jsonResponse.errors = params.pet.errors?.allErrors
             }
 
@@ -217,9 +217,9 @@ class PetsController {
         def user = springSecurityService.currentUser as User
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
-        def response = petService.reclaim( params.pet, user )
+        def resp = petService.reclaim( params.pet, user )
 
-        jsonResponse.data = response
+        jsonResponse.data = resp
 
         withFormat {
             json{

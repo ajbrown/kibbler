@@ -57,7 +57,7 @@ class EventService {
             event = lastEvent
 
             //Append to the fields that were updated
-            if( EventType.PET_UPDATE ) {
+            if( et == EventType.PET_UPDATE ) {
                 event.args[3] += args[0]
             }
         } else {

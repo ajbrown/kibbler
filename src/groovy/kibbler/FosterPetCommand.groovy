@@ -11,6 +11,9 @@ import grails.validation.Validateable
  */
 @Validateable
 class FosterPetCommand {
-    String organizationId
-    String personId
+    String fosterId
+
+    static constraints = {
+        fosterId nullable: false
+    }
 }

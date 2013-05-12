@@ -23,5 +23,11 @@ class FosterRecord {
     static constraints = {
         createdBy nullable: true
         updatedBy nullable: true
+        lastUpdated nullable: true
+
+    }
+
+    def beforeValidate() {
+        organization = pet.organization
     }
 }

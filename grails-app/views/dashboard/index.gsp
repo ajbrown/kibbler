@@ -378,16 +378,40 @@
         }
 
         this.foster = function( pet, event ) {
-            alert('Fostering.');
+            $('#pet-foster-modal').reveal();
+        }
+
+        this.submitFoster = function( d ) {
+            var form = $('form', '#pet-foster-modal')
+            var vals = form.serializeArray();
+            var url  = form.attr('action');
+            var data = {}
+            for( var i in vals ) {
+                data[ vals[i].name ] = vals[i].value;
+            }
+            $.post( url, data, function( resp ) {
+                if( resp.status == 200 ) {
+                    self.setActive( ko.mapping.fromJS( resp.data ) );
+                    $('#pet-foster-modal').trigger('reveal:close');
+                } else {
+                    alert('There was an error fostering this pet.');
+                }
+            });
         }
 
         this.reclaim = function( pet, event ) {
-            alert('Reclaiming.');
+            $.post( pet.url + '/reclaim', function(resp) {
+                if ( resp.status == 200 ) {
+                    self.setActive( ko.mapping.fromJS( resp.data ) );
+                }
+            } );
         }
 
         this.hold = function( pet, event ) {
             $.post( SERVER_URL + '/pets/' + pet.id() + '/hold', function() {
-
+                if ( resp.status == 200 ) {
+                    self.setActive( ko.mapping.fromJS( resp.data ) );
+                }
             });
         }
 
