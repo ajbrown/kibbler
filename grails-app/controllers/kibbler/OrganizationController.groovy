@@ -3,7 +3,7 @@ package kibbler
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
 
-@Secured(['IS_AUTHENTICATED_FULLY'])
+@Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class OrganizationController {
 
     def organizationService

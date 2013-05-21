@@ -2,7 +2,9 @@ package kibbler
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
+import grails.plugins.springsecurity.Secured
 
+@Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class UserController {
 
     def springSecurityService

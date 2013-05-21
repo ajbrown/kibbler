@@ -32,6 +32,10 @@ class UrlMappings {
         "/pets/$id/$action" ( controller: 'pets' )
         "/people/$id/$action" ( controller: 'people' )
 
+        "/upload/photo" {
+            controller = "upload"
+            action = "photo"
+        }
 
 		"500"(view:'/error')
 	}

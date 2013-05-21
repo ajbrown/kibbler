@@ -13,11 +13,11 @@ class User implements UserDetails {
 	String password
     String activationCode
 
-    Boolean activated = true
-	Boolean enabled = true
-	Boolean accountExpired  = false
-	Boolean accountLocked   = false
-	Boolean passwordExpired = false
+    boolean activated = true
+	boolean enabled = true
+	boolean accountExpired  = false
+	boolean accountLocked   = false
+	boolean passwordExpired = false
 
 	static constraints = {
         email blank: false, unique: true, index: [unique: true]

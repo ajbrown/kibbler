@@ -148,4 +148,14 @@ class PetService {
         }
         saved
     }
+
+    def addPhotos( Pet pet, List<Photo> photos, User creator = null ) {
+        photos.each{ pet.addToPhotos( it ) }
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_ADD_PHOTO, pet, creator, [photos] )
+        }
+
+        saved
+    }
 }

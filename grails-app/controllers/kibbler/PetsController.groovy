@@ -1,9 +1,21 @@
 package kibbler
 
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.ObjectMetadata
+import com.cloudinary.Cloudinary
 import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
+import grails.plugins.springsecurity.Secured
+import org.imgscalr.Scalr
+import org.springframework.web.multipart.commons.CommonsMultipartFile
 
+import javax.imageio.ImageIO
+
+@Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class PetsController {
+
+    static final int PHOTO_MAX_WIDTH = 600
+    static final PHOTO_ALLOWED_CONTENT_TYPES = [ 'image/jpeg', 'image/x-png', 'image/png' ]
 
     def organizationService
     def petService
@@ -11,7 +23,10 @@ class PetsController {
     def springSecurityService
     def eventService
 
+    def grailsApplication
+    AmazonS3Client amazonS3Client
     ObjectMapper objectMapper
+    Cloudinary cloudinary
 
     def beforeInterceptor = {
         def skipActions = ['index','create']
@@ -188,14 +203,9 @@ class PetsController {
     def hold( HoldPetCommand cmd ) {
         cmd.clearErrors()
         def user = springSecurityService.currentUser as User
-        def jsonResponse = new JSONResponseEnvelope( status: 201 )
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
         if( cmd.validate() ) {
-            //Make sure the pet exists
-            if( !params.pet ) {
-                //TODO return a 404 instead
-                throw new Exception( 'Could not find the specified pet' )
-            }
 
             if( !petService.hold( params.pet, user ) ) {
                 jsonResponse.status = 500
@@ -249,6 +259,72 @@ class PetsController {
             }
         }
     }
+
+    def photos() {
+        def par = params
+        def jsonResponse = new JSONResponseEnvelope()
+        def req = request
+
+        def files = request.multipartFiles["photos"]
+        def bucket = grailsApplication.config.petphotos.uploadBucket.toString()
+
+        //make sure we have a valid orgianzation, since it's used to prefix the photos.
+
+        // Each file is first uploaded to amazon s3 to retain the original.  We then shrink photos to a maximum of
+        // 600 pixes wide, and upload those to cloudinary where transformations can be done.
+        def photos = files.collect{ CommonsMultipartFile file ->
+
+            //TODO we should group all of the local processing, then do the uploads
+
+            def photo = new Photo()
+
+            if( !PHOTO_ALLOWED_CONTENT_TYPES.contains( file.contentType.toLowerCase() ) ) {
+                log.info "Skipping a file, wrong content type: ${file.contentType}"
+                //TODO notify the user.
+                return
+            }
+
+            def id = UUID.randomUUID().toString().replace( '-', '' )
+            photo.s3key = "${params.pet.organization.id.toString()}/${params.pet.id.toString()}/${id}.jpg"
+            photo.standardUrl = "http://${bucket}.s3.amazonaws.com/${photo.s3key}"
+
+            def img = ImageIO.read( file.inputStream )
+            if( img.width > PHOTO_MAX_WIDTH ) {
+                img  = Scalr.resize( img, Scalr.Method.ULTRA_QUALITY, Scalr.Mode.FIT_TO_WIDTH, PHOTO_MAX_WIDTH )
+            }
+
+            def outStream = new ByteArrayOutputStream()
+            ImageIO.write( img, "jpg", outStream )
+            def inStream = new ByteArrayInputStream( outStream.toByteArray() )
+
+            def meta = new ObjectMetadata()
+            meta.cacheControl = 'max-age=31536000'
+            meta.contentType  = 'image/jpg'
+            meta.setHeader( 'X-Kibbler-Org-Id', params.pet.id.toString() )
+            meta.setHeader( 'X-Kibbler-Pet-Id', params.pet.organization.id.toString() )
+
+            //Upload the photo to the S3 bucket
+            def s3resp = amazonS3Client.putObject( bucket, photo.s3key, inStream, meta )
+
+            //Upload the photo to cloudinary
+            def map = Cloudinary.asMap( "tags", "pet,org_${params.pet.organization.id},pet_${params.pet.id}" )
+            photo.cloudinaryData = cloudinary.uploader().upload( photo.standardUrl, map )
+            photo
+        }
+
+        def resp = petService.addPhotos( params.pet, photos, springSecurityService.currentUser )
+
+        withFormat{
+            javascript {
+
+                params.callback = params.callback ?: 'console.log'
+
+                jsonResponse.status = response.status
+                jsonResponse.data = photos
+                def text = jsonResponse as JSON
+
+                render "<script>${params.callback}(${text});</script>"
+            }
+        }
+    }
 }
-
-

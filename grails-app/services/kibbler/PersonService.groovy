@@ -1,5 +1,6 @@
 package kibbler
 
+import grails.plugin.cache.Cacheable
 import org.bson.types.ObjectId
 
 class PersonService {

@@ -10,8 +10,7 @@ class DashboardController {
 
         [
                 createPet: new CreatePetCommand(),
-                config: [
-                ]
+                config: [ ]
         ]
     }
 

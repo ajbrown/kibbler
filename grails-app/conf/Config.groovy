@@ -63,11 +63,15 @@ grails.hibernate.cache.queries = false
 
 grails.converters.json.default.deep = true
 
+cloudinary.url = System.getenv( 'CLOUDINARY_URL' )
+
 environments {
     development {
         grails.logging.jul.usebridge = true
         grails.resources.debug = true
         cache.headers.enabled = false
+
+        cloudinary.url = "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
     }
 
     production {
@@ -111,6 +115,11 @@ log4j = {
 //Resources configuration
 grails.resources.mappers.yuijsminify.js.noMunge = true
 
+awsAccessKey = 'AKIAJ5FGOVD7YDHNJYYA'
+awsSecretKey = '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'
+
+petphotos.uploadBucket = 'kibblerpics'
+
 
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
@@ -121,3 +130,8 @@ grails.plugins.springsecurity.securityConfigType = "Annotation"
 
 //DatabaseSession plugin does not work correctly with Mongo
 grails.plugin.databasesession.enabled = false
+
+imageUpload {
+    temporaryFile = '/tmp/uploaded.file'
+}
+

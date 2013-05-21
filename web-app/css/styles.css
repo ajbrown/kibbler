@@ -56,3 +56,12 @@
     height: 120px;
     font-family: monospace;
 }
+
+#pet-history tbody {
+    font-size: 0.85em;
+}
+
+.bar {
+    height: 18px;
+    background: green;
+}

@@ -27,7 +27,7 @@ class Person {
     Date lastUpdated
     User lastUpdatedBy
 
-    static hasMany = [ fostering: Pet, adopted: Pet ]
+    static hasMany = [ fostering: Pet, adopted: Pet, photos: Photo ]
 
     static mappedBy = [ fostering: "foster", adopted: "adopter" ]
 

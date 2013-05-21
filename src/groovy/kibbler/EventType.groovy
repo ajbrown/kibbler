@@ -15,6 +15,7 @@ enum EventType {
     PET_FOSTER('events.pet.foster'),
     PET_ADD('events.pet.add'),
     PET_HOLD('events.pet.hold'),
+    PET_ADD_PHOTO('events.pet.photos'),
     PERSON_UPDATE('events.person.update'),
     PERSON_CREATE('events.person.create'),
     PERSON_REMOVE('events.person.remove'),

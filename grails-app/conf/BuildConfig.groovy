@@ -36,12 +36,17 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+        mavenRepo "http://repo.desirableobjects.co.uk/"
     }
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
         // runtime 'mysql:mysql-connector-java:5.1.20'
+
+        compile 'org.imgscalr:imgscalr-lib:4.2'
+        compile 'com.amazonaws:aws-java-sdk:1.4.3'
+        compile 'com.cloudinary:cloudinary:1.0.2'
 
         compile 'org.xhtmlrenderer:core-renderer:R8'
         compile 'com.fasterxml.jackson.core:jackson-databind:2.1.2'
@@ -56,16 +61,18 @@ grails.project.dependency.resolution = {
         runtime ":yui-minify-resources:0.1.4"
         runtime ":twitter-bootstrap:2.2.2"
 
+
         compile ':heroku:1.0.1'
         compile ':cloud-support:1.0.8'
 
-        //compile ":amazon-s3:0.8.2"
         compile ":font-awesome-resources:3.0"
         compile ":jquery-ui:1.8.24"
         compile ":mongodb:1.1.0.GA"
         compile ':cache:1.0.1'
         compile ":fields:1.3"
         compile ":rendering:0.4.3"
+
+        compile ":ajax-uploader:1.1"
 
         compile ":cache-headers:1.1.5"
 

@@ -3,7 +3,7 @@
 <head>
   <title></title>
   <meta name="layout" content="main">
-  <r:require module="bootstrap-editable"/>
+  <r:require modules="bootstrap-editable"/>
 </head>
 <body>
 
@@ -408,11 +408,15 @@
         }
 
         this.hold = function( pet, event ) {
-            $.post( SERVER_URL + '/pets/' + pet.id() + '/hold', function() {
+            $.post( SERVER_URL + '/pets/' + pet.id() + '/hold', function( resp ) {
                 if ( resp.status == 200 ) {
                     self.setActive( ko.mapping.fromJS( resp.data ) );
                 }
             });
+        }
+
+        this.uploadPhotos = function( pet, event ) {
+            $.post( pet.url + '/photos' )
         }
 
         this.editBreed = function( pet, event) {
@@ -450,6 +454,10 @@
             list.sort( function(a,b) { return a[field] - b[field] } );
             return list;
         }, this );
+
+        this.showPhotoUpload = function( pet, event ) {
+           $('#pet-photo-modal').reveal();
+        }
 
         this.showCreateModal = function() {
             self.createName('');

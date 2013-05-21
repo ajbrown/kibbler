@@ -51,16 +51,6 @@ modules = {
         resource url: '/js/jquery.timeago.js'
     }
 
-    personService {
-        dependsOn 'jStorage'
-        resource url: '/js/service.person.js'
-    }
-
-    petService {
-        dependsOn 'jStorage'
-        resource url: '/js/service.pet.js'
-    }
-
     application {
         dependsOn 'jquery,knockout,sammy,jStorage,jQueryTimeAgo'
         resource url:'js/knockout.mapping.js'
