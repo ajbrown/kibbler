@@ -323,7 +323,7 @@ class PetsController {
                 jsonResponse.data = photos
                 def text = jsonResponse as JSON
 
-                render "<script>${params.callback}(${text});</script>"
+                render "<script>window.parent.${params.callback}(${text});</script>"
             }
         }
     }

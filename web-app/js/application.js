@@ -185,6 +185,47 @@ window.PetWrapper = function( pet ) {
         } );
     };
 
+    this.photoList = ko.computed( function() {
+        var ret = [];
+        var thumbPrefix = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_50,h_50,c_thumb,g_faces,r_6/';
+        var largePrefix = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_150,h_150,c_thumb,g_faces,r_10/';
+        var photos = pet.photos();
+
+        for( var i in photos ) {
+            var p = {};
+
+            p.id = photos[i].id();
+            p.primary = photos[i].primary();
+            p.thumbnail = thumbPrefix + photos[i].cloudinaryData.public_id() + '.' + photos[i].cloudinaryData.format();
+            p.large     = largePrefix + photos[i].cloudinaryData.public_id() + '.' + photos[i].cloudinaryData.format();
+
+            ret.push( p );
+        }
+
+        return ret;
+    });
+
+    this.thumbnailUrl = ko.computed( function() {
+        var photos = pet.photos();
+        var primePhoto = 0;
+        var prefix = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_150,h_150,c_thumb,g_faces,r_10/';
+
+        if( !photos || photos.length == 0 ) {
+            return null;
+        }
+
+        //try to find a primary photo, otherwise just use the first.
+        for( var i in photos ) {
+            if( photos[i].primary() ) {
+                primePhoto = i;
+                break;
+            }
+        }
+
+        var data = photos[primePhoto].cloudinaryData;
+        return prefix + data.public_id() + '.' + data.format();
+    });
+
     this.typeLabel = ko.computed( function() {
         var sex   = this.sex();
         var breed = this.breed();

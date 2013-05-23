@@ -154,8 +154,7 @@ class PetService {
         def saved = pet.save()
         if( saved ) {
             eventService.create( EventType.PET_ADD_PHOTO, pet, creator, [photos] )
+            return saved.photos
         }
-
-        saved
     }
 }

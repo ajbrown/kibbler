@@ -459,6 +459,16 @@
            $('#pet-photo-modal').reveal();
         }
 
+        this.completePhotoUpload = function( data ) {
+            var photos = [];
+            for( var i in data.data ) {
+                photos.push( ko.mapping.fromJS( data.data[i] ) );
+            }
+            self.active().photos( photos );
+           $('#pet-photo-modal').trigger('reveal:close');
+
+        }
+
         this.showCreateModal = function() {
             self.createName('');
             self.createType('');
@@ -551,7 +561,8 @@
         }
     });
 
-    ko.applyBindings( new DashboardViewModel() );
+    window.dashboard = new DashboardViewModel();
+    ko.applyBindings( window.dashboard );
 
 
 

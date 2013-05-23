@@ -21,6 +21,8 @@ class Pet {
     Person adopter
     Person foster
 
+    Set photos
+
     //Vitals
     Boolean heartworm
     Boolean housebroken

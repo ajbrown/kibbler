@@ -37,37 +37,18 @@
 
             <div class="span4">
 
-            <ul class="nav nav-pills">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" id="change-status-menu-toggle"
-                       role="button" data-toggle="dropdown" href="#">Change Status <i class="icon-reorder"></i></a>
-                    <ul class="dropdown-menu">
-                        <li role="presentation">
-                            <a role="menuitem" href="#"
-                                    data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"
-                                >Adopt</a>
-                        </li>
-                        <li role="presentation">
-                            <a role="menuitem" href="#"
-                                    data-bind="text: status() != 'fostered' ? 'Foster' : 'Re-Foster', click: $root.pets.foster"
-                                >Foster</a>
-                        </li>
-                        <li role="presentation" data-bind="visible: status() != 'available'">
-                            <a role="menuitem"
-                                    data-bind="visible: status() != 'available', click: $root.pets.reclaim"
-                                    href="#">Reclaim</a>
-                        </li>
-                        <li role="presentation">
-                            <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
                 <div id="pet-photo-container">
-                    <img
-                            style="width: 200px;"
-                            src="http://distilleryimage8.s3.amazonaws.com/2f2dccbe8ad611e2b59422000a9f13f8_6.jpg" alt=""/>
+
+                    <ul class="thumbnails">
+
+                        <!-- ko if: thumbnailUrl -->
+                        <li><img data-bind="attr: { src: thumbnailUrl }" /></li>
+                        <!-- /ko -->
+
+                        <!-- ko foreach: photoList -->
+                        <li><img data-bind="attr: { src: thumbnail }"/></li>
+                        <!-- /ko -->
+                    </ul>
                 </div>
             </div>
 
@@ -126,6 +107,32 @@
 
                     <a href="#" data-bind="click: $root.pets.showPhotoUpload">Upload Photo</a>
 
+                    <ul class="nav nav-pills">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" id="change-status-menu-toggle"
+                               role="button" data-toggle="dropdown" href="#">Change Status <i class="icon-reorder"></i></a>
+                            <ul class="dropdown-menu">
+                                <li role="presentation">
+                                    <a role="menuitem" href="#"
+                                       data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"
+                                    >Adopt</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" href="#"
+                                       data-bind="text: status() != 'fostered' ? 'Foster' : 'Re-Foster', click: $root.pets.foster"
+                                    >Foster</a>
+                                </li>
+                                <li role="presentation" data-bind="visible: status() != 'available'">
+                                    <a role="menuitem"
+                                       data-bind="visible: status() != 'available', click: $root.pets.reclaim"
+                                       href="#">Reclaim</a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
 
 
                 </fieldset>
@@ -253,7 +260,7 @@
     </div>
 
     <div id="pet-photo-modal" class="reveal-modal">
-        <form data-bind="attr: { action: url + '/photos' }"
+        <form data-bind="attr: { action: url + '/photos?callback=dashboard.pets.completePhotoUpload' }"
                 target="pet_photo_upload"
                 action="" method="post" enctype="multipart/form-data">
             <fieldset>

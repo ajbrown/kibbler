@@ -7,7 +7,9 @@ class Photo {
     Pet pet
     String s3key
     String standardUrl
+    Boolean primary = false
     Map cloudinaryData
+
     Date dateCreated
     User uploadedBy
 
