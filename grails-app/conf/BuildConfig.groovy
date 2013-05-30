@@ -11,6 +11,8 @@ grails.project.source.level = 1.6
 //   run: [maxMemory:1024, minMemory:64, debug:false, maxPerm:256]
 //]
 
+grails.plugin.location.'slug-generator' = 'plugins/grails-slug-generator'
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {

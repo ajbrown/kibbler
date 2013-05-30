@@ -1,0 +1,3 @@
+[submodule "plugins/grails-slug-generator"]
+	path = plugins/grails-slug-generator
+	url = git://github.com/lmivan/grails-slug-generator.git

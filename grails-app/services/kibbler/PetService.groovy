@@ -36,6 +36,10 @@ class PetService {
         Pet.findAllByOrganization( org )
     }
 
+    def findBySlug( String slug ) {
+        Pet.findBySlug( slug  )
+    }
+
     @CacheEvict( value='pets', key='#root.args[1].id.toString()' )
     def updateFields( Map fields, Pet pet, User user ) {
         fields.each { key, value ->

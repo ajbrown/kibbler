@@ -4,7 +4,10 @@ import org.bson.types.ObjectId
 
 class Person {
 
+    def slugGeneratorService
+
     ObjectId id
+    String slug
 
     String name
     String company
@@ -84,5 +87,13 @@ class Person {
             this.foster = false
             this.available = false
         }
+    }
+
+    def beforeInsert() {
+        generateSlug()
+    }
+
+    def generateSlug() {
+        slug = slugGeneratorService.generateSlug( this.class, "slug", name )
     }
 }

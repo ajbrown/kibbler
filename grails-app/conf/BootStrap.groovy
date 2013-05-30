@@ -5,6 +5,8 @@ import grails.util.Environment
 import kibbler.AdoptionContractTemplate
 import kibbler.EventType
 import kibbler.Organization
+import kibbler.Person
+import kibbler.Pet
 import kibbler.Species
 import kibbler.User
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -35,9 +37,31 @@ class BootStrap {
             return it.toString()
         }
 
+        populateMissingSlugs()
     }
+
     def destroy = {
 
+    }
+
+    def populateMissingSlugs() {
+
+        log.info "Populating missing slugs"
+
+        Organization.findAllBySlugIsNull().each{
+            it.generateSlug()
+            it.save()
+        }
+
+        Pet.findAllBySlugIsNull().each{
+            it.generateSlug()
+            it.save()
+        }
+
+        Person.findAllBySlugIsNull().each {
+            it.generateSlug()
+            it.save()
+        }
     }
 
     def void createMockAdoptionContracts() {

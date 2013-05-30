@@ -4,11 +4,14 @@ import org.bson.types.ObjectId
 
 class Pet {
 
+    def slugGeneratorService
+
     static final STATUS_OPTIONS = [ 'available','hold','fostered','adopted','deceased' ]
 
     ObjectId id
 
     String assignedId
+    String slug
 
     String givenName
     String description
@@ -46,6 +49,7 @@ class Pet {
 
     static mapping = {
         organization index: true
+        slug index: true
         sort "givenName"
     }
 
@@ -82,5 +86,13 @@ class Pet {
 
         description nullable: true
         notes nullable: true
+    }
+
+    def beforeInsert() {
+        generateSlug()
+    }
+
+    def generateSlug() {
+        slug = slugGeneratorService.generateSlug( this.class, "slug", "${breed ?: ''} ${givenName ?: ''}".trim(), true )
     }
 }

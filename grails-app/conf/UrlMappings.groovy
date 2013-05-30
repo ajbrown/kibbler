@@ -19,6 +19,11 @@ class UrlMappings {
             controller = 'documents'
         }
 
+        "/pages/$orgSlug/$petSlug" {
+            controller = "pages"
+            action = "pet"
+        }
+
         "/pdf/$action?"( controller: "pdf" )
 
         "/$controller/create"( action: "create" )
