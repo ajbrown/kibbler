@@ -16,7 +16,7 @@ class Event {
     User actor
     List args
 
-    boolean hidden = false
+    Boolean hidden = false
 
     Date dateCreated
 
