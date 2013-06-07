@@ -106,10 +106,7 @@ class PetsController {
         def user = springSecurityService.currentUser as User
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
-        def org  = organizationService.read( cmd.organizationId )
-        if( !org ) {
-            throw new Exception( 'The specified organization doesn\'t exist' )
-        }
+        def org  = organizationService.read( cmd.orgId )
 
         //make sure the organization belongs to the user
         if( !user.belongsTo( org ) ) {
@@ -117,11 +114,17 @@ class PetsController {
         }
 
         if( cmd.validate() ) {
-            def pet = new Pet( givenName: cmd.name, sex: cmd.sex, type: cmd.species )
+            def pet = new Pet(
+                    givenName: cmd.givenName,
+                    sex: cmd.sex,
+                    type: cmd.species,
+                    breed: cmd.breed
+            )
 
-            if ( petService.create( org, pet, user ) ) {
+            def saved = petService.create( org, pet, user )
+            if ( saved ) {
                 jsonResponse.status = 200
-                jsonResponse.data = pet
+                jsonResponse.data = saved
             } else {
                 jsonResponse.status = 400
                 jsonResponse.errors.addAll pet.errors.allErrors

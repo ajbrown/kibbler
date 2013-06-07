@@ -74,41 +74,47 @@
 <div id="modal-create-pet" class="reveal-modal">
     <h1>Create a Pet</h1>
 
-    <form class="form-horizontal">
+    <form class="form" data-bind="with: createPet">
 
         <div class="control-group">
-            <label class="control-label" for="pet-create-type">Type</label>
-            <div class="controls">
-                <select name="type" id="pet-create-type" data-bind="value: pets.createType">
-                    <option value="cat:female">Dog, Female</option>
-                    <option value="cat:male">Dog, Male</option>
-                    <option value="cat:female">Cat, Female</option>
-                    <option value="cat:male">Cat, Male</option>
-                </select>
-            </div>
+            <label>Species</label>
+            <select name="type" id="pet-create-species" data-bind="value: species">
+                <option value=""></option>
+                <option value="DOG">Dog</option>
+                <option value="CAT">Cat</option>
+            </select>
         </div>
 
         <div class="control-group">
-            <label class="control-label" for="pet-create-name">Name</label>
-            <div class="controls">
-                <input id="pet-create-name" type="text" placeholder="Pet Name" data-bind="value: pets.createName">
-            </div>
+            <label>Breed</label>
+            <input type="text" name="breed" data-bind="value: breed, typeahead: breedSource">
         </div>
 
-        <div class="control-group" data-bind="visible: !orgs.active()">
-            <label class="control-label" for="pet-create-organization">Type</label>
-            <div class="controls">
-                <select name="type" id="pet-create-organization"
-                        data-bind="options: orgs.list, optionsValue: 'id', optionsText: 'name', value: pets.createOrgId">
-                </select>
-            </div>
-        </div>
 
         <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-primary" data-bind="click: pets.submitCreatePet">Create</button>
-            </div>
+            <label>Gender</label>
+            <label class="radio inline">
+                <input type="radio" name="gender" data-bind="checked: isFemale">
+                <g:message code="label.female" default="Female"/>
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="gender" value="female" data-bind="checked: isMale">
+                <g:message code="label.male" default="Male"/>
+            </label>
         </div>
+
+
+        <div class="control-group">
+            <label>Name</label>
+            <input type="text" name="givenName" data-bind="value: givenName">
+            <span class="help-inline">
+                <small><a href="#" data-bind="click: suggestName">Pick one for me!</a></small>
+            </span>
+        </div>
+
+        <hr>
+        <button class="btn btn-primary" type="submit"
+                data-bind="text: 'Add ' + givenName(), click: submit"></button>
 
     </form>
 
@@ -519,6 +525,8 @@
                 self.orgs.setActive( ko.mapping.fromJS( data.organizations[0] ) )
             }
         }
+
+        this.createPet = new CreatePetDialogue( this );
 
 
         //On Construction

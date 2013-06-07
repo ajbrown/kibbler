@@ -10,6 +10,20 @@
 
 (function() {
 
+
+    ko.bindingHandlers.typeahead = {
+        init: function( element, valueAccessor ) {
+            var $e = $(element),
+                source = valueAccessor();
+
+            $e.typeahead({
+                source:source,
+                minLength: 1
+            });
+        }
+    }
+
+
     var __autosaveTimeouts = {};
     var __autosaveDefaults = {
         event: 'change',

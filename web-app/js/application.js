@@ -162,6 +162,8 @@ window.PetWrapper = function( pet ) {
     var self = this;
     this.url = SERVER_URL + '/pets/' + pet.id();
 
+    this.publicUrl = SERVER_URL + '/pages/' + pet.organization.slug() + '/' + pet.slug();
+
     this.update = function( data ) {
         $.ajax( this.url, {
             async: true,

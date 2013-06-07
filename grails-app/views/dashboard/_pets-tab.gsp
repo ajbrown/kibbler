@@ -110,7 +110,7 @@
                     <ul class="nav nav-pills">
                         <li class="dropdown">
                             <a class="dropdown-toggle" id="change-status-menu-toggle"
-                               role="button" data-toggle="dropdown" href="#">Change Status <i class="icon-reorder"></i></a>
+                               role="button" data-toggle="dropdown" href="#">Actions <i class="icon-reorder"></i></a>
                             <ul class="dropdown-menu">
                                 <li role="presentation">
                                     <a role="menuitem" href="#"
@@ -129,6 +129,13 @@
                                 </li>
                                 <li role="presentation">
                                     <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li role="presentation">
+                                    <a role="menuitem" href="#"
+                                       data-bind="attr: { href: publicUrl }">
+                                        View Public Page
+                                    </a>
                                 </li>
                             </ul>
                         </li>

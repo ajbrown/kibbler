@@ -5,6 +5,8 @@ class UrlMappings {
         "/" ( controller: "dashboard", action: "index" )
         "/login/$action?"( controller: "login" )
 
+        "/suggestions/$action"( controller: "suggestion" )
+
         "/organization/$id/transactions" {
             controller = "organization"
             action = [POST: "addTransaction", GET: "listTransactions"]

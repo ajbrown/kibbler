@@ -36,6 +36,18 @@ class PetService {
         Pet.findAllByOrganization( org )
     }
 
+    def Pet create( Organization org, Pet pet, User creator = null) {
+        pet.organization = org
+        pet.createdBy = creator
+        pet.generateSlug()
+
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_ADD, pet, creator )
+        }
+        saved
+    }
+
     def findBySlug( String slug ) {
         Pet.findBySlug( slug  )
     }

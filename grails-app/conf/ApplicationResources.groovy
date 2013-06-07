@@ -57,5 +57,6 @@ modules = {
         resource url:'js/knockout.bindings.js'
         resource url: 'js/pretty.js'
         resource url:'js/application.js'
+        resource url:'js/viewmodels.js'
     }
 }
