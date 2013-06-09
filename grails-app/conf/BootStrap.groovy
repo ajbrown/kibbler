@@ -7,9 +7,11 @@ import kibbler.EventType
 import kibbler.Organization
 import kibbler.Person
 import kibbler.Pet
+import kibbler.Role
 import kibbler.Species
 import kibbler.User
 import com.fasterxml.jackson.databind.ObjectMapper
+
 import org.bson.types.ObjectId
 
 class BootStrap {
@@ -22,26 +24,37 @@ class BootStrap {
         configureObjectMapper()
         configureJSONMarshaller()
 
-        def aj     = new User( email: 'aj@synklabs.com', password: '123456').save()
-        def david  = new User( email: 'david@synklabs.com', password: '123456' ).save()
+        setupAdminAccounts()
+
 
         if( Environment.DEVELOPMENT == Environment.currentEnvironment ) {
             createMockAdoptionContracts()
         }
 
-        //Make sure the two users are created.
-        def users = User.count()
-        log.info "There are ${users} users in the system."
-
-        JSON.registerObjectMarshaller( EventType ) {
-            return it.toString()
-        }
 
         populateMissingSlugs()
     }
 
     def destroy = {
 
+    }
+
+    def private setupAdminAccounts() {
+        //setup roles for aj and david
+        def userRole = Role.findOrCreateByAuthority( 'ROLE_USER' ).save()
+        def adminRole = Role.findOrCreateByAuthority( 'ROLE_ADMIN' ).save()
+
+        ['aj@synklabs.com','david@synklabs.com'].each{
+
+            def user = User.findByEmail( it )
+            if( !user ) {
+                user = new User( email: it, password: '123456' ).save()
+            }
+            user.roles = user.roles ?: []
+            user.roles << userRole.authority
+            user.roles << adminRole.authority
+            user.save( failOnError: true )
+        }
     }
 
     def populateMissingSlugs() {
@@ -110,5 +123,6 @@ class BootStrap {
     def void configureJSONMarshaller() {
         JSON.registerObjectMarshaller( ObjectId, { it.toString() } )
         JSON.registerObjectMarshaller( Species, { it.label } )
+        JSON.registerObjectMarshaller( EventType ) { it.toString() }
     }
 }

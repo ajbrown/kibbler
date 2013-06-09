@@ -283,7 +283,7 @@
                 organizationId: AppService.activeOrg
             };
 
-            $.post( '<g:createLink controller="people" action="create"/>', submit, function( data ) {
+            $.post( SERVER_URL + '/people/create', submit, function( data ) {
                 if( data ) {
                     AppService.preCache( 'people', data.data );
                     var person = ko.mapping.fromJS(data.data);
@@ -327,7 +327,7 @@
         };
 
         //Construct
-        $.getJSON( '<g:createLink controller="people" action="index"/>',
+        $.getJSON( SERVER_URL + '/people',
                 function(data) {
                     var items = [];
                     for( var i in data.data ) {
@@ -442,7 +442,7 @@
                 organizationId:  AppService.activeOrg
             };
 
-            $.post( '<g:createLink controller="pets" action="create"/>', submit, function( data ) {
+            $.post( SERVER_URL + '/pets/create', submit, function( data ) {
                 if( data ) {
                     var pet = ko.mapping.fromJS( data.data );
                     self.list.push( pet );
@@ -453,13 +453,6 @@
                 }
             });
         };
-
-        this.sortedList = ko.computed( function() {
-            var list  = this.list();
-            var field = this.listSortField();
-            list.sort( function(a,b) { return a[field] - b[field] } );
-            return list;
-        }, this );
 
         this.showPhotoUpload = function( pet, event ) {
            $('#pet-photo-modal').reveal();
@@ -502,7 +495,7 @@
         };
 
         //Construction
-        $.get('<g:createLink controller="pets" action="index"/>',
+        $.get( SERVER_URL + '/pets',
             function(data) { self.list( ko.mapping.fromJS(data.data) ); }
         );
     };

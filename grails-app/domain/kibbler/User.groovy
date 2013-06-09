@@ -19,6 +19,8 @@ class User implements UserDetails {
 	boolean accountLocked   = false
 	boolean passwordExpired = false
 
+    Set<String> roles = []
+
 	static constraints = {
         email blank: false, unique: true, index: [unique: true]
         password nullable: true
@@ -45,7 +47,7 @@ class User implements UserDetails {
     }
 
 	Set<GrantedAuthority> getAuthorities() {
-		UserRole.findAllByUser(this).collect { it.role } as Set
+        roles.collect{ role -> [getAuthority: {-> role} ] as GrantedAuthority }
 	}
 
 	def beforeInsert() {
@@ -53,9 +55,13 @@ class User implements UserDetails {
 	}
 
 	def beforeUpdate() {
-		if (isDirty('password')) {
-			encodePassword()
-		}
+
+        //if the password doesn't appear to be encoded, it was probably changed.
+        //TODO obviously a user that creates a 64 character password would have their password exposed and wouldn't
+        // be able to log in.  We should make this method smarter.
+        if( password && password.size() != 64 ) {
+            encodePassword()
+        }
 	}
 
 	protected void encodePassword() {

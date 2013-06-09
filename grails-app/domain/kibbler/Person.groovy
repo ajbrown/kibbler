@@ -30,7 +30,7 @@ class Person {
     Date lastUpdated
     User lastUpdatedBy
 
-    static hasMany = [ fostering: Pet, adopted: Pet, photos: Photo ]
+    static hasMany = [ fostering: Pet, adopted: Pet ]
 
     static mappedBy = [ fostering: "foster", adopted: "adopter" ]
 
@@ -46,6 +46,12 @@ class Person {
     }
 
     static constraints = {
+        id()
+        name()
+        organization()
+        linkedAccount nullable: true
+        dateCreated()
+
         company nullable: true
         address nullable: true
         notes nullable: true
@@ -61,7 +67,6 @@ class Person {
         available nullable: true, validator: { value, obj ->
             value && obj.doNotAdopt ? ['person.available.listed'] :  true }
 
-        linkedAccount nullable: true
 
         createdBy nullable: true
         lastUpdatedBy nullable: true

@@ -20,6 +20,10 @@ class Organization {
     ]
 
     static constraints = {
+        id()
+        name()
+        slug()
+
         adoptionFeeCents nullable: true
     }
 
@@ -43,5 +47,9 @@ class Organization {
      */
      def void generateSlug() {
         slug = slugGeneratorService.generateSlug( this.class, "slug", name, true )
+    }
+
+    def String toString() {
+        "${this.name ?:  '(Unnamed)'}"
     }
 }

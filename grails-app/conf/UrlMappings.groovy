@@ -5,6 +5,7 @@ class UrlMappings {
         "/" ( controller: "dashboard", action: "index" )
         "/login/$action?"( controller: "login" )
 
+
         "/suggestions/$action"( controller: "suggestion" )
 
         "/organization/$id/transactions" {
@@ -36,13 +37,18 @@ class UrlMappings {
             action = [GET: "read", POST: "update", PUT: "create", DELETE: "delete"]
         }
 
-        "/pets/$id/$action" ( controller: 'pets' )
+        "/pets/$id/$action" ( controller: 'petsAdmin' )
         "/people/$id/$action" ( controller: 'people' )
 
         "/upload/photo" {
             controller = "upload"
             action = "photo"
         }
+
+        "/admin/users/$action?"( controller: "usersAdmin")
+        "/admin/pets/$action?"( controller: "petsAdmin")
+        "/admin/persons/$action?"( controller: "personsAdmin")
+        "/admin/organizations/$action?"( controller: "organizationsAdmin")
 
 		"500"(view:'/error')
 	}

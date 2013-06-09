@@ -16,4 +16,8 @@ enum Species {
         this.label = label
     }
 
+    String toString() {
+        this.label
+    }
+
 }

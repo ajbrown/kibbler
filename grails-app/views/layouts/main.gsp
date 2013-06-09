@@ -55,6 +55,9 @@
                 </p>
                 <ul class="nav pull-right">
                     <li><a href="#dashboard">Dashboard</a></li>
+                    <sec:ifAllGranted roles="ROLE_ADMIN">
+                        <li><g:link controller="indexAdmin">Administration</g:link></li>
+                    </sec:ifAllGranted>
                     <li><a href="#help">Help</a></li>
                 </ul>
             </div><!--/.nav-collapse -->

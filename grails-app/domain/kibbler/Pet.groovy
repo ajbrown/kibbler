@@ -54,12 +54,17 @@ class Pet {
     }
 
     static constraints = {
+        id()
+        organization()
+        type()
 
-        assignedId nullable: true
-        givenName blank: false
 
         breed nullable: true
         sex   nullable: true, inList: [ 'male','female' ]
+
+        status inList: STATUS_OPTIONS
+        givenName blank: false
+
         weight nullable: true
         color nullable: true
 
@@ -79,13 +84,14 @@ class Pet {
         neutered nullable: true
         specialNeeds nullable: true
 
-        status inList: STATUS_OPTIONS
 
         createdBy nullable: true
         lastUpdatedBy nullable: true
 
         description nullable: true
         notes nullable: true
+
+        assignedId nullable: true
     }
 
     def beforeInsert() {
