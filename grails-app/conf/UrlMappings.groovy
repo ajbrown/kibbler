@@ -5,9 +5,15 @@ class UrlMappings {
         "/" ( controller: "dashboard", action: "index" )
         "/login/$action?"( controller: "login" )
 
+        "/upload/photo" {
+            controller = "upload"
+            action = "photo"
+        }
 
         "/suggestions/$action"( controller: "suggestion" )
 
+        "/pets/$id/$action" ( controller: 'pets' )
+        "/people/$id/$action" ( controller: 'people' )
         "/organization/$id/transactions" {
             controller = "organization"
             action = [POST: "addTransaction", GET: "listTransactions"]
@@ -22,9 +28,8 @@ class UrlMappings {
             controller = 'documents'
         }
 
-        "/pages/$orgSlug/$petSlug" {
+        "/pages/$action/$slug" {
             controller = "pages"
-            action = "pet"
         }
 
         "/pdf/$action?"( controller: "pdf" )
@@ -37,14 +42,7 @@ class UrlMappings {
             action = [GET: "read", POST: "update", PUT: "create", DELETE: "delete"]
         }
 
-        "/pets/$id/$action" ( controller: 'petsAdmin' )
-        "/people/$id/$action" ( controller: 'people' )
-
-        "/upload/photo" {
-            controller = "upload"
-            action = "photo"
-        }
-
+        "/admin" ( controller: "indexAdmin" )
         "/admin/users/$action?"( controller: "usersAdmin")
         "/admin/pets/$action?"( controller: "petsAdmin")
         "/admin/persons/$action?"( controller: "personsAdmin")

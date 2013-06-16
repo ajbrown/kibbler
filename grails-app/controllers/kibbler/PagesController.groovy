@@ -8,8 +8,8 @@ class PagesController {
 
     }
 
-    def pet() {
-        def pet = petService.findBySlug( params.petSlug )
+    def pets() {
+        def pet = petService.findBySlug( params.slug )
 
         [ pet: pet ]
     }

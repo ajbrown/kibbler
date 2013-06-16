@@ -90,6 +90,7 @@ class Pet {
 
         description nullable: true
         notes nullable: true
+        photos nullable: true
 
         assignedId nullable: true
     }

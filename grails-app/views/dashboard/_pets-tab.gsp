@@ -105,13 +105,14 @@
                         Special Needs
                     </label>
 
-                    <a href="#" data-bind="click: $root.pets.showPhotoUpload">Upload Photo</a>
-
                     <ul class="nav nav-pills">
                         <li class="dropdown">
                             <a class="dropdown-toggle" id="change-status-menu-toggle"
                                role="button" data-toggle="dropdown" href="#">Actions <i class="icon-reorder"></i></a>
                             <ul class="dropdown-menu">
+                                <li role="presentation">
+                                    <a role="menuitem" href="#" data-bind="click: $root.pets.showPhotoUpload">Upload Photo</a>
+                                </li>
                                 <li role="presentation">
                                     <a role="menuitem" href="#"
                                        data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"

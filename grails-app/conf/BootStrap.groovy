@@ -63,17 +63,17 @@ class BootStrap {
 
         Organization.findAllBySlugIsNull().each{
             it.generateSlug()
-            it.save()
+            it.save( failOnError: true )
         }
 
         Pet.findAllBySlugIsNull().each{
             it.generateSlug()
-            it.save()
+            it.save( failOnError: true )
         }
 
         Person.findAllBySlugIsNull().each {
             it.generateSlug()
-            it.save()
+            it.save( failOnError:  true )
         }
     }
 

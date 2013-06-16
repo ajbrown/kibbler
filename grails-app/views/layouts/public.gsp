@@ -49,31 +49,6 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">Kibbler</a>
-            <div class="nav-collapse collapse">
-                <p class="navbar-text pull-right">
-                    Logged in as <a href="#" class="navbar-link"><sec:username/></a>
-                </p>
-                <ul class="nav pull-right">
-                    <li><g:link controller="dashboard" action="index">Dashboard</g:link></li>
-                    <sec:ifAllGranted roles="ROLE_ADMIN">
-                        <li><g:link controller="indexAdmin">Administration</g:link></li>
-                    </sec:ifAllGranted>
-                    <li><a href="#help">Help</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-            <div class="navbar-text dropdown pull-right" id="org-options">
-                <a href="#" data-toggle="dropdown" data-bind="visible: orgs.active()">
-                    <i class="icon-group"></i>
-                    <span id="org-label"></span>
-                    <i class="icon-double-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" data-bind="foreach: orgs.list()">
-                    <li data-bind="css: { disabled : $data == $root.orgs.active }">
-                        <a tabindex="-1" href="#"
-                           data-bind="text: name, attr: { href: '#organization/' + id() }"></a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 </div>

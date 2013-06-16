@@ -51,11 +51,17 @@ modules = {
         resource url: '/js/jquery.timeago.js'
     }
 
+    coverflow {
+        dependsOn 'jquery'
+        resource url:'/js/coverflow/coverflow.css'
+        resource url:'/js/coverflow/coverflow.js'
+    }
+
     application {
         dependsOn 'jquery,knockout,sammy,jStorage,jQueryTimeAgo'
         resource url:'js/knockout.mapping.js'
         resource url:'js/knockout.bindings.js'
-        resource url: 'js/pretty.js'
+        resource url:'js/pretty.js'
         resource url:'js/application.js'
         resource url:'js/viewmodels.js'
     }
