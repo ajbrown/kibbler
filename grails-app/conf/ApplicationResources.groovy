@@ -57,6 +57,10 @@ modules = {
         resource url:'/js/coverflow/coverflow.js'
     }
 
+    flippant {
+        resource url: '/js/flippant.min.js'
+    }
+
     application {
         dependsOn 'jquery,knockout,sammy,jStorage,jQueryTimeAgo'
         resource url:'js/knockout.mapping.js'

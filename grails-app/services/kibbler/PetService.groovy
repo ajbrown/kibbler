@@ -27,7 +27,6 @@ class PetService {
         key
     }
 
-    @Cacheable('pets')
     def Pet read( String id ) {
         Pet.read( new ObjectId( id ) )
     }
@@ -52,7 +51,6 @@ class PetService {
         Pet.findBySlug( slug  )
     }
 
-    @CacheEvict( value='pets', key='#root.args[1].id.toString()' )
     def updateFields( Map fields, Pet pet, User user ) {
         fields.each { key, value ->
             pet[ key ] = value
@@ -74,7 +72,6 @@ class PetService {
      * @param adopter
      * @param creator
      */
-    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def adopt( Pet pet, Person adopter, User creator = null ) {
 
         def record = new AdoptionRecord( organization: pet.organization, pet: pet, adopter: adopter,  createdBy: creator )
@@ -104,7 +101,6 @@ class PetService {
      * @param creator
      * @return
      */
-    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def foster( Pet pet, Person foster, User creator = null ) {
         def record = new FosterRecord( pet: pet, foster: foster, createdBy: creator )
         if( !record.save( failOnError: true ) ) {
@@ -130,7 +126,6 @@ class PetService {
      * @param updater
      * @return
      */
-    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def reclaim( Pet pet, User updater = null ) {
 
         pet.adopter = null
@@ -151,7 +146,6 @@ class PetService {
      * @param creator
      * @return
      */
-    @CacheEvict( value='pets', key='#root.args[0].id.toString()' )
     def hold( Pet pet, User creator = null ) {
         pet.adopter = null
         pet.foster  = null

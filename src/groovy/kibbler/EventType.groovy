@@ -6,6 +6,7 @@ package kibbler
 enum EventType {
     ORG_ADD_PERSON('events.organization.addUser'),
     ORG_CREATED('events.organization.create'),
+    ORG_UPDATE('events.organization.update'),
     ORG_TRANSACTION_REVENUE('events.organization.addRevenue'),
     ORG_TRANSACTION_EXPENSE('events.organization.addExpense'),
     ORG_TRANSACTION_PET_EXPENSE('events.organization.addPetExpense'),

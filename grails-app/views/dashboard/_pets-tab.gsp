@@ -32,6 +32,7 @@
 
             </div>
         </div>
+
         <div class="row">
             <!-- Image and Description -->
 

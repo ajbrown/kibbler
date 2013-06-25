@@ -9,11 +9,16 @@
 </div>
 
 <section class="span9 main-section" id="organization-info-pane" data-bind="with: orgs.active()">
-    <form id="person-info-form" data-bind="">
+    <form id="org-info-form" data-bind="attr: { action: url }" method="post">
         <div class="row">
             <div class="span4">
-                <label>Organization Info</label>
-                <p></p>
+                <label>Organization Description</label>
+                <textarea
+                        id="organization-description"
+                        name="description"
+                        style="height: 160px;"
+                        class="stretch-width"
+                        data-bind="value: description, autosave: { event: 'keypress', field: 'description' }"></textarea>
             </div>
             <div class="span5">
                 <a href="#" class="pull-right">30 days</a>
@@ -40,7 +45,8 @@
                             <td data-field="amount"
                                 data-bind="text: (amountCents / 100).toMoney(), css: { moneyNegative: amountCents < 0 }"></td>
                             <td data-field="category" data-bind="text: category"></td>
-                            <td data-field="date"     data-bind="text: prettyDate( dateCreated )"></td>
+                            <td data-field="date"
+                                data-bind="text: dateCreated ? prettyDate( dateCreated() ) : ''"></td>
                         </tr>
                     </tbody>
                 </table>

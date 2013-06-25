@@ -1,124 +1,124 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title></title>
-  <meta name="layout" content="main">
-  <r:require modules="bootstrap-editable"/>
+    <title></title>
+    <meta name="layout" content="main">
+    <r:require modules="bootstrap-editable"/>
 </head>
 <body>
 
 <div class="row">
 
-<ul class="nav nav-tabs" id="tabs">
-    <li><a href="#pets" data-toggle="tab">Pets</a></li>
-    <li><a href="#people" data-toggle="tab">People</a></li>
-    <li><a href="#organization" data-toggle="tab">Organization</a></li>
-</ul>
+    <ul class="nav nav-tabs" id="tabs">
+        <li><a href="#pets" data-toggle="tab">Pets</a></li>
+        <li><a href="#people" data-toggle="tab">People</a></li>
+        <li><a href="#organization" data-toggle="tab">Organization</a></li>
+    </ul>
 
-<div class="tab-content">
+    <div class="tab-content">
 
-    <div class="tab-pane row" id="pets">
-        <g:render template="pets-tab"/>
-    </div>
-
-    <!-- People Tab -->
-
-    <div class="tab-pane row" id="people">
-        <g:render template="people-tab"/>
-    </div>
-
-    <!-- Organization Tab -->
-
-    <div class="tab-pane row" id="organization">
-        <g:render template="organization-tab"/>
-    </div>
-
-</div>
-
-
-
-<div id="modal-create-org" class="reveal-modal">
-    <h1>Create a new Organization</h1>
-    <p class="small">
-        <g:message code="modal.create.organization.text"
-                   default="You'll need to create a new organization before you can continue."/>
-    </p>
-
-    <form class="form-horizontal">
-        <input type="text" placeholder="Organization Name" data-bind="value: orgs.createOrgName, valueUpdate:'afterkeydown'"/>
-        <button class="btn btn-inverse"
-           data-bind="enable: orgs.createOrgName().trim().length > 0, click: orgs.submitCreateOrg">Create</button>
-    </form>
-</div>
-
-<div id="modal-create-person" class="reveal-modal">
-    <h1>Add a Contact</h1>
-
-    <form class="form">
-        <label class="">Name</label>
-        <input type="text" name="name" data-bind="value: people.createName"/>
-
-        <label class="checkbox">
-            <input type="checkbox" name="adopter" data-bind="value: people.createAdopter"> Adopter
-        </label>
-
-        <label class="checkbox">
-            <input type="checkbox" name="foster" data-bind="value: people.create"> Foster
-        </label>
-
-        <button class="btn btn-primary" data-bind="click: people.create">Create</button>
-    </form>
-
-</div>
-
-<div id="modal-create-pet" class="reveal-modal">
-    <h1>Create a Pet</h1>
-
-    <form class="form" data-bind="with: createPet">
-
-        <div class="control-group">
-            <label>Species</label>
-            <select name="type" id="pet-create-species" data-bind="value: species">
-                <option value=""></option>
-                <option value="DOG">Dog</option>
-                <option value="CAT">Cat</option>
-            </select>
+        <div class="tab-pane row" id="pets">
+            <g:render template="pets-tab"/>
         </div>
 
-        <div class="control-group">
-            <label>Breed</label>
-            <input type="text" name="breed" data-bind="value: breed, typeahead: breedSource">
+        <!-- People Tab -->
+
+        <div class="tab-pane row" id="people">
+            <g:render template="people-tab"/>
         </div>
 
+        <!-- Organization Tab -->
 
-        <div class="control-group">
-            <label>Gender</label>
-            <label class="radio inline">
-                <input type="radio" name="gender" data-bind="checked: isFemale">
-                <g:message code="label.female" default="Female"/>
+        <div class="tab-pane row" id="organization">
+            <g:render template="organization-tab"/>
+        </div>
+
+    </div>
+
+
+
+    <div id="modal-create-org" class="reveal-modal">
+        <h1>Create a new Organization</h1>
+        <p class="small">
+            <g:message code="modal.create.organization.text"
+                       default="You'll need to create a new organization before you can continue."/>
+        </p>
+
+        <form class="form-horizontal">
+            <input type="text" placeholder="Organization Name" data-bind="value: orgs.createOrgName, valueUpdate:'afterkeydown'"/>
+            <button class="btn btn-inverse"
+                    data-bind="enable: orgs.createOrgName().trim().length > 0, click: orgs.submitCreateOrg">Create</button>
+        </form>
+    </div>
+
+    <div id="modal-create-person" class="reveal-modal">
+        <h1>Add a Contact</h1>
+
+        <form class="form">
+            <label class="">Name</label>
+            <input type="text" name="name" data-bind="value: people.createName"/>
+
+            <label class="checkbox">
+                <input type="checkbox" name="adopter" data-bind="value: people.createAdopter"> Adopter
             </label>
-            <label class="radio inline">
-                <input type="radio" name="gender" value="female" data-bind="checked: isMale">
-                <g:message code="label.male" default="Male"/>
+
+            <label class="checkbox">
+                <input type="checkbox" name="foster" data-bind="value: people.create"> Foster
             </label>
-        </div>
+
+            <button class="btn btn-primary" data-bind="click: people.create">Create</button>
+        </form>
+
+    </div>
+
+    <div id="modal-create-pet" class="reveal-modal">
+        <h1>Create a Pet</h1>
+
+        <form class="form" data-bind="with: createPet">
+
+            <div class="control-group">
+                <label>Species</label>
+                <select name="type" id="pet-create-species" data-bind="value: species">
+                    <option value=""></option>
+                    <option value="DOG">Dog</option>
+                    <option value="CAT">Cat</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Breed</label>
+                <input type="text" name="breed" data-bind="value: breed, typeahead: breedSource">
+            </div>
 
 
-        <div class="control-group">
-            <label>Name</label>
-            <input type="text" name="givenName" data-bind="value: givenName">
-            <span class="help-inline">
-                <small><a href="#" data-bind="click: suggestName">Pick one for me!</a></small>
-            </span>
-        </div>
+            <div class="control-group">
+                <label>Gender</label>
+                <label class="radio inline">
+                    <input type="radio" name="gender" data-bind="checked: isFemale">
+                    <g:message code="label.female" default="Female"/>
+                </label>
+                <label class="radio inline">
+                    <input type="radio" name="gender" value="female" data-bind="checked: isMale">
+                    <g:message code="label.male" default="Male"/>
+                </label>
+            </div>
 
-        <hr>
-        <button class="btn btn-primary" type="submit"
-                data-bind="text: 'Add ' + givenName(), click: submit"></button>
 
-    </form>
+            <div class="control-group">
+                <label>Name</label>
+                <input type="text" name="givenName" data-bind="value: givenName">
+                <span class="help-inline">
+                    <small><a href="#" data-bind="click: suggestName">Pick one for me!</a></small>
+                </span>
+            </div>
 
-</div>
+            <hr>
+            <button class="btn btn-primary" type="submit"
+                    data-bind="text: 'Add ' + givenName(), click: submit"></button>
+
+        </form>
+
+    </div>
 
 
 </div>
@@ -190,19 +190,13 @@
 
         self.setActive = function( org ) {
 
-            if( typeof org == 'function' ) {
-                org = org();
-            }
-
             if( typeof org == 'string' ) {
                 $.getJSON( SERVER_URL + '/organization/' + org, function( data ) {
                     self.setActive( ko.mapping.fromJS( data.data ) );
-                    AppService.preCache( 'organizations', data.data );
+                    AppService.preCache( 'organization', data.data );
                 });
                 return;
             }
-
-            console.log( org );
 
             org = $.extend( org, new OrgWrapper( org ) );
             org.populateHistory( 30 );

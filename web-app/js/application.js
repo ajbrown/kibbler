@@ -259,6 +259,27 @@ window.PetWrapper = function( pet ) {
     }, pet );
 }
 
+window.OrgWrapper = function( org ) {
+    var self = this;
+
+    console.log( org );
+
+    this.url = SERVER_URL + '/organization/' + org.id();
+
+    this.historyDays = ko.observable();
+    this.history = ko.observable();
+
+    this.populateHistory = function( days ) {
+        var limitDays = days || 30;
+        $.getJSON( this.url + '/history', function( data ) {
+            if( data.status == 200 ) {
+                self.historyDays( days );
+                self.history( data.data );
+            }
+        } );
+    }
+};
+
 window.AppService = (function() {
 
     var models = ['people','pets','organizations'];

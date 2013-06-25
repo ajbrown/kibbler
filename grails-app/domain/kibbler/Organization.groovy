@@ -9,8 +9,14 @@ class Organization {
     ObjectId id
     String name
     String slug
+    String description
 
     Integer adoptionFeeCents
+
+    Date dateCreated
+    User createdBy
+    Date lastUpdated
+    User lastUpdatedBy
 
     static hasMany = [
             pets: Pet,
@@ -25,6 +31,9 @@ class Organization {
         slug()
 
         adoptionFeeCents nullable: true
+
+        createdBy nullable: true
+        lastUpdatedBy nullable: true
     }
 
     static mapping = {

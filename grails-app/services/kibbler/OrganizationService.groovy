@@ -12,6 +12,7 @@ class OrganizationService {
      * @return
      */
     def Organization read( String id ) {
+        if( !id ) { return null }
         Organization.findById( new ObjectId( id ) )
     }
 
@@ -21,14 +22,27 @@ class OrganizationService {
      * @param creator the user that is creating the organization.  They will be set as the administrator.
      * @return
      */
-    def createOrganization( String name, User creator ) {
+    def createOrganization( String name, User creator = null ) {
         def org = new Organization( name: name )
         org.addToMembers( [ role: 'admin', user: creator ] )
+        org.createdBy = creator
 
         def saved = org.save()
         if( saved ) {
             eventService.create( EventType.ORG_CREATED, org, creator )
         }
+        saved
+    }
+
+    def updateFields( Map fields, Organization org, User updater = null ) {
+        fields.each{ key, value -> org[ key ] = value }
+        org.lastUpdatedBy = updater
+
+        def saved = org.save()
+        if( saved ) {
+            eventService.create( EventType.ORG_UPDATE, org, updater, [fields] )
+        }
+
         saved
     }
 

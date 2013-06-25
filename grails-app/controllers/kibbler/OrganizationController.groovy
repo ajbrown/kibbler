@@ -1,5 +1,6 @@
 package kibbler
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
 
@@ -9,7 +10,31 @@ class OrganizationController {
     def organizationService
     def springSecurityService
     def userService
+    def eventService
     def petService
+
+    ObjectMapper objectMapper
+
+    def beforeInterceptor = {
+        def skipActions = ['index','create']
+
+        if( params.action in skipActions ) {
+            return true
+        }
+
+        def org = organizationService.read( params.id )
+
+        if( !org ) {
+            response.sendError( 404, 'The specified organization was not found.' )
+            return false
+        }
+
+        if( !springSecurityService.currentUser.belongsTo( org ) ) {
+            response.sendError( 403, "You do not have access to this organization." )
+        }
+
+        params.org = org
+    }
 
     def index() {
 
@@ -17,30 +42,33 @@ class OrganizationController {
         def orgs = organizationService.listUserOrganizations( user )
 
         withFormat {
+            html {
+                return [ user: user, orgs: orgs ]
+            }
             json {
                 render orgs as JSON
             }
         }
     }
 
-    def read() {
-        def resp = new JSONResponseEnvelope( status: 200 )
-        def org  = organizationService.read( params.id )
+    def dashboard() {
+        def org  = params.org as Organization
         def user = springSecurityService.currentUser as User
 
-        if( !org ) {
-            response.status = 404
-        }
+        def model = [ user: user, organization: org ]
 
-        //make sure the person belongs to one of the user's organizations
-        if( ! user.belongsTo( org ) ) {
-            response.status = 403
+        withFormat{
+            html { return model }
+            json { render model as JSON }
         }
+    }
 
+    def read() {
+        def resp = new JSONResponseEnvelope( status: 200 )
 
         withFormat{
             json{
-                resp.data = org
+                resp.data = params.org
                 render resp as JSON
             }
         }
@@ -57,20 +85,52 @@ class OrganizationController {
         }
     }
 
+    def update() {
+        def user = springSecurityService.currentUser as User
+        def resp = new JSONResponseEnvelope( status: 201 )
+
+        def fields = objectMapper.readValue( request.inputStream, Map.class )
+        def saved = organizationService.updateFields( fields, params.org, user )
+
+        //TODO if saving failed due to optimistic locking, refresh and try again.
+
+        if( !saved ) {
+            resp.status = 400
+            resp.errors = pet.errors.allErrors
+            resp.data = pet
+        } else {
+            resp.data = saved
+        }
+
+        withFormat{
+            json{ render resp as JSON }
+        }
+    }
+
+    def history() {
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
+        def events = eventService.listByOrganization( params.org, params.days ?: 30 )
+
+        if( events ) {
+            lastModified events.first().dateCreated
+        }
+
+        jsonResponse.data = events.collect{
+            [ event: it, message: eventService.translateMessage( it, request.locale ) ]
+        }
+
+        withFormat {
+            json{
+                response.status = jsonResponse.status
+                render jsonResponse as JSON
+            }
+        }
+    }
+
     def listTransactions() {
         def resp = new JSONResponseEnvelope( status: 200 )
-        def user = springSecurityService.currentUser as User
-        def org  = organizationService.read( params.id )
 
-        if( !org ) {
-            response.status = 404
-        }
-
-        if( !user.belongsTo( org ) ) {
-            throw new Exception( "User doesn't belong to this organization." )
-        }
-
-        resp.data = organizationService.listTransactions( org )
+        resp.data = organizationService.listTransactions( params.org )
 
         withFormat {
             json {
@@ -81,9 +141,8 @@ class OrganizationController {
     }
 
     def termsText() {
-        def org = organizationService.read( params.id )
-        def template = organizationService.readAdoptionContractTemplate( org )
-        if( !org || !template ) {
+        def template = organizationService.readAdoptionContractTemplate( params.org )
+        if( !template ) {
             response.status = 404
         }
 
@@ -101,15 +160,6 @@ class OrganizationController {
 
         def resp = new JSONResponseEnvelope( status: 200 )
         def user = springSecurityService.currentUser as User
-        def org  = organizationService.read( params.id )
-
-        if( !org ) {
-            response.status = 404
-        }
-
-        if( !user.belongsTo( org ) ) {
-            throw new Exception( "User doesn't belong to this organization." )
-        }
 
         //turn the transaction into a transaction record.
         def trans = new Transaction(
@@ -117,7 +167,7 @@ class OrganizationController {
                 category: cmd.category,
                 enteredBy: user,
                 pet: cmd.pet ? petService.read( cmd.pet ) : null,
-                organization: org
+                organization: params.org
         )
 
         resp.data = organizationService.addTransaction( trans, user )
