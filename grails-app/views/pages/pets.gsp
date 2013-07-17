@@ -24,13 +24,13 @@
 <section class="container">
     <div class="span3" id="public-pet-org-summary">
         <h4>${pet.organization.name}</h4>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fringilla, nulla in pharetra pulvinar, quam mauris imperdiet ipsum, vel porta sem magna malesuada leo. In nulla turpis, fringilla nec suscipit non, cursus ac eros. Sed accumsan accumsan interdum. Nulla aliquam orci non odio aliquet pellentesque. Donec quis ligula nec leo scelerisque dapibus. Aenean eu dictum ante, ac placerat nulla. Sed vestibulum sem at ipsum faucibus, vitae lobortis orci ultrices. Duis eget blandit elit, ut facilisis sapien.</p>
+        <p>${pet.organization.description}</p>
     </div>
     <div class="span6" id="public-pet-main" style="">
 
         <div id="pet-photos-carousel" style="width:300px;margin:0 auto;"> </div>
 
-        <p>${pet.description}</p>
+        <p style="margin-top: 12px;">${pet.description}</p>
 
     </div>
     <div class="span2" id="public-pet-right">
@@ -66,9 +66,11 @@
             coverwidth: 250,
             coverheight: 250,
             coverdepth: 200,
+            covergap: 60,
             fixedsize: false,
             textoffset: 50,
-            showtext: false
+            showtext: false,
+            item: ${ pet.photos.size() > 2 ? '1' : '0' }
         });
     })();
 </r:script>

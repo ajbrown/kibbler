@@ -6,3 +6,10 @@ transformation for both public pages and management pages.  We also store it in 
 just in case we want to transfer images out of cloudinary without paying their costs.
 
 
+### Notes on Adoption and Foster Records.
+
+- When a pet is transfered to another organization, does all of it's records get transfered as well? At the moment,
+if we switch the organization a pet belongs to, the new organization will see the exact same thing the old
+organization saw before the transfer, and the old one will see nothing.
+- As above, the same goes for history.  Once the pet is transfered, the new organization will see all of the "Updated
+ by Charlie" and "Bobby uploaded a pic of Champ".

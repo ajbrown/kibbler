@@ -17,4 +17,8 @@ class DashboardController {
     def config() {
 
     }
+
+    def contract() {
+
+    }
 }

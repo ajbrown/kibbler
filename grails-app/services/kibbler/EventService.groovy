@@ -29,7 +29,7 @@ class EventService {
                 args: newArgs,
                 type: et
         )
-        event.save( failOnError: true )
+        event.insert( failOnError: true )
     }
 
     /**
@@ -70,7 +70,7 @@ class EventService {
             )
         }
 
-        event.save( failOnError: true )
+        event.insert( failOnError: true )
     }
 
     /**
@@ -92,7 +92,7 @@ class EventService {
                 args: newArgs,
                 type: et
         )
-        event.save( failOnError: true )
+        event.insert( failOnError: true )
     }
 
     /**

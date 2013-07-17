@@ -94,27 +94,27 @@
 <div class="form-section">
     <div class="form-item" style="width: 424px;">
         <strong>Animal: </strong>
-        <span class="value">Fake Ass Mikka</span>
+        <span class="value">${pet.givenName}</span>
     </div>
 
     <div class="form-item" style="width: 100px;">
         <strong class="label">Age: </strong>
-        <span class="value">4</span>
+        <span class="value">${pet.age}</span>
     </div>
 
     <div class="form-item" style="width: 100px;">
         <strong>Sex: </strong>
-        <span class="value">Female</span>
+        <span class="value">${pet.sex.capitalize()}</span>
     </div>
 
     <div class="form-item" style="width: 250px;">
         <strong>Breed: </strong>
-        <span class="value">Rottweiler</span>
+        <span class="value">${pet.breed}</span>
     </div>
 
     <div class="form-item" style="width: 390px;">
         <strong>Colors/Markings: </strong>
-        <span class="value">Black/Tan</span>
+        <span class="value">${pet.markings}</span>
     </div>
 
 </div>
@@ -122,10 +122,9 @@
 <p>As an Adopter, I agree to the following terms:</p>
 
 <ol>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, mauris non pulvinar ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. Pellentesque tincidunt, sapien eget porttitor rhoncus, elit eros pulvinar mauris, at pharetra lectus ante ut mauris.</li>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, mauris non pulvinar ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. Pellentesque tincidunt, sapien eget porttitor rhoncus, elit eros pulvinar mauris, at pharetra lectus ante ut mauris.</li>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, mauris non pulvinar ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. Pellentesque tincidunt, sapien eget porttitor rhoncus, elit eros pulvinar mauris, at pharetra lectus ante ut mauris.</li>
-    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, mauris non pulvinar ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. Pellentesque tincidunt, sapien eget porttitor rhoncus, elit eros pulvinar mauris, at pharetra lectus ante ut mauris.</li>
+    <g:each in="${organization.terms}">
+        <li>${it}</li>
+    </g:each>
 </ol>
 
 
@@ -153,19 +152,21 @@
     %>
 
     <p>This adoption contract is entered into this ${new Date().format("dd'${ordinalSuffix}' 'day of' MMMM, yyyy")}, between the
-    organization FGT Inc. and the Adopter Not A.J. Brown.</p>
+    organization <u>${organization.name}</u> and the Adopter Not <u>${adopter.name}</u>.</p>
 
-    <p><strong>Adoption Fee:</strong> $150.00</p>
+    <g:if test="${organization.adoptionFeeCents}">
+        <p><strong>Adoption Fee:</strong> $${organization.adoptionFeeCents * 100}</p>
+    </g:if>
 
 
     <div class="form-section">
         <div class="form-item" style="width: 420px;">
             <strong>Adopter's Address:</strong>
-            <span class="value">1234 56th Alphabet Street, Dayton, Ohio 45123</span>
+            <span class="value">${adopter.address}</span>
         </div>
         <div class="form-item" style="width: 200px;">
             <strong>Adopter's Phone:</strong>
-            <span class="value">(937) 555-5555</span>
+            <span class="value">${adopter.phone}</span>
         </div>
     </div>
 
@@ -176,15 +177,15 @@
         <strong>Date Signed</strong>
     </div>
 
-
     <div class="signature-item" style="width: 420px;margin-right:8px;">
         <strong>Adopter's Signature</strong>
     </div>
     <div class="signature-item" style="width: 200px;">
         <strong>Date Signed</strong>
     </div>
-
 </div>
+
+<rendering:inlinePng bytes="${signaturePng}"/>
 
 <div id="footer"></div>
 

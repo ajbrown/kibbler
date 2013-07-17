@@ -32,7 +32,7 @@ class UserService implements UserDetailsService {
         }
 
         def user = new User( email: email, activated: false )
-        def saved = user.save( flush: true )
+        def saved = user.insert( flush: true )
 
         saved
     }

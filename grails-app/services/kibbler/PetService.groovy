@@ -1,5 +1,10 @@
 package kibbler
 
+import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.CannedAccessControlList
+import com.amazonaws.services.s3.model.ObjectMetadata
+import com.amazonaws.services.s3.model.PutObjectRequest
+import com.amazonaws.services.s3.model.StorageClass
 import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.CachePut
@@ -9,7 +14,14 @@ import org.springframework.cache.CacheManager
 
 class PetService {
 
+    private static final SIGNATURE_XML_HEADER = '<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+
     def eventService
+    def pdfRenderingService
+    def grailsApplication
+
+
+    AmazonS3Client amazonS3Client
 
     /**
      * Remove pets from the cache.  Allows referencing the object either by String id, ObjectId, or by Pet instance.
@@ -40,7 +52,7 @@ class PetService {
         pet.createdBy = creator
         pet.generateSlug()
 
-        def saved = pet.save()
+        def saved = pet.insert()
         if( saved ) {
             eventService.create( EventType.PET_ADD, pet, creator )
         }
@@ -56,7 +68,7 @@ class PetService {
             pet[ key ] = value
         }
         pet.lastUpdatedBy = user
-        def saved = pet.save()
+        def saved = pet.update()
 
         if( saved ) {
             eventService.create( EventType.PET_UPDATE, pet, user, [fields] )
@@ -72,11 +84,17 @@ class PetService {
      * @param adopter
      * @param creator
      */
-    def adopt( Pet pet, Person adopter, User creator = null ) {
+    def adopt( Pet pet, Person adopter, AdoptionContract contract = null, User creator = null ) {
 
-        def record = new AdoptionRecord( organization: pet.organization, pet: pet, adopter: adopter,  createdBy: creator )
+        def record = new AdoptionRecord(
+                organization: pet.organization,
+                pet: pet,
+                adopter: adopter,
+                contract: contract,
+                createdBy: creator
+        )
 
-        if( !record.save() ) {
+        if( !record.insert() ) {
             //TODO better exception handling
             throw new Exception( 'Could not create adoption record, aborting adoption' )
         }
@@ -86,11 +104,56 @@ class PetService {
         pet.status = 'adopted'
         pet.lastUpdatedBy = creator
 
-        def saved = pet.save()
+        def saved = pet.update()
         if( saved ) {
             eventService.create( EventType.PET_ADOPT, pet, creator, [adopter, record] )
         }
         saved
+    }
+
+    def createContract(
+            Pet pet, Person adopter, Map signatures, User creator = null )
+    {
+        def saved
+        def contract = new AdoptionContract(
+                id: new ObjectId(),
+                adopterSignature: new String( signatures.svg )
+        )
+
+        contract.adopterSignatureUrl = uploadSignature( contract )
+
+        //generate the contract's pdf
+        def pdfModel = [
+                pet: pet,
+                organization: pet.organization,
+                adopter: adopter,
+                signaturePng: signatures.png
+        ]
+
+        def bucket = grailsApplication.config.contractsBucket
+
+        //Render the PDF into a stream that we can send to Amazon S3
+        def outputStream = new ByteArrayOutputStream()
+        pdfRenderingService.render( [ model: pdfModel, template: '/pdf/adoption' ], outputStream )
+        def inputStream = new ByteArrayInputStream( outputStream.toByteArray() )
+
+        contract.pdfS3key = "contracts/${pet.organization.slug.encodeAsURL()}/${contract.id}.pdf"
+
+        def meta = new ObjectMetadata()
+        meta.cacheControl = 'max-age=31536000'
+        meta.contentType = 'application/pdf'
+        meta.setHeader( 'X-Kibbler-Org-Id', pet.organization.id.toString() )
+        meta.setHeader( 'X-Kibbler-Pet-Id', pet.id.toString() )
+
+        def s3resp = amazonS3Client.putObject( bucket, contract.pdfS3key, inputStream, meta )
+
+        if( !s3resp ) {
+            throw new Exception( 'Could not upload contract!' )
+        }
+
+        contract.insert( failOnError:  true )
+
+        adopt( pet, adopter, creator, contract )
     }
 
     /**
@@ -103,7 +166,7 @@ class PetService {
      */
     def foster( Pet pet, Person foster, User creator = null ) {
         def record = new FosterRecord( pet: pet, foster: foster, createdBy: creator )
-        if( !record.save( failOnError: true ) ) {
+        if( !record.insert( failOnError: true ) ) {
             //TODO better exception handling
             throw new Exception( 'Could not create fostering record, aborting fostering' )
         }
@@ -113,7 +176,7 @@ class PetService {
         pet.status = 'fostered'
         pet.lastUpdatedBy = creator
 
-        def saved = pet.save()
+        def saved = pet.update()
         if( saved ) {
             eventService.create( EventType.PET_FOSTER, pet, creator, [foster, record] )
         }
@@ -133,7 +196,7 @@ class PetService {
         pet.status  = 'available'
         pet.lastUpdatedBy = updater
 
-        def saved = pet.save()
+        def saved = pet.update()
         if( saved ) {
             eventService.create( EventType.PET_RECLAIM, pet, updater )
         }
@@ -152,7 +215,7 @@ class PetService {
         pet.status  = 'hold'
         pet.lastUpdatedBy = creator
 
-        def saved = pet.save()
+        def saved = pet.update()
         if( saved ) {
             eventService.create( EventType.PET_HOLD, pet, creator )
         }
@@ -161,10 +224,31 @@ class PetService {
 
     def addPhotos( Pet pet, List<Photo> photos, User creator = null ) {
         photos.each{ pet.addToPhotos( it ) }
-        def saved = pet.save()
+        def saved = pet.update()
         if( saved ) {
             eventService.create( EventType.PET_ADD_PHOTO, pet, creator, [photos] )
             return saved.photos
         }
     }
+
+    private String uploadSignature( AdoptionContract contract ) {
+        def bucket = grailsApplication.config.contractsBucket
+        def meta = new ObjectMetadata()
+        meta.cacheControl = 'max-age=31536000'
+        meta.contentType  = 'image/svg+xml'
+        meta.expirationTime = new Date() + 365
+        meta.contentLength = contract.adopterSignature.bytes.length
+        meta.setHeader( 'X-Kibbler-Org-Id', contract.pet.organization.id.toString() )
+        meta.setHeader( 'X-Kibbler-Pet-Id', contract.pet.id.toString() )
+
+        def key = "contracts/${contract.pet.organization.slug}/${contract.id}-signature.svg"
+        def inputStream = new ByteArrayInputStream( contract.adopterSignature.getBytes() )
+        def request = new PutObjectRequest( bucket, key, inputStream, meta )
+                .withCannedAcl( CannedAccessControlList.PublicRead )
+                .withStorageClass( StorageClass.Standard )
+
+        def s3resp =  amazonS3Client.putObject( request )
+        "http://${bucket}.s3.amazonaws.com/${key}"
+    }
+
 }

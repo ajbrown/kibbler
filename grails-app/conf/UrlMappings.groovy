@@ -3,6 +3,8 @@ class UrlMappings {
 	static mappings = {
 
         "/" ( controller: "dashboard", action: "index" )
+        "/contract" ( controller: "dashboard", action: "contract" )
+
         "/login/$action?"( controller: "login" )
 
         "/upload/photo" {

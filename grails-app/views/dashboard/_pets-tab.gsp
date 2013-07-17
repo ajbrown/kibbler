@@ -15,6 +15,32 @@
         <!-- /ko -->
     </ul>
 </div>
+<section id="pets-dashboard" class="span9 main-section" data-bind="if: !pets.active()">
+
+    <figure class="card">
+        <h4 data-bind="text: givenName"></h4>
+        <!-- ko if: tinyThumbUrl -->
+        <img data-bind="attr: { src: tinyThumbUrl }" src="" alt="">
+        <!-- /ko -->
+        <p>5 year old </p>
+    </figure>
+
+    <div class="card-container row" id="pet-cards-container" data-bind="foreach: pets.list()">
+        <div class="span3" data-bind="click: function() { location.href = '#pets/' + id() }">
+            <div class="card pet-card">
+                <!-- ko if: tinyThumbUrl -->
+                <img data-bind="attr: { src: tinyThumbUrl }"src="" alt="">
+                <!-- /ko -->
+                <div class="card-info">
+                    <h4 data-bind="text: givenName"></h4>
+                    <span class="breed" data-bind="text: breed"></span>
+                    <span class="status" data-bind="html: statusLabel"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
     <form id="status-info-form" data-bind="attr: { action: url }" method="post">
 
@@ -27,10 +53,50 @@
                            data-bind="text: typeLabel"></small>
                     <span class="editable"
                         data-bind="text: givenName"></span>
-
                 </legend>
 
             </div>
+
+        </div>
+
+        <div class="row">
+
+            <ul class="nav nav-pills">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" id="change-status-menu-toggle"
+                       role="button" data-toggle="dropdown" href="#">Actions <i class="icon-reorder"></i></a>
+                    <ul class="dropdown-menu">
+                        <li role="presentation">
+                            <a role="menuitem" href="#" data-bind="click: $root.pets.showPhotoUpload">Upload Photo</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" href="#"
+                               data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"
+                            >Adopt</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" href="#"
+                               data-bind="text: status() != 'fostered' ? 'Foster' : 'Re-Foster', click: $root.pets.foster"
+                            >Foster</a>
+                        </li>
+                        <li role="presentation" data-bind="visible: status() != 'available'">
+                            <a role="menuitem"
+                               data-bind="visible: status() != 'available', click: $root.pets.reclaim"
+                               href="#">Reclaim</a>
+                        </li>
+                        <li role="presentation">
+                            <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li role="presentation">
+                            <a role="menuitem" href="#"
+                               data-bind="attr: { href: publicUrl }">
+                                View Public Page
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
 
         <div class="row">
@@ -106,42 +172,6 @@
                         Special Needs
                     </label>
 
-                    <ul class="nav nav-pills">
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" id="change-status-menu-toggle"
-                               role="button" data-toggle="dropdown" href="#">Actions <i class="icon-reorder"></i></a>
-                            <ul class="dropdown-menu">
-                                <li role="presentation">
-                                    <a role="menuitem" href="#" data-bind="click: $root.pets.showPhotoUpload">Upload Photo</a>
-                                </li>
-                                <li role="presentation">
-                                    <a role="menuitem" href="#"
-                                       data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"
-                                    >Adopt</a>
-                                </li>
-                                <li role="presentation">
-                                    <a role="menuitem" href="#"
-                                       data-bind="text: status() != 'fostered' ? 'Foster' : 'Re-Foster', click: $root.pets.foster"
-                                    >Foster</a>
-                                </li>
-                                <li role="presentation" data-bind="visible: status() != 'available'">
-                                    <a role="menuitem"
-                                       data-bind="visible: status() != 'available', click: $root.pets.reclaim"
-                                       href="#">Reclaim</a>
-                                </li>
-                                <li role="presentation">
-                                    <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li role="presentation">
-                                    <a role="menuitem" href="#"
-                                       data-bind="attr: { href: publicUrl }">
-                                        View Public Page
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
 
 
                 </fieldset>
@@ -204,6 +234,7 @@
         </form>
     </div>
 
+    <r:require module="jSignature"/>
     <div id="pet-adopt-modal" class="reveal-modal">
         <form class="form-horizontal" method="post"
               data-bind="attr: { action: url + '/adopt' }">
@@ -225,12 +256,12 @@
                     <textarea id="contract-terms" name="contract-terms"></textarea>
 
                     <p class="small">
-                        By typing your full name in the box below, you acknowledge that you agree to the terms of the
+                        By signing your name below, you acknowledge that you agree to the terms of the
                         contract.
                     </p>
 
-                    <label for="name">Print your name</label>
-                    <input type="text" name="name" id="name" class="name"/>
+                    <div id="signature"></div>
+
                 </div>
 
                 <hr/>

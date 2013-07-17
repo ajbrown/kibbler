@@ -49,6 +49,8 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">Kibbler</a>
+
+            <span class="organization-title">${pet.organization.name}</span>
         </div>
     </div>
 </div>

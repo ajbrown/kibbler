@@ -18,7 +18,9 @@ class Pet {
     Species type
     String breed
     String sex
+    Integer age
     Integer weight
+    String markings
 
     //TODO these could probably be consildated. Think about it once we get further along in the prototype.
     Person adopter
@@ -58,13 +60,14 @@ class Pet {
         organization()
         type()
 
-
         breed nullable: true
         sex   nullable: true, inList: [ 'male','female' ]
 
         status inList: STATUS_OPTIONS
         givenName blank: false
 
+        age nullable: true
+        markings nullable: true
         weight nullable: true
         color nullable: true
 
@@ -84,7 +87,6 @@ class Pet {
         neutered nullable: true
         specialNeeds nullable: true
 
-
         createdBy nullable: true
         lastUpdatedBy nullable: true
 
@@ -93,6 +95,17 @@ class Pet {
         photos nullable: true
 
         assignedId nullable: true
+    }
+
+    def getCurrentContract() {
+        if( !status == 'adopted' || !adopter ) {
+            return null
+        }
+
+        AdoptionContract.createCriteria().list{
+            eq "adopter", adopter
+            order "dateCreated", "desc"
+        }?.first()
     }
 
     def beforeInsert() {

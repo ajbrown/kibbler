@@ -202,8 +202,6 @@
                 return;
             }
 
-            console.log( org );
-
             org = $.extend( org, new OrgWrapper( org ) );
             org.populateHistory( 30 );
 
@@ -234,6 +232,7 @@
             jQuery.get( SERVER_URL + '/organization/' + self.active().id() + '/terms-text', function( text ) {
                 jQuery( '#contract-terms' ).val( text );
                 jQuery( '#contract-info').show();
+                jQuery( '#signature' ).jSignature();
             } );
             return true;
         };
@@ -392,10 +391,23 @@
             var form = $('form', '#pet-adopt-modal')
             var vals = form.serializeArray();
             var url  = form.attr('action');
-            var data = {}
+            var data = {};
+            var isWithContract = false;
+
             for( var i in vals ) {
                 data[ vals[i].name ] = vals[i].value;
             }
+
+
+            isWithContract = ( data['contract'] == 'on' )
+
+            //if we're adopting with a contract, we need to make sure the signature data is sent.
+            if( isWithContract ) {
+                var signature = $('#signature');
+                data['signature_png'] = signature.jSignature( 'getData', 'image' )[1];
+                data['signature_svg'] = signature.jSignature( 'getData', 'svgbase64')[1];
+            }
+
             $.post( url, data, function( resp ) {
                     if( resp.status > 200 && resp.status < 300 ) {
                         self.setActive( ko.mapping.fromJS( resp.data) );
@@ -517,7 +529,16 @@
 
         //Construction
         $.get( SERVER_URL + '/pets',
-            function(data) { self.list( ko.mapping.fromJS(data.data) ); }
+            function(data) {
+                var pets = [];
+
+                for( var i in data.data ) {
+                    var pet = ko.mapping.fromJS( data.data[i] );
+                    pet = $.extend( pet, new PetWrapper( pet ) );
+                    pets.push( pet );
+                }
+
+                self.list( pets ); }
         );
     };
 

@@ -12,6 +12,7 @@ class OrganizationController {
     def userService
     def eventService
     def petService
+    def personService
 
     ObjectMapper objectMapper
 
@@ -61,6 +62,14 @@ class OrganizationController {
             html { return model }
             json { render model as JSON }
         }
+    }
+
+    def contract() {
+        def org     = organizationService.
+        def pet     = petService.read( params.pet )
+        def person  = personService.read( params.person )
+
+
     }
 
     def read() {

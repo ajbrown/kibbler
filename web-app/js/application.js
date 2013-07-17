@@ -227,6 +227,27 @@ window.PetWrapper = function( pet ) {
         return prefix + data.public_id() + '.' + data.format();
     });
 
+    this.tinyThumbUrl = ko.computed( function() {
+        var photos = pet.photos();
+        var primePhoto = 0;
+        var prefix = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_78,h_78,c_thumb,g_faces,r_10/';
+
+        if( !photos || photos.length == 0 ) {
+            return null;
+        }
+
+        //try to find a primary photo, otherwise just use the first.
+        for( var i in photos ) {
+            if( photos[i].primary() ) {
+                primePhoto = i;
+                break;
+            }
+        }
+
+        var data = photos[primePhoto].cloudinaryData;
+        return prefix + data.public_id() + '.' + data.format();
+    });
+
     this.typeLabel = ko.computed( function() {
         var sex   = this.sex();
         var breed = this.breed();
@@ -257,12 +278,16 @@ window.PetWrapper = function( pet ) {
 
         return label;
     }, pet );
+
+    this.friendlyDescription = ko.computed( function() {
+        var age = this.age();
+
+
+    }, pet );
 }
 
 window.OrgWrapper = function( org ) {
     var self = this;
-
-    console.log( org );
 
     this.url = SERVER_URL + '/organization/' + org.id();
 

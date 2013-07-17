@@ -61,6 +61,11 @@ modules = {
         resource url: '/js/flippant.min.js'
     }
 
+    jSignature {
+        dependsOn 'jquery'
+        resource url: 'js/jSignature/jSignature.min.js'
+    }
+
     application {
         dependsOn 'jquery,knockout,sammy,jStorage,jQueryTimeAgo'
         resource url:'js/knockout.mapping.js'

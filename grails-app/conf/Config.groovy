@@ -115,10 +115,11 @@ log4j = {
 //Resources configuration
 grails.resources.mappers.yuijsminify.js.noMunge = true
 
-awsAccessKey = 'AKIAJ5FGOVD7YDHNJYYA'
-awsSecretKey = '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'
+awsAccessKey = 'AKIAIQUABNVCDHLXZHGA'
+awsSecretKey = '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'
 
 petphotos.uploadBucket = 'kibblerpics'
+contractsBucket = 'kibbler-data'
 
 
 // Added by the Spring Security Core plugin:

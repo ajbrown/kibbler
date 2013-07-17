@@ -69,3 +69,36 @@
 .public-header {
     text-align: center;
 }
+
+.organization-title {
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.card {
+    outline: 1px solid #c3c3c3;
+    height: 100px;
+}
+
+.card:hover {
+    cursor: pointer;
+}
+
+.card img {
+    float:left;
+    margin: 2px 4px;
+    width: 60px;
+    height: 60px;
+}
+
+.card .status {
+    display: block;
+    font-size: 0.75em;
+}
+.card .breed {
+    display: block;
+}
+
+.card-container:last-child {
+    clear: right;
+}

@@ -27,7 +27,7 @@ class OrganizationService {
         org.addToMembers( [ role: 'admin', user: creator ] )
         org.createdBy = creator
 
-        def saved = org.save()
+        def saved = org.insert()
         if( saved ) {
             eventService.create( EventType.ORG_CREATED, org, creator )
         }
@@ -38,7 +38,7 @@ class OrganizationService {
         fields.each{ key, value -> org[ key ] = value }
         org.lastUpdatedBy = updater
 
-        def saved = org.save()
+        def saved = org.update()
         if( saved ) {
             eventService.create( EventType.ORG_UPDATE, org, updater, [fields] )
         }
@@ -61,10 +61,10 @@ class OrganizationService {
 
         if( !exists ) {
             org.addToMembers( new OrgRole( role: role, user: added, createdBy: addedBy ) )
-            saved = org.save( failOnError: true )
+            saved = org.update( failOnError: true )
         } else if( exists.role != role ) {
             exists.role = role
-            saved = exists.save( failOnError: true )
+            saved = exists.update( failOnError: true )
         }
 
         if( saved ) {
@@ -82,7 +82,7 @@ class OrganizationService {
      */
     def addTransaction( Transaction trx, User recorder = null ) {
         trx.createdBy = recorder
-        def saved = trx.save( failOnError: true )
+        def saved = trx.insert( failOnError: true )
         if( saved ) {
             //Determine the EventType based on the transaction amount, and whether or not it was tied to a pet.
             def et = trx.amountCents > 0 ? EventType.ORG_TRANSACTION_REVENUE : EventType.ORG_TRANSACTION_EXPENSE

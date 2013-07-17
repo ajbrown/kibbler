@@ -157,7 +157,19 @@ class PetsController {
                 throw new Exception( 'Adopter does not exist' )
             }
 
-            if( !petService.adopt( params.pet, adopter, user ) ) {
+            def signatures = [
+                    svg: cmd.signature_svg.decodeBase64(),
+                    png: cmd.signature_png.decodeBase64()
+            ]
+            def adopt
+
+            if( cmd.contract ) {
+                adopt = petService.adoptWithContract( params.pet, adopter, signatures,  user )
+            } else {
+                adopt = petService.adopt( params.pet, adopter, user )
+            }
+
+            if( !adopt ) {
                 response.status = 500
                 jsonResponse.errors = params.pet.errors.allErrors
             }

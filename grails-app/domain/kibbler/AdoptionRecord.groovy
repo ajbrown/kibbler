@@ -11,6 +11,7 @@ class AdoptionRecord {
     Organization organization
     Person adopter
     Pet pet
+    AdoptionContract contract
 
     User createdBy
     Date dateCreated
@@ -21,6 +22,7 @@ class AdoptionRecord {
 
     static mapping = {
         version false
+        stateless true
     }
 
     static constraints = {

@@ -19,10 +19,10 @@ class PersonService {
     def create( Person person, Organization org, User creator = null ) {
         person.createdBy = creator
         person.organization = org
-        def saved = person.save()
+        def saved = person.insert()
         if( saved ) {
             org.addToPeople( person )
-            org.save()
+            org.update( failOnError: true )
 
             eventService.create( EventType.PERSON_CREATE, person, creator )
         }
@@ -69,7 +69,7 @@ class PersonService {
         }
 
         person.lastUpdatedBy = updater
-        def saved = person.save()
+        def saved = person.update()
         if( saved ) {
             eventService.create( EventType.PERSON_UPDATE, person, updater, [fields] )
         }
@@ -86,7 +86,7 @@ class PersonService {
         person.doNotAdopt = true
         person.lastUpdatedBy = bannedBy
 
-        def saved = person.save()
+        def saved = person.update()
         if( saved ) {
             eventService.create( EventType.PERSON_ADD_DONOTADOPT, person, bannedBy )
         }
@@ -111,7 +111,7 @@ class PersonService {
 
         person.linkedAccount = user
         organizationService.addUserToOrganization( person.organization, user, granter )
-        def saved = person.save()
+        def saved = person.update()
         if( saved ) {
             eventService.create( EventType.ORG_ADD_PERSON, person, granter )
         }

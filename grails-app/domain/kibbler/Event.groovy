@@ -21,6 +21,8 @@ class Event {
     Date dateCreated
 
     static mapping = {
+        version false
+        stateless true
         pet index: true
         person index: true
         organization index: true
