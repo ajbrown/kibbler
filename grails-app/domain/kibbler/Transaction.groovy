@@ -13,6 +13,7 @@ class Transaction {
 
     User createdBy
     Date dateCreated
+
     User updatedBy
     User lastUpdated
 
@@ -20,10 +21,10 @@ class Transaction {
 
     static constraints = {
         enteredBy nullable: true, validator: { val, obj ->
-            ( !val || val.belongsTo( obj.organization ) ) ?: ['default.organization.mismatch']
+            ( !val || val.belongsTo( obj.organization ) ) ?: ['organization.mismatch']
         }
         createdBy nullable: true, validator: { val, obj ->
-            ( !val || val.belongsTo( obj.organization ) ) ?: ['default.organization.mismatch']
+            ( !val || val.belongsTo( obj.organization ) ) ?: ['organization.mismatch']
         }
         updatedBy nullable: true
         lastUpdated nullable: true

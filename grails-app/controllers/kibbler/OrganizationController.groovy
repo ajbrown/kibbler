@@ -40,7 +40,7 @@ class OrganizationController {
     def index() {
 
         def user = springSecurityService.currentUser as User
-        def orgs = organizationService.listUserOrganizations( user )
+        def orgs = user.organizations
 
         withFormat {
             html {
@@ -136,6 +136,10 @@ class OrganizationController {
         }
     }
 
+    /**
+     * Show all of the transactions for an organization
+     * @return
+     */
     def listTransactions() {
         def resp = new JSONResponseEnvelope( status: 200 )
 

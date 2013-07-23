@@ -4,6 +4,8 @@ import org.bson.types.ObjectId
 
 class OrganizationService {
 
+    static transactional = 'mongo'
+
     def eventService
 
     /**
@@ -22,23 +24,31 @@ class OrganizationService {
      * @param creator the user that is creating the organization.  They will be set as the administrator.
      * @return
      */
-    def createOrganization( String name, User creator = null ) {
+    def createOrganization( String name, User creator ) {
         def org = new Organization( name: name )
-        org.addToMembers( [ role: 'admin', user: creator ] )
+        org.members = [ new OrgRole( role: 'admin', user: creator ) ]
         org.createdBy = creator
 
-        def saved = org.insert()
+        def saved = org.insert( failOnError: true )
         if( saved ) {
+            //create a person for this organization, representing the current user
+            def person = new Person( name: creator.name, email: creator.email )
+            person.organization = org
+            person.linkedAccount = creator
+            person.save( failOnError: true )
+
+            //Add the event
             eventService.create( EventType.ORG_CREATED, org, creator )
         }
+
         saved
     }
 
-    def updateFields( Map fields, Organization org, User updater = null ) {
+    def Organization updateFields( Map fields, Organization org, User updater = null ) {
         fields.each{ key, value -> org[ key ] = value }
         org.lastUpdatedBy = updater
 
-        def saved = org.update()
+        def saved = org.save( failOnError: true )
         if( saved ) {
             eventService.create( EventType.ORG_UPDATE, org, updater, [fields] )
         }
@@ -55,20 +65,43 @@ class OrganizationService {
      * @return
      */
     def void addUserToOrganization( Organization org, User added, User addedBy = null, String role = 'user' ) {
-        def exists = org.members.find{ it.user == added }
+        def exists = org.members?.find{ it.user == added }
 
         def saved
 
         if( !exists ) {
+            org.members = org.members ?: []
             org.addToMembers( new OrgRole( role: role, user: added, createdBy: addedBy ) )
-            saved = org.update( failOnError: true )
+            saved = org.save( failOnError: true )
         } else if( exists.role != role ) {
             exists.role = role
-            saved = exists.update( failOnError: true )
+            saved = exists.save( failOnError: true )
         }
 
-        if( saved ) {
+        if( saved && addedBy ) {
             eventService.create( EventType.ORG_ADD_PERSON, org, addedBy, [added])
+        }
+    }
+
+    /**
+     * Remove a user from an organization.
+     *
+     * @param org
+     * @param removed
+     * @param removedBy
+     */
+    def void removeUser( Organization org, User removed, User removedBy = null ) {
+        def exists = org.members?.find{ it.user == removed }
+
+        if( !exists ) {
+            return
+        }
+
+        org.removeFromMembers( exists )
+        def saved = org.save( failOnError: true )
+
+        if( saved && removedBy ) {
+            eventService.create( EventType.ORG_REMOVE_PERSON, org, removedBy, [removed] )
         }
     }
 
@@ -100,26 +133,18 @@ class OrganizationService {
      * @return
      */
     def listTransactions( Organization org, int limitDays = 30 ) {
-        Transaction.createCriteria().list{
-            eq "organization", org
-            if( limitDays >= 0 ) {
-                gte "dateCreated", (new Date().clearTime()) - limitDays
+        Transaction.withStatelessSession {
+            Transaction.createCriteria().list{
+                eq "organization", org
+                if( limitDays >= 0 ) {
+                    gte "dateCreated", (new Date().clearTime()) - limitDays
+                }
+                order "dateCreated", "desc"
             }
-            order "dateCreated", "desc"
         }
-    }
-
-    /**
-     * List all of the organizations a user is a member of.
-     * @param user
-     * @return
-     */
-    def listUserOrganizations( User user ) {
-        user.organizations
     }
 
     def readAdoptionContractTemplate( Organization org ) {
         AdoptionContractTemplate.findByOrganization( org )
     }
-
 }
