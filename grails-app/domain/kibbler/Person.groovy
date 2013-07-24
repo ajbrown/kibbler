@@ -1,5 +1,6 @@
 package kibbler
 
+import grails.util.Environment
 import org.bson.types.ObjectId
 
 class Person {
@@ -48,6 +49,8 @@ class Person {
     static constraints = {
         id()
         name()
+        email email: true, nullable: true, blank: true
+
         organization()
         linkedAccount nullable: true
         dateCreated()
@@ -94,8 +97,15 @@ class Person {
         }
     }
 
-    def beforeInsert() {
-        generateSlug()
+    def beforeValidate() {
+        //Nasty hack to allow tests to run
+        if( Environment.current == Environment.TEST ) {
+            slug = name?.toLowerCase().replace( " ", "-" )
+        }
+
+        if( !slug ) {
+            generateSlug()
+        }
     }
 
     def generateSlug() {

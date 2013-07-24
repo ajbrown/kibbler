@@ -1,7 +1,5 @@
 package kibbler
 
-
-
 import grails.test.mixin.*
 import grails.test.mixin.support.GrailsUnitTestMixin
 import spock.lang.Specification
@@ -44,6 +42,7 @@ class PersonSpec extends Specification {
 
         when:
 
+        person.name = "Bruce"
         person.doNotAdopt = true
         person.foster = true
         person.adopter = true

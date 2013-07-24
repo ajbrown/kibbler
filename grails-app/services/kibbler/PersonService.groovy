@@ -5,9 +5,9 @@ import org.bson.types.ObjectId
 
 class PersonService {
 
-    def userService
-    def organizationService
     def eventService
+    def organizationService
+    def userService
 
     /**
      * Create a new person.
@@ -22,7 +22,7 @@ class PersonService {
         def saved = person.insert()
         if( saved ) {
             org.addToPeople( person )
-            org.update( failOnError: true )
+            org.save( failOnError: true )
 
             eventService.create( EventType.PERSON_CREATE, person, creator )
         }
@@ -40,6 +40,8 @@ class PersonService {
      * @return
      */
     def Person read( id ) {
+        if( !id ) { return }
+
         def key = id instanceof ObjectId ? id : new ObjectId( id )
         Person.read( key )
     }
@@ -69,7 +71,7 @@ class PersonService {
         }
 
         person.lastUpdatedBy = updater
-        def saved = person.update()
+        def saved = person.save()
         if( saved ) {
             eventService.create( EventType.PERSON_UPDATE, person, updater, [fields] )
         }
@@ -86,7 +88,7 @@ class PersonService {
         person.doNotAdopt = true
         person.lastUpdatedBy = bannedBy
 
-        def saved = person.update()
+        def saved = person.save()
         if( saved ) {
             eventService.create( EventType.PERSON_ADD_DONOTADOPT, person, bannedBy )
         }
@@ -106,12 +108,12 @@ class PersonService {
         def user = userService.findByEmail( person.email )
         if( !user ) {
             //Create an account, which sends an invite email
-            user = userService.create( person.email )
+            user = userService.create( person.email, person.name )
         }
 
         person.linkedAccount = user
         organizationService.addUserToOrganization( person.organization, user, granter )
-        def saved = person.update()
+        def saved = person.save()
         if( saved ) {
             eventService.create( EventType.ORG_ADD_PERSON, person, granter )
         }
