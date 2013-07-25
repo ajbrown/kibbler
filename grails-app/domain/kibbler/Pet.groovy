@@ -1,5 +1,6 @@
 package kibbler
 
+import grails.util.Environment
 import org.bson.types.ObjectId
 
 class Pet {
@@ -13,7 +14,7 @@ class Pet {
     String assignedId
     String slug
 
-    String givenName
+    String name
     String description
     Species type
     String breed
@@ -52,7 +53,7 @@ class Pet {
     static mapping = {
         organization index: true
         slug index: true
-        sort "givenName"
+        sort "name"
     }
 
     static constraints = {
@@ -64,7 +65,7 @@ class Pet {
         sex   nullable: true, inList: [ 'male','female' ]
 
         status inList: STATUS_OPTIONS
-        givenName blank: false
+        name blank: false
 
         age nullable: true
         markings nullable: true
@@ -73,11 +74,11 @@ class Pet {
 
         adopter nullable: true, validator:  { Person val, Pet obj ->
             if( !val ) { return true }
-            val.organizationId == obj.organizationId ?: ['organization.mismatch']
+            val.organization == obj.organization ?: ['organization.mismatch']
         }
         foster  nullable: true, validator: { Person val, Pet obj ->
             if( !val ) { return true }
-            val.organizationId == obj.organizationId ?: ['organization.mismatch']
+            val.organization == obj.organization ?: ['organization.mismatch']
         }
 
         heartworm nullable: true
@@ -97,22 +98,38 @@ class Pet {
         assignedId nullable: true
     }
 
-    def getCurrentContract() {
+    /**
+     * Returns the current contract for the pet's adoption.  If the Pet is not currently adopted,
+     * or there was no contract for the latest adoption,  no contract will be returned.
+     *
+     * @return
+     */
+    def AdoptionContract getCurrentContract() {
         if( !status == 'adopted' || !adopter ) {
             return null
         }
 
-        AdoptionContract.createCriteria().list{
+        def adoptionRecord = AdoptionRecord.createCriteria().get {
             eq "adopter", adopter
+            eq "pet", this
             order "dateCreated", "desc"
-        }?.first()
+        }
+
+        adoptionRecord?.contract
     }
 
-    def beforeInsert() {
-        generateSlug()
+    def beforeValidation() {
+        //Nasty hack to allow tests to run
+        if( Environment.current == Environment.TEST ) {
+            slug = name.toLowerCase().replace( " ", "-" )
+        }
+
+        if( !slug ) {
+            generateSlug()
+        }
     }
 
     def generateSlug() {
-        slug = slugGeneratorService.generateSlug( this.class, "slug", "${breed ?: ''} ${givenName ?: ''}".trim(), true )
+        slug = slugGeneratorService.generateSlug( this.class, "slug", "${breed ?: ''} ${name ?: ''}".trim(), true )
     }
 }
