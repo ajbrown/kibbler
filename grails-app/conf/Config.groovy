@@ -63,7 +63,7 @@ grails.hibernate.cache.queries = false
 
 grails.converters.json.default.deep = true
 
-cloudinary.url = System.getenv( 'CLOUDINARY_URL' )
+cloudinary.url = System.getenv( 'CLOUDINARY_URL' ) ?: "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
 
 environments {
     development {
@@ -129,6 +129,7 @@ grails.plugins.springsecurity.userLookup.usernamePropertyName = "email"
 grails.plugins.springsecurity.authority.className = 'kibbler.Role'
 grails.plugins.springsecurity.securityConfigType = "Annotation"
 
+
 //DatabaseSession plugin does not work correctly with Mongo
 grails.plugin.databasesession.enabled = false
 
@@ -136,3 +137,41 @@ imageUpload {
     temporaryFile = '/tmp/uploaded.file'
 }
 
+
+grails {
+    mail {
+        host = "smtp.mandrillapp.com"
+        port = 587
+        username = "aj@intypica.com"
+        password = "McNEQPuGNCk5C5bKnm01IA"
+        props = ["mail.smtp.auth":"true",
+                "mail.smtp.socketFactory.port":"465",
+                "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+                "mail.smtp.socketFactory.fallback":"false"]
+    }
+}
+
+
+// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
+
+/* remove this line
+// GSP settings
+grails {
+    views {
+        gsp {
+            encoding = 'UTF-8'
+            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+            codecs {
+                expression = 'html' // escapes values inside null
+                scriptlet = 'none' // escapes output from scriptlets in GSPs
+                taglib = 'none' // escapes output from taglibs
+                staticparts = 'none' // escapes output from static template parts
+            }
+        }
+        // escapes all not-encoded output at final stage of outputting
+        filteringCodecForContentType {
+            //'text/html' = 'html'
+        }
+    }
+}
+remove this line */

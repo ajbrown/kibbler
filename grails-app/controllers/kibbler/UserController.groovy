@@ -11,16 +11,21 @@ class UserController {
 
     def index() {
         def user = springSecurityService.getCurrentUser() as User
+        def organizations = user.organizations
 
         withFormat{
             json {
                 def data = [:]
                 data.id = user.id.toString()
                 data.email = user.email
-                data.organizations = user.organizations.collect{ [ id: it.id.toString(), name: it.name ] }
+                data.organizations = organizations
                 render data as JSON
             }
         }
+    }
+
+    def activate() {
+
     }
 
 }

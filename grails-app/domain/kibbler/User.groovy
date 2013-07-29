@@ -9,6 +9,7 @@ class User implements UserDetails {
 	transient springSecurityService
 
     ObjectId id
+    String name
 	String email
 	String password
     String activationCode
@@ -19,13 +20,17 @@ class User implements UserDetails {
 	boolean accountLocked   = false
 	boolean passwordExpired = false
 
+    User invitedBy
+    Date dateCreated
+
     Set<String> roles = []
 
 	static constraints = {
-        email blank: false, unique: true, index: [unique: true]
+        email blank: false, unique: true, email: true, index: [unique: true]
         password nullable: true
         activated nullable: true
         activationCode nullable: true
+        invitedBy nullable: true
 	}
 
 	static mapping = {
@@ -42,10 +47,18 @@ class User implements UserDetails {
         OrgRole.countByUserAndOrganization( this, lookup ) > 0
     }
 
+    /**
+     * Returns all organizations this user belongs to.
+     * @return
+     */
     Set<Organization> getOrganizations() {
-        OrgRole.findAllByUser( this )*.organization
+        OrgRole.findAllByUserAndOrganizationIsNotNull( this )*.organization
     }
 
+    /**
+     * Returns all security authorities this user belongs to.  Most users only belong to ROLE_USER.
+     * @return
+     */
 	Set<GrantedAuthority> getAuthorities() {
         roles.collect{ role -> [getAuthority: {-> role} ] as GrantedAuthority }
 	}

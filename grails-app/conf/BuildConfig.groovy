@@ -21,7 +21,7 @@ grails.project.dependency.resolution = {
     }
     log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     checksums true // Whether to verify checksums on resolve
-    legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+    //legacyResolve false // whether to do a secondary resolve on plugin installation,  not advised and here for backwards compatibility
 
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
@@ -65,8 +65,11 @@ grails.project.dependency.resolution = {
         compile ":ajax-uploader:1.1"
         compile ":cache-headers:1.1.5"
         compile ":fields:1.3"
-        compile ":font-awesome-resources:3.2.1.1"
+        compile (":font-awesome-resources:3.2.1.1") {
+            exclude "resources"
+        }
         compile ":jquery-ui:1.8.24"
+        compile ":mail:1.0.1"
         compile ":mongodb:1.3.0"
         compile ":rendering:0.4.4"
         compile ':cache:1.1.1'
