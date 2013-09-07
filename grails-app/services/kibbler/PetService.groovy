@@ -228,6 +228,26 @@ class PetService {
         }
     }
 
+    /**
+     * Submits an adoption application
+     * @param pet
+     * @param cmd
+     * @return
+     */
+    def AdoptionApplication submitApplication( Pet pet, AdoptionApplyCommand cmd ) {
+        def saved
+        if( cmd.validate() ) {
+            def app   = new AdoptionApplication( pet: pet, name: cmd.name, email: cmd.email, phone: cmd.phone )
+            saved = app.save()
+
+            if( saved ) {
+                eventService.create( EventType.PET_APPLICATION, pet, null, [app] )
+            }
+        }
+
+        saved
+    }
+
     private String uploadSignature( AdoptionContract contract ) {
         def bucket = grailsApplication.config.contractsBucket
         def meta = new ObjectMetadata()

@@ -2,6 +2,7 @@ package kibbler
 
 import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
+import org.bson.types.ObjectId
 import org.springframework.web.servlet.support.RequestContextUtils
 
 import javax.servlet.http.HttpServletRequest
@@ -43,7 +44,7 @@ class EventService {
      * @return
      */
     @CachePut( value='last-event', key='#subject' )
-    def create( EventType et, Pet subject, User actor, List args = null ) {
+    def create( EventType et, Pet subject, User actor = null, List args = null ) {
         Event event
         def userPerson = Person.findByLinkedAccountAndOrganization( actor, subject.organization )
         def newArgs = ([subject.id, subject.class, userPerson.id] + args)
@@ -53,7 +54,7 @@ class EventService {
 
         def lastEvent = lastEvent( subject )
         def cuttOff = System.currentTimeMillis() - (60 * 15 * 1000) //15 minutes ago
-        if( lastEvent?.actor == actor && lastEvent?.type == et && lastEvent?.dateCreated?.time >= cuttOff ) {
+        if( actor && lastEvent?.actor == actor && lastEvent?.type == et && lastEvent?.dateCreated?.time >= cuttOff ) {
             event = lastEvent
 
             //Append to the fields that were updated
@@ -85,8 +86,9 @@ class EventService {
     def create( EventType et, Organization subject, User actor, List args = null  ) {
         def userPerson = Person.findByLinkedAccountAndOrganization( actor, subject )
 
-        def newArgs = [subject.id, subject.class, userPerson.id] + args
+        def newArgs = [subject.id, subject.class, userPerson?.id] + args
         def event = new Event(
+                id: new ObjectId(),
                 organization: subject,
                 actor: actor,
                 args: newArgs,

@@ -12,4 +12,8 @@ class JSONResponseEnvelope {
     Collection errors = []
 
     Object data
+
+    def isSuccess() {
+        return status in 200..210 && !errors
+    }
 }

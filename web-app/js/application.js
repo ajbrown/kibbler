@@ -288,8 +288,10 @@ window.PetWrapper = function( pet ) {
 
 window.OrgWrapper = function( org ) {
     var self = this;
+    console.log( org );
+    var id = ko.utils.unwrapObservable( org.id );
 
-    this.url = SERVER_URL + '/organization/' + org.id();
+    this.url = SERVER_URL + '/organization/' + id;
 
     this.historyDays = ko.observable();
     this.history = ko.observable();
@@ -386,7 +388,7 @@ window.AppService = (function() {
             var name;
 
             switch( type ) {
-                case 'pet':             name = obj.givenName;   break;
+                case 'pet':             name = obj.name;   break;
                 case 'person':          name = obj.name;        break;
                 case 'organization':    name = obj.name;        break;
             }

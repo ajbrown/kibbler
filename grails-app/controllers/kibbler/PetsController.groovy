@@ -1,12 +1,15 @@
 package kibbler
 
 import com.amazonaws.services.s3.AmazonS3Client
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.cloudinary.Cloudinary
 import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
 import org.imgscalr.Scalr
+import org.springframework.context.MessageSourceResolvable
+import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 import javax.imageio.ImageIO
@@ -49,6 +52,7 @@ class PetsController {
         params.pet = pet
     }
 
+
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
         def user = springSecurityService.currentUser as User
@@ -56,7 +60,12 @@ class PetsController {
         //Get all pets for all organizations this user belongs to.
         //TODO we may want to only return for the currently active organization
         // but for now we're developing in single organization mode anyway.
-        def pets = user.organizations.collectMany{ petService.readAllForOrg( it ) }
+
+        def pets
+
+        Pet.withStatelessSession {
+            pets = user.organizations.collectMany{ petService.readAllForOrg( it ) }
+        }
 
         withFormat{
             json{
@@ -115,7 +124,7 @@ class PetsController {
 
         if( cmd.validate() ) {
             def pet = new Pet(
-                    givenName: cmd.givenName,
+                    name: cmd.name,
                     sex: cmd.sex,
                     type: cmd.species,
                     breed: cmd.breed
@@ -252,6 +261,33 @@ class PetsController {
                 render jsonResponse as JSON
             }
         }
+    }
+
+    /**
+     * Retrieves a contract for the a pet.  If a contract ID is not supplied, the contract for the current adoption
+     * is returned.  If no contractId is supplied, and the pet is not currently adopted, nothing will be returned.
+     */
+    def contract() {
+        def jsonResponse = new JSONResponseEnvelope( status: 200 )
+
+        //TODO allow specifying of a contract id
+        def contract = params.pet.currentContract as AdoptionContract
+        if( !contract ) {
+            jsonResponse.status = 404
+            render jsonResponse as JSON
+            return
+        }
+
+        def bucket = grailsApplication.config.contractsBucket
+        def expiration = new Date()
+        expiration.time = expiration.time + (1000 * 60 * 60)
+
+        def url = amazonS3Client.generatePresignedUrl( bucket, contract.pdfS3key, expiration )
+
+        jsonResponse.status = 200
+        jsonResponse.data = [ downloadUrl: url, contract: contract ]
+
+        render jsonResponse as JSON
     }
 
     def history() {

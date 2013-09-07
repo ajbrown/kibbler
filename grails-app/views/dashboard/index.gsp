@@ -9,6 +9,7 @@
 
 <div class="row">
 
+<!-- ko if: orgs.active -->
 <ul class="nav nav-tabs" id="tabs">
     <li><a href="#pets" data-toggle="tab">Pets</a></li>
     <li><a href="#people" data-toggle="tab">People</a></li>
@@ -34,7 +35,7 @@
     </div>
 
 </div>
-
+<!-- /ko -->
 
 
 <div id="modal-create-org" class="reveal-modal">
@@ -77,6 +78,14 @@
     <form class="form" data-bind="with: createPet">
 
         <div class="control-group">
+            <label>Name</label>
+            <input type="text" name="name" data-bind="value: name">
+            <span class="help-inline">
+                <small><a href="#" data-bind="click: suggestName">Pick one for me!</a></small>
+            </span>
+        </div>
+
+        <div class="control-group">
             <label>Species</label>
             <select name="type" id="pet-create-species" data-bind="value: species">
                 <option value=""></option>
@@ -90,7 +99,6 @@
             <input type="text" name="breed" data-bind="value: breed, typeahead: breedSource">
         </div>
 
-
         <div class="control-group">
             <label>Gender</label>
             <label class="radio inline">
@@ -103,18 +111,9 @@
             </label>
         </div>
 
-
-        <div class="control-group">
-            <label>Name</label>
-            <input type="text" name="givenName" data-bind="value: givenName">
-            <span class="help-inline">
-                <small><a href="#" data-bind="click: suggestName">Pick one for me!</a></small>
-            </span>
-        </div>
-
         <hr>
         <button class="btn btn-primary" type="submit"
-                data-bind="text: 'Add ' + givenName(), click: submit"></button>
+                data-bind="text: 'Add ' + name(), click: submit"></button>
 
     </form>
 
@@ -125,7 +124,7 @@
 
 <r:require module="reveal"/>
 <r:script>
-
+;
 (function() {
 
     $('a[data-toggle="tab"]').on( 'shown', function(e) {
@@ -164,6 +163,10 @@
             $('#modal-org-add-finance').trigger('reveal:close');
         };
 
+        /**
+         * Provides the list of categories that can be used for a financial transaction in the origanization tab.
+         * @type {*}
+         */
         this.financeCategories = ko.observableArray([
             new FinanceCategory( 'Donation', '+', 'organization' ),
             new FinanceCategory( 'Vet Bill', '-', 'pet' ),
@@ -171,6 +174,9 @@
             new FinanceCategory( 'Other (Income)', '+', 'organization' )
         ]);
 
+        /**
+        * Create a new organization.  Once the organization is created, it will be switched to.
+        */
         self.submitCreateOrg = function() {
             var name = self.createOrgName().trim();
             if( name == '' ) {
@@ -179,8 +185,7 @@
 
             $.post( '<g:createLink controller="organization" action="create"/>', { 'name': name }, function( data ) {
                 if( data ) {
-                    self.list.push( data );
-                    self.active( data );
+                    self.setActive( data );
                     createModalElem.trigger('reveal:close');
                 } else {
                     alert( 'There was an error creating the organization.  Please try again.');
@@ -188,6 +193,13 @@
             });
         };
 
+        /**
+         * Switch to a new organization.  When switching to a new organization, the display must be updated, and the list
+         * of pets and people must also be updated.  We also perform some checks to see if we need to prompt the user for
+         * some input (such as if no pets currently belong to the organization).
+         *
+         * @param org the organization to switch to.
+         */
         self.setActive = function( org ) {
 
             if( typeof org == 'function' ) {
@@ -196,15 +208,17 @@
 
             if( typeof org == 'string' ) {
                 $.getJSON( SERVER_URL + '/organization/' + org, function( data ) {
-                    self.setActive( ko.mapping.fromJS( data.data ) );
+                    self.setActive( data.data );
                     AppService.preCache( 'organizations', data.data );
                 });
                 return;
             }
 
+            org = ko.mapping.fromJS( org );
             org = $.extend( org, new OrgWrapper( org ) );
             org.populateHistory( 30 );
 
+            self.list.push( org );
             self.active( org );
             $('#org-label').text( org.name() );
 
@@ -213,8 +227,9 @@
                 self.active( org );
                 AppService.activeOrg = org.id();
                 $('#org-label').text( org.name() );
-            });
 
+                console.log( org.pets );
+            });
 
         }
 
@@ -380,7 +395,7 @@
         this.createType  = ko.observable();
         this.createOrgId = ko.observable();
 
-        this.listSortField     = ko.observable('givenName');
+        this.listSortField     = ko.observable('name');
         this.listSortDirection = ko.observable('asc');
 
         this.adopt = function( pet, event ) {
@@ -559,6 +574,24 @@
                 self.orgs.list( ko.mapping.fromJS( data.organizations ) );
                 self.orgs.setActive( ko.mapping.fromJS( data.organizations[0].id ) )
             }
+        }
+
+        /**
+         * Switch to a new organization.  When switching to a new organization, the display must be updated, and the list
+         * of pets and people must also be updated.  We also perform some checks to see if we need to prompt the user for
+         * some input (such as if no pets currently belong to the organization).
+         *
+         * @param org the organization to switch to.
+         */
+        self.switchOrganization = function( org ) {
+
+            this.orgs.active( org );
+            this.pets;
+
+            //Check for pets in the organization.  If the organization does not have any pets, prompt the user to add some.
+            //To get users started quickly, this prompt includes a "quick add" prompt that will speed the process of getting
+            //pets into the system.
+
         }
 
         this.createPet = new CreatePetDialogue( this );
