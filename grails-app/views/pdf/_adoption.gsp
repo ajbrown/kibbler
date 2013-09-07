@@ -94,7 +94,7 @@
 <div class="form-section">
     <div class="form-item" style="width: 424px;">
         <strong>Animal: </strong>
-        <span class="value">${pet.givenName}</span>
+        <span class="value">${pet.name}</span>
     </div>
 
     <div class="form-item" style="width: 100px;">

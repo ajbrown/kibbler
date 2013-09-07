@@ -5,6 +5,8 @@ import org.bson.types.ObjectId
 
 class Pet {
 
+    static THUMBNAIL_PREFIX = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_150,h_150,c_thumb,g_faces,r_6'
+
     def slugGeneratorService
 
     static final STATUS_OPTIONS = [ 'available','hold','fostered','adopted','deceased' ]
@@ -118,7 +120,7 @@ class Pet {
         adoptionRecord?.contract
     }
 
-    def beforeValidation() {
+    def beforeValidate() {
         //Nasty hack to allow tests to run
         if( Environment.current == Environment.TEST ) {
             slug = name.toLowerCase().replace( " ", "-" )
@@ -127,6 +129,22 @@ class Pet {
         if( !slug ) {
             generateSlug()
         }
+    }
+
+    def getThumbnail() {
+        def url
+
+        if( !photos ) {
+            return
+        }
+
+        def first = photos.first()
+
+        if( first && first.cloudinaryData ) {
+            url = THUMBNAIL_PREFIX + first.cloudinaryData.public_id + '.' + first.cloudinaryData.format
+        }
+
+        url
     }
 
     def generateSlug() {

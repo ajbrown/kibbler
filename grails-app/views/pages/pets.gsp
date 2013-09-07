@@ -11,56 +11,151 @@
 <head>
   <title></title>
   <meta name="layout" content="public">
-  <r:require module="coverflow"/>
+
+  <r:require modules="coverflow,reveal"/>
+
+   <style>
+#wrap > .container {
+    padding: 60px 15px 0;
+}
+.container .credit {
+    margin: 20px 0;
+}
+
+#footer > .container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+code {
+    font-size: 80%;
+}
+   </style>
 
 </head>
 <body>
 
 <header class="public-header">
-    <h1>${pet.givenName}</h1>
-    <p class="lead">${pet.breed} (${pet.sex})</p>
+    <div>
+        <h1 class="media-heading">Meet "${pet.name}."</h1>
+        <ul class="nav nav-pills pull-right">
+            <li> <a href="#" id="apply-button">Apply to Adopt</a> </li>
+            <li> <a href="#" id="share-button">Share</a> </li>
+            <li> <a href="#about-${pet.organization.slug}" id="about-button">About ${pet.organization.name}</a></li>
+        </ul>
+    </div>
+    <p class="lead">A ${pet.age ? pet.age + " y/o" : "" } ${pet.sex.capitalize() ?: ''} ${pet.breed}.</p>
 </header>
 
-<section class="container">
-    <div class="span3" id="public-pet-org-summary">
-        <h4>${pet.organization.name}</h4>
-        <p>${pet.organization.description}</p>
-    </div>
-    <div class="span6" id="public-pet-main" style="">
 
+<section class="container" id="photos-${pet.slug}">
+
+<g:if test="${pet.photos}">
         <div id="pet-photos-carousel" style="width:300px;margin:0 auto;"> </div>
 
-        <p style="margin-top: 12px;">${pet.description}</p>
 
     </div>
-    <div class="span2" id="public-pet-right">
-        <div class="">
-            <ul class="nav nav-tabs nav-stacked">
-                <li> <a href="#">Apply to Adopt</a> </li>
-                <li> <a href="#">Share</a> </li>
-                <li> <a href="#">Contact</a> </li>
-            </ul>
-        </div>
+</section>
+</g:if>
 
-        <div class="pet-options">
-            <% fields = ['heartworm','housebroken','microchipped','neutered','specialNeeds'] %>
-            <ul class="nav">
+<section class="container" id="about-${pet.slug}" role="main">
+    <h3>About ${pet.name}</h3>
+
+    <p style="margin-top: 12px;">${pet.description}</p>
+
+    <div class="pet-options">
+        <% fields = ['heartworm','housebroken','microchipped','neutered','specialNeeds'] %>
+        <ul class="nav">
             <g:each in="${fields.findAll{ pet[it] }}">
                 <li><b class="icon-check"></b> <g:message code="pet.fields.${it}" default="${it}"/></li>
             </g:each>
-            </ul>
-        </div>
+        </ul>
     </div>
 </section>
 
+<section class="container" id="about-${pet.organization.slug}">
+    <h3>About ${pet.organization.name}</h3>
+
+    <g:if test="${pet.organization.description}">
+        <p>${pet.organization.description}</p>
+    </g:if>
+    <g:else>
+        <p>${pet.organization.name} is using Kibbler to manage their lovable animals.  </p>
+    </g:else>
+
+</section>
+
+<!-- Pet Adoption Modal -->
+<div class="reveal-modal" id="apply-adopt-modal">
+
+    <legend data-bind="">Apply for Adoption</legend>
+
+    <g:form controller="pages" action="apply" params="[slug:pet.slug]" method="post" name="adoption-form" class="form">
+
+        <div class="alert" style="display:none;"></div>
+
+        <p>To apply to adopt ${pet.name}, please fill out the information below.  You will be contacted by a
+        representative shortly.</p>
+
+        <label>First & Last Name</label>
+        <input type="text" name="name"/>
+
+        <label>Phone Number</label>
+        <input type="text" name="phone"/>
+
+        <label>Email Address</label>
+        <input type="text" name="email"/>
+
+        <hr/>
+
+        <a class="pull-right btn btn-inverse" onclick="$('#apply-adopt-modal').trigger('reveal:close')">Cancel</a>
+
+        <button type="submit" class="btn btn-primary">Submit Application</button>
+
+        <input type="hidden" name="petId" value="${pet.id}"/>
+
+    </g:form>
+</div>
+
 <r:script>
     (function() {
+
+        $( '#apply-button' ).on( 'click', function( event ) {
+            event.preventDefault();
+            $('#apply-adopt-modal').reveal();
+        });
+
+        $( '#adoption-form' ).on( 'submit', function( event ) {
+            var $this = $(this);
+            event.preventDefault();
+            $.post( $this.attr('action'), $this.serialize() )
+                .done( function() {
+                    $('#adoption-form .alert')
+                        .removeClass( 'alert-error')
+                        .addClass( 'alert-success' )
+                        .text( 'Your application has been submitted!' )
+                        .fadeIn()
+                        ;
+
+                    $('#apply-adopt-modal').delay( 5000 ).trigger( 'reveal:close' );
+                })
+                .fail( function() {
+                    $('#adoption-form .alert')
+                        .removeClass( 'alert-error' )
+                        .addClass( 'alert-success')
+                        .text( 'There was a problem submitting your application.  Please try again.' )
+                        .fadeIn()
+                        ;
+
+                });
+        });
+
         $('#pet-photos-carousel').coverflow({
            flash: '<g:createLinkTo file="js/coverflow/coverflow.swf"/>',
            backgroundcolor: 'FFFFFF',
            playlist: [
                 <g:each in="${pet.photos}" status="i" var="it">
-                    {"image": "${it.standardUrl}", "title" : "${it.pet.givenName}"},
+                    {"image": "${it.standardUrl}", "title" : "${it.pet.name}"},
                 </g:each>
            ],
             coverwidth: 250,

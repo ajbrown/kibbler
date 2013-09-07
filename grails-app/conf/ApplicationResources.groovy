@@ -74,4 +74,9 @@ modules = {
         resource url:'js/application.js'
         resource url:'js/viewmodels.js'
     }
+
+    petPages {
+        dependsOn 'jquery'
+        resource url: '/css/pet-pages.css'
+    }
 }

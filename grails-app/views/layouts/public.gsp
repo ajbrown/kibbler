@@ -13,17 +13,19 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <style>
-    body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-    }
-    </style>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
 
     <script>
         var SERVER_URL = '<g:createLink absolute="true" uri=""/>';
         var SERVER_PATH = '<g:createLink uri=""/>'
     </script>
-    <r:require modules="bootstrap,styling,knockout"/>
+    <r:require module="petPages"/>
 
     <r:layoutResources />
 
@@ -40,33 +42,22 @@
 
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container-fluid">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <a class="brand" href="#">Kibbler</a>
 
-            <span class="organization-title">${pet.organization.name}</span>
-        </div>
+<div id="wrap">
+
+    <!-- Begin page content -->
+    <div class="container">
+    <g:layoutBody/>
     </div>
 </div>
 
+<div id="footer">
+    <div class="container">
+        <p class="text-muted credit">Copyright &copy; 2013 Kibbler.com, LLC.  <a href="#">Get your account today.</a>
+        </p>
+    </div>
+</div>
 
-
-<div class="container">
-
-    <g:layoutBody/>
-
-</div> <!-- /container -->
-
-
-
-
-<g:javascript library="application"/>
 <r:layoutResources/>
 
 </body>
