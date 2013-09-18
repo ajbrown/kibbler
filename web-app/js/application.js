@@ -288,7 +288,6 @@ window.PetWrapper = function( pet ) {
 
 window.OrgWrapper = function( org ) {
     var self = this;
-    console.log( org );
     var id = ko.utils.unwrapObservable( org.id );
 
     this.url = SERVER_URL + '/organization/' + id;

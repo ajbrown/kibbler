@@ -13,18 +13,20 @@ var CreatePetDialogue = function( parent ) {
     this.species = ko.observable('DOG');
     this.sex = ko.observable('');
     this.breed = ko.observable('');
-    this.givenName = ko.observable('');
+    this.name = ko.observable('');
 
     this.reset = function() {
         self.species('DOG');
         self.sex('');
         self.breed('');
-        self.givenName('');
+        self.name('');
     }
 
     this.orgId = ko.computed( function() {
         var active = parent.orgs.active();
-        return active && active.id ? active.id() : null
+        if( active ) {
+            return ko.utils.unwrapObservable( active.id );
+        }
     }, this );
 
     this.isMale = ko.computed({
@@ -47,7 +49,7 @@ var CreatePetDialogue = function( parent ) {
             var params = { species: species, sex: sex }
 
             $.getJSON( SERVER_URL + '/suggestions/name', params, function( data ) {
-                pet.givenName( data.data );
+                pet.name( data.data );
             } );
         }
     }

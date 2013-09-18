@@ -10,15 +10,15 @@
         <li data-bind="attr: { 'data-id': id }, css: { active: id() == $root.pets.activeId() }">
             <a href="#"
                data-bind="
-                    attr: { href: '#pets/' + id() }, text: givenName"></a>
+                    attr: { href: '#pets/' + id() }, text: name"></a>
         </li>
         <!-- /ko -->
     </ul>
 </div>
-<section id="pets-dashboard" class="span9 main-section" data-bind="if: !pets.active()">
+<%--section id="pets-dashboard" class="span9 main-section" data-bind="if: !pets.active() && pets.list()">
 
     <figure class="card">
-        <h4 data-bind="text: givenName"></h4>
+        <h4 data-bind="text: name"></h4>
         <!-- ko if: tinyThumbUrl -->
         <img data-bind="attr: { src: tinyThumbUrl }" src="" alt="">
         <!-- /ko -->
@@ -32,14 +32,14 @@
                 <img data-bind="attr: { src: tinyThumbUrl }"src="" alt="">
                 <!-- /ko -->
                 <div class="card-info">
-                    <h4 data-bind="text: givenName"></h4>
+                    <h4 data-bind="text: name"></h4>
                     <span class="breed" data-bind="text: breed"></span>
                     <span class="status" data-bind="html: statusLabel"></span>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</section--%>
 
 <section class="span9 main-section" id="pet-info-pane" data-bind="with: pets.active()">
     <form id="status-info-form" data-bind="attr: { action: url }" method="post">
@@ -52,7 +52,7 @@
                     <small class="pull-right" id="pet-type-label"
                            data-bind="text: typeLabel"></small>
                     <span class="editable"
-                        data-bind="text: givenName"></span>
+                        data-bind="text: name"></span>
                 </legend>
 
             </div>
@@ -61,9 +61,9 @@
 
         <div class="row">
 
-            <ul class="nav nav-pills">
+            <ul class="nav nav-pills pull-right">
                 <li class="dropdown">
-                    <a class="dropdown-toggle" id="change-status-menu-toggle"
+                    <a class="" id="change-status-menu-toggle"
                        role="button" data-toggle="dropdown" href="#">Actions <i class="icon-reorder"></i></a>
                     <ul class="dropdown-menu">
                         <li role="presentation">
@@ -197,8 +197,16 @@
             </div>
             <div class="span5">
                 <div class="editable-text">
-                    <a href="#" class="pull-right"><span data-bind="text: historyDays">30</span>
-                        days <i class="icon-calendar"></i></a>
+                    <a href="#" class="pull-right ">
+                        <span data-bind="text: historyDays">30</span>
+                        days <i class="icon-calendar"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li role="presentation"><a role="menuitem" href="#" data-bind="">60 days</a></li>
+                        <li role="presentation"><a role="menuitem" href="#" data-bind="">14 days</a></li>
+                        <li role="presentation"><a role="menuitem" href="#" data-bind=""> 7 days</a></li>
+                    </ul>
+
                     <label>History</label>
                     <div style="max-height: 200px; overflow-y: auto;">
                         <!--TODO This should be an ordered list, not a table. -->
@@ -239,7 +247,7 @@
         <form class="form-horizontal" method="post"
               data-bind="attr: { action: url + '/adopt' }">
             <fieldset>
-                <legend data-bind="text: 'Adopt ' + givenName()">Adopt</legend>
+                <legend data-bind="text: 'Adopt ' + name()">Adopt</legend>
                 <label><g:message code="pet.adoptmodal.adopter.label" default="Choose an adopter"/></label>
                 <select name="adopter"
                         data-bind="options: $root.people.listAdopters(), optionsText: 'name', optionsValue: 'id'">
@@ -304,7 +312,7 @@
                 target="pet_photo_upload"
                 action="" method="post" enctype="multipart/form-data">
             <fieldset>
-                <legend data-bind="text: 'Upload Photos of ' + givenName()">Upload Photos</legend>
+                <legend data-bind="text: 'Upload Photos of ' + name()">Upload Photos</legend>
                 <input id="fileupload" type="file" name="photos" multiple>
                 <input type="hidden" name="petId" value="" data-bind="value: id()"/>
                 <button type="submit" class="btn btn-primary">Upload</button>

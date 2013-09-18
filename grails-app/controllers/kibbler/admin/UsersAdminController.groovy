@@ -15,5 +15,8 @@ class UsersAdminController {
     def invite( InviteUserCommand cmd ) {
         def user = springSecurityService.principal as User
         userService.invite( cmd.email, cmd.name, user )
+
+        flash.message = "${cmd.name} <${cmd.email}> has been invited."
+        redirect( controller: "usersAdmin", action: "index" )
     }
 }

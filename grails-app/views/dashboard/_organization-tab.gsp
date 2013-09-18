@@ -78,7 +78,7 @@
             <label>For</label>
             <select name="for"
                     data-bind="value: pet, enable: selected() && selected().scope == 'pet',
-                            options: $root.pets.list(), optionsCaption: 'Choose...', value: 'id', optionsText: 'givenName'">
+                            options: $root.pets.list(), optionsCaption: 'Choose...', value: 'id', optionsText: 'name'">
             </select>
         </div>
 

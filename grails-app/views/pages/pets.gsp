@@ -90,27 +90,35 @@ code {
 
     <legend data-bind="">Apply for Adoption</legend>
 
-    <g:form controller="pages" action="apply" params="[slug:pet.slug]" method="post" name="adoption-form" class="form">
+    <g:form
+            controller="pages" action="apply" params="[slug:pet.slug]" method="post"
+            name="adoption-form" class="form" role="form">
 
         <div class="alert" style="display:none;"></div>
 
         <p>To apply to adopt ${pet.name}, please fill out the information below.  You will be contacted by a
         representative shortly.</p>
 
-        <label>First & Last Name</label>
-        <input type="text" name="name"/>
+        <div class="form-group">
+            <label for="adoption-form-name">What's your <strong>name</strong>?</label>
+            <input class="form-control" type="text" name="name" id="adoption-form-name"/>
+        </div>
 
-        <label>Phone Number</label>
-        <input type="text" name="phone"/>
+        <div class="form-group">
+            <label for="adoption-form-name">What's your <strong>phone number</strong>?</label>
+            <input class="form-control" type="text" name="phone" id="adoption-form-phone"/>
+        </div>
 
-        <label>Email Address</label>
-        <input type="text" name="email"/>
+        <div class="form-group">
+            <label for="adoption-form-email">What's your <strong>email address</strong>?</label>
+            <input class="form-control" type="text" name="email" id="adoption-form-email"/>
+        </div>
 
         <hr/>
 
-        <a class="pull-right btn btn-inverse" onclick="$('#apply-adopt-modal').trigger('reveal:close')">Cancel</a>
-
         <button type="submit" class="btn btn-primary">Submit Application</button>
+
+        <a class="pull-right btn btn-default" onclick="$('#apply-adopt-modal').trigger('reveal:close')">Cancel</a>
 
         <input type="hidden" name="petId" value="${pet.id}"/>
 

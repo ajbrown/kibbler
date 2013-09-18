@@ -81,7 +81,9 @@
             </div>
             <div class="span5">
                 <div class="editable-text">
+
                     <label for="person-notes">Notes <small>(Organization Visible)</small></label>
+
                     <textarea
                             id="person-notes"
                             name="notes"
@@ -104,7 +106,7 @@
                 <div>
                     <a href="#"
                        data-bind="click: $parent.removeFoster"><i class="icon-remove"></i></a>&nbsp;
-                    <span data-bind="text: givenName()"></span>
+                    <span data-bind="text: name()"></span>
                 </div>
                 <!-- /ko -->
 
@@ -117,7 +119,7 @@
                 <div>
                     <a href="#"
                        data-bind="click: $parent.removeAdoption"><i class="icon-remove"></i></a>&nbsp;
-                    <span data-bind="text: givenName()"></span>
+                    <span data-bind="text: name()"></span>
                 </div>
                 <!-- /ko -->
 
@@ -138,6 +140,9 @@
 
         <!-- Edit Address Modal -->
         <div class="reveal-modal" id="person-edit-address-modal">
+
+            <div class="alert" style="display:none;"></div>
+
             <legend data-bind="text: 'Edit ' + name() + '\'s Contact Info'">Edit Contact Info</legend>
 
             <label>Company Name</label>
@@ -152,7 +157,11 @@
             <label>E-mail</label>
             <input type="text" name="email" data-bind="value: email, autosave: true"/>
 
-            <button type="button" class="btn">Done.</button>
+            <hr/>
+
+            <button type="button" class="btn btn-primary"
+                    data-bind="click: function() { $('#person-edit-address-modal').trigger('reveal:close') }">I'm
+            Finished</button>
         </div>
 
     </form>

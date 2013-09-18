@@ -3,19 +3,12 @@
 
 <%  excludedProps = Event.allEvents.toList() << 'version' << 'dateCreated' << 'lastUpdated'
 	persistentPropNames = domainClass.persistentProperties*.name
-    order = 0
-    constraintsOrder = domainClass.constrainedProperties.collectEntries{ [ it.value.propertyName, order++ ] }
-    boolean hasHibernate = pluginManager?.hasGrailsPlugin('hibernate')
+	boolean hasHibernate = pluginManager?.hasGrailsPlugin('hibernate')
 	if (hasHibernate && org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder.getMapping(domainClass)?.identity?.generator == 'assigned') {
 		persistentPropNames << domainClass.identifier.name
 	}
-	props = domainClass.properties
-            .findAll { persistentPropNames.contains(it.name) && !excludedProps.contains(it.name) }
-            .sort{ a,b ->
-                def aPos = constraintsOrder[a.name] ?: 99
-                def bPos = constraintsOrder[b.name] ?: 99
-                aPos <=> bPos
-            }
+	props = domainClass.properties.findAll { persistentPropNames.contains(it.name) && !excludedProps.contains(it.name) }
+	Collections.sort(props, comparator.constructors[0].newInstance([domainClass] as Object[]))
 	for (p in props) {
 		if (p.embedded) {
 			def embeddedPropNames = p.component.persistentProperties*.name
@@ -41,13 +34,11 @@ private renderFieldForProperty(p, owningClass, prefix = "") {
 		required = (cp ? !(cp.propertyType in [boolean, Boolean]) && !cp.nullable && (cp.propertyType != String || !cp.blank) : false)
 	}
 	if (display) { %>
-<div class="control-group \${hasErrors(bean: ${propertyName}, field: '${prefix}${p.name}', 'error')} ${required ? 'required' : ''}">
-	<label class="control-label" for="${prefix}${p.name}">
+<div class="fieldcontain \${hasErrors(bean: ${propertyName}, field: '${prefix}${p.name}', 'error')} ${required ? 'required' : ''}">
+	<label for="${prefix}${p.name}">
 		<g:message code="${domainClass.propertyName}.${prefix}${p.name}.label" default="${p.naturalName}" />
 		<% if (required) { %><span class="required-indicator">*</span><% } %>
 	</label>
-    <div class="controls">
-        ${renderEditor(p)}
-    </div>
+	${renderEditor(p)}
 </div>
 <%  }   } %>

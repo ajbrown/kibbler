@@ -10,7 +10,7 @@ import org.bson.types.ObjectId
 class CreatePetCommand {
 
     String orgId
-    String givenName
+    String name
     String sex
     Species species
     String breed

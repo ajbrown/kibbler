@@ -25,6 +25,20 @@ class UserService implements UserDetailsService {
     }
 
     /**
+     * Activate a user.  Usually this is triggered after a user has clicked on an activation link and filled out
+     * their information.
+     *
+     * @param user
+     * @return
+     */
+    def activate( User user ) {
+        user.activationCode = null
+        user.activated = true
+        user.enabled = true
+        user.save( flush: true )
+    }
+
+    /**
      * Create a new user by email address.  If an organization is specified, they will be added to that org.
      * @param emailAddress
      * @param org
@@ -47,6 +61,15 @@ class UserService implements UserDetailsService {
     @CacheEvict(value='users-by-email',key='#user.email.toLowerCase()')
     def save( User user ) {
         user.save()
+    }
+
+    /**
+     * Find a user with the specified activation code.
+     * @param code
+     * @return
+     */
+    def findByActivationCode( String code ) {
+        User.findByActivationCode( code )
     }
 
     @Cacheable('users-by-email')

@@ -20,22 +20,13 @@
 			<g:if test="\${flash.message}">
 			<div class="message" role="status">\${flash.message}</div>
 			</g:if>
-			<table class="table table-striped">
+			<table>
 				<thead>
 					<tr>
 					<%  excludedProps = Event.allEvents.toList() << 'id' << 'version'
 						allowedNames = domainClass.persistentProperties*.name << 'dateCreated' << 'lastUpdated'
-                        order = 0
-                        constraintsOrder = domainClass.constrainedProperties.collectEntries{
-                            [ it.value.propertyName, order++ ] }
-
-						props = domainClass.properties
-                                .findAll { allowedNames.contains(it.name) && !excludedProps.contains(it.name) && it.type != null && !Collection.isAssignableFrom(it.type) }
-                                .sort{ a,b ->
-                                    def aPos = constraintsOrder[a.name] ?: 99
-                                    def bPos = constraintsOrder[b.name] ?: 99
-                                    aPos <=> bPos
-                                }
+						props = domainClass.properties.findAll { allowedNames.contains(it.name) && !excludedProps.contains(it.name) && it.type != null && !Collection.isAssignableFrom(it.type) }
+						Collections.sort(props, comparator.constructors[0].newInstance([domainClass] as Object[]))
 						props.eachWithIndex { p, i ->
 							if (i < 6) {
 								if (p.isAssociation()) { %>
@@ -50,8 +41,7 @@
 					<tr class="\${(i % 2) == 0 ? 'even' : 'odd'}">
 					<%  props.eachWithIndex { p, i ->
 							if (i == 0) { %>
-						<td><g:link controller="\${${propertyName}sAdmin}" action="show" id="\${${propertyName}.id}">\${fieldValue(bean
-						: ${propertyName}, field: "${p.name}")}</g:link></td>
+						<td><g:link action="show" id="\${${propertyName}.id}">\${fieldValue(bean: ${propertyName}, field: "${p.name}")}</g:link></td>
 					<%      } else if (i < 6) {
 								if (p.type == Boolean || p.type == boolean) { %>
 						<td><g:formatBoolean boolean="\${${propertyName}.${p.name}}" /></td>

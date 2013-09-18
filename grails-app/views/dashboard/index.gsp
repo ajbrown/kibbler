@@ -227,8 +227,6 @@
                 self.active( org );
                 AppService.activeOrg = org.id();
                 $('#org-label').text( org.name() );
-
-                console.log( org.pets );
             });
 
         }
@@ -360,19 +358,6 @@
             $( '[data-id]', peopleNav ).removeClass('active');
             $( '[data-id="' + person.id() + '"]', peopleNav ).addClass('active');
         };
-
-        //Construct
-        $.getJSON( SERVER_URL + '/people',
-                function(data) {
-                    var items = [];
-                    for( var i in data.data ) {
-                        items.push( ko.mapping.fromJS( data.data[i] ) );
-                    }
-
-                    ko.utils.arrayPushAll( self.list, items );
-                }
-        );
-
     };
 
     var PetsViewModel = function() {
@@ -541,20 +526,6 @@
             $( '[data-id]', petsNav ).removeClass('active');
             $( '[data-id="' + pet.id() + '"]', petsNav ).addClass('active');
         };
-
-        //Construction
-        $.get( SERVER_URL + '/pets',
-            function(data) {
-                var pets = [];
-
-                for( var i in data.data ) {
-                    var pet = ko.mapping.fromJS( data.data[i] );
-                    pet = $.extend( pet, new PetWrapper( pet ) );
-                    pets.push( pet );
-                }
-
-                self.list( pets ); }
-        );
     };
 
     var DashboardViewModel = function() {
@@ -572,7 +543,7 @@
                 self.orgs.showCreateModal();
             } else {
                 self.orgs.list( ko.mapping.fromJS( data.organizations ) );
-                self.orgs.setActive( ko.mapping.fromJS( data.organizations[0].id ) )
+                self.switchOrganization( data.organizations[0].id );
             }
         }
 
@@ -585,12 +556,53 @@
          */
         self.switchOrganization = function( org ) {
 
-            this.orgs.active( org );
-            this.pets;
+            //First we must tell the server that this session is now using a different organization.  The AJAX calls rely on the session
+            //to determine which organization we're loading data from at the moment.  Once that's done, we can load
+            //the pets and people for this org.
+            $.get( SERVER_URL + '/user/switchTo', {'org': org } )
+                .done( function( data ) {
+                    var newOrg = data.data;
 
-            //Check for pets in the organization.  If the organization does not have any pets, prompt the user to add some.
-            //To get users started quickly, this prompt includes a "quick add" prompt that will speed the process of getting
-            //pets into the system.
+                    self.orgs.setActive( newOrg );
+
+                    //Check for pets in the organization.  If the organization does not have any pets, prompt the user to add some.
+                    //To get users started quickly, this prompt includes a "quick add" prompt that will speed the process of getting
+                    //pets into the system.
+                    $.getJSON( SERVER_URL + '/pets',
+                        function(data) {
+                            var pets = [];
+
+                            for( var i in data.data ) {
+                                var pet = ko.mapping.fromJS( data.data[i] );
+                                pet = $.extend( pet, new PetWrapper( pet ) );
+                                pets.push( pet );
+                            }
+
+                            self.pets.list( pets );
+
+                            if( pets.length == 0 ) {
+                                alert( 'You have no pets. Create one now.' );
+                            }
+                        }
+                    );
+
+                    //Load the people for this organization
+                    $.getJSON( SERVER_URL + '/people',
+                            function(data) {
+                                var items = [];
+                                for( var i in data.data ) {
+                                    items.push( ko.mapping.fromJS( data.data[i] ) );
+                                }
+
+                                self.people.list( items );
+                            }
+                    );
+
+
+                })
+                .fail( function() {
+                    alert( 'There was an unknown error switching to your organization.  Please contact us at support@kibbler.org' );
+                });
 
         }
 

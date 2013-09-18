@@ -1,4 +1,6 @@
 package kibbler
+
+import grails.plugin.spock.IntegrationSpec
 /**
  * Created with IntelliJ IDEA.
  * User: ajbrown

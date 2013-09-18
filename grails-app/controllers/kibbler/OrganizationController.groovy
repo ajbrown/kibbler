@@ -17,6 +17,8 @@ class OrganizationController {
     ObjectMapper objectMapper
 
     def beforeInterceptor = {
+        params.orgId = session.activeOrgId
+
         def skipActions = ['index','create']
 
         if( params.action in skipActions ) {

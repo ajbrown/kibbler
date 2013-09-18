@@ -26,7 +26,8 @@ class OrganizationService {
      */
     def createOrganization( String name, User creator ) {
         def org = new Organization( name: name )
-        org.members = [ new OrgRole( role: 'admin', user: creator ) ]
+        org.addToMembers( new OrgRole( role: 'admin', user: creator ) )
+        org.name = name
         org.createdBy = creator
 
         def saved = org.insert( failOnError: true )

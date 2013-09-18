@@ -106,7 +106,7 @@
 
             <div class="control-group">
                 <label>Name</label>
-                <input type="text" name="givenName" data-bind="value: givenName">
+                <input type="text" name="name" data-bind="value: name">
                 <span class="help-inline">
                     <small><a href="#" data-bind="click: suggestName">Pick one for me!</a></small>
                 </span>
@@ -114,7 +114,7 @@
 
             <hr>
             <button class="btn btn-primary" type="submit"
-                    data-bind="text: 'Add ' + givenName(), click: submit"></button>
+                    data-bind="text: 'Add ' + name(), click: submit"></button>
 
         </form>
 
@@ -375,7 +375,7 @@
         this.createType  = ko.observable();
         this.createOrgId = ko.observable();
 
-        this.listSortField     = ko.observable('givenName');
+        this.listSortField     = ko.observable('name');
         this.listSortDirection = ko.observable('asc');
 
         this.adopt = function( pet, event ) {

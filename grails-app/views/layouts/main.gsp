@@ -50,6 +50,9 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">Kibbler</a>
+
+            <sec:ifLoggedIn>
+
             <div class="nav-collapse collapse">
                 <p class="navbar-text pull-right">
                     Logged in as <a href="#" class="navbar-link"><sec:username/></a>
@@ -75,6 +78,9 @@
                     </li>
                 </ul>
             </div>
+
+            </sec:ifLoggedIn>
+
         </div>
     </div>
 </div>

@@ -55,7 +55,6 @@ class OrganizationServiceSpec extends Specification {
 
     def "transactions can be added"() {
         def org = new Organization( name: 'Kibbler', id: new ObjectId() )
-        def pet = new Pet( givenName: 'Odie', breed: 'Poodle Mix', sex: 'male', type: Species.DOG )
 
         when:
 

@@ -12,6 +12,10 @@ class UrlMappings {
             action = "photo"
         }
 
+        "/activate"( controller: 'user', action: 'activate' )
+
+        "/user/switchTo"( controller: 'user', action: 'switchTo' )
+
         "/suggestions/$action"( controller: "suggestion" )
 
         "/pets/$id/$action" ( controller: 'pets' )

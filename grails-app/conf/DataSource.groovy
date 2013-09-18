@@ -12,6 +12,15 @@ environments {
     development {
     }
     test {
+        grails {
+            mongo {
+                host = "localhost"
+                port = 27017
+                //username = "kibbler"
+                //password = "kibbler"
+                databaseName = "kibbler_test"
+            }
+        }
     }
     production {
         grails {

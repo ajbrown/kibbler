@@ -14,9 +14,27 @@
   border-radius: @radius;
 }
 
-
 .form-signin {
-  .drop-shadow( 2px, 15px, 100px, 0.35 );
+  .drop-shadow();
+
+  max-width: 300px;
+  padding: 19px 29px 29px;
+  margin: 0 auto 20px;
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+  font-size: 16px;
+  height: auto;
+  margin-bottom: 15px;
+  padding: 7px 9px;
 }
 
 body.simple {

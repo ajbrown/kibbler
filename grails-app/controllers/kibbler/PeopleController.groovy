@@ -15,6 +15,7 @@ class PeopleController {
     def objectMapper = new ObjectMapper()
 
     def beforeInterceptor = {
+        params.orgId  = session.activeOrgId
 
         def skipActions = ['index','create']
 
@@ -39,7 +40,11 @@ class PeopleController {
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
         def user = springSecurityService.currentUser as User
-        def people = user.organizations.collectMany{ personService.readAllForOrg( it ) }
+        def people
+
+        Person.withStatelessSession {
+            people = personService.readAllForOrg( Organization.load( params.orgId ) )
+        }
 
         withFormat{
             json{

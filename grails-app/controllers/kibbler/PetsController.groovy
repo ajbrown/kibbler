@@ -32,6 +32,8 @@ class PetsController {
     Cloudinary cloudinary
 
     def beforeInterceptor = {
+        params.orgId = session.activeOrgId
+
         def skipActions = ['index','create']
 
         if( params.action in skipActions ) {
@@ -56,15 +58,11 @@ class PetsController {
     def index() {
         def resp = new JSONResponseEnvelope( status: 200 )
         def user = springSecurityService.currentUser as User
-
-        //Get all pets for all organizations this user belongs to.
-        //TODO we may want to only return for the currently active organization
-        // but for now we're developing in single organization mode anyway.
-
         def pets
 
         Pet.withStatelessSession {
-            pets = user.organizations.collectMany{ petService.readAllForOrg( it ) }
+            pets = petService.readAllForOrg( Organization.load( params.orgId ) )
+
         }
 
         withFormat{

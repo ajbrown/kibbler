@@ -26,6 +26,7 @@ class AdoptionRecord {
     }
 
     static constraints = {
+        contract nullable: true
         createdBy nullable: true
         updatedBy nullable: true
     }

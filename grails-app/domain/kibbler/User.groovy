@@ -1,5 +1,6 @@
 package kibbler
 
+import com.amazonaws.services.cloudfront_2012_03_15.model.InvalidArgumentException
 import org.bson.types.ObjectId
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -43,7 +44,19 @@ class User implements UserDetails {
      * @return
      */
     Boolean belongsTo( org ) {
-        def lookup = org instanceof Organization ? org : new ObjectId( org )
+        def lookup
+        switch( true ) {
+            case org instanceof Organization:
+                lookup = org
+                break
+            case org instanceof ObjectId:
+                lookup = Organization.load( org )
+                break
+            case org instanceof String:
+                lookup = Organization.load( new ObjectId( org ) )
+            default:
+                throw new InvalidArgumentException( 'org must be a String or Organization')
+        }
         OrgRole.countByUserAndOrganization( this, lookup ) > 0
     }
 

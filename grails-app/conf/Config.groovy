@@ -68,7 +68,7 @@ cloudinary.url = System.getenv( 'CLOUDINARY_URL' ) ?: "cloudinary://361482238469
 environments {
     development {
         grails.logging.jul.usebridge = true
-        grails.resources.debug = true
+        //grails.resources.debug = true
         cache.headers.enabled = false
 
         cloudinary.url = "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
