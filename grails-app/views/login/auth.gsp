@@ -56,11 +56,9 @@
         <h2 class="form-signin-heading">Please sign in</h2>
         <input type="text" class="input-block-level"
                name="j_username"
-               value="aj@synklabs.com" <% //TODO: remove hardcoded username %>
                placeholder="<g:message code="springSecurity.login.username.label"/>">
         <input type="password" class="input-block-level"
                name="j_password"
-               value="123456" <% //TODO: remove hardcoded password %>
                placeholder="<g:message code="springSecurity.login.password.label"/>">
         <label class="checkbox">
             <input type="checkbox" name="${rememberMeParameter}" value="remember-me" <g:if test='${hasCookie}'>checked='checked'</g:if>>

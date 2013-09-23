@@ -65,6 +65,7 @@ class UserController {
             if( user ) {
                 user.name = cmd.name
                 user.password = cmd.password
+                user.activationCode = null
                 if( userService.activate( user ) ) {
                     springSecurityService.reauthenticate( user.email )
                     redirect( controller: 'dashboard', action: 'index' )
