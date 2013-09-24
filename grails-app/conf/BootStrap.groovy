@@ -44,7 +44,7 @@ class BootStrap {
         def userRole = Role.findOrCreateByAuthority( 'ROLE_USER' ).save()
         def adminRole = Role.findOrCreateByAuthority( 'ROLE_ADMIN' ).save()
 
-        [ 'A.J.':'aj@synklabs.com', 'David' : 'david@synklabs.com'].each{
+        [ 'A.J.':'aj@synklabs.com', 'David' : 'david@synklabs.com' ].each{
 
             def user = User.findByEmail( it.value )
             if( !user ) {

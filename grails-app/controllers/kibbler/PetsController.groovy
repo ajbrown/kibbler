@@ -110,15 +110,12 @@ class PetsController {
 
     def create( CreatePetCommand cmd ) {
         cmd.clearErrors()
+        cmd.orgId = params.orgId
+
         def user = springSecurityService.currentUser as User
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
-        def org  = organizationService.read( cmd.orgId )
-
-        //make sure the organization belongs to the user
-        if( !user.belongsTo( org ) ) {
-            throw new Exception( "You don't belong to the specified organization." )
-        }
+        def org  = organizationService.read( params.orgId )
 
         if( cmd.validate() ) {
             def pet = new Pet(

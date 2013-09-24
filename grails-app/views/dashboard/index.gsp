@@ -73,9 +73,25 @@
 </div>
 
 <div id="modal-create-pet" class="reveal-modal">
-    <h1>Create a Pet</h1>
+    <legend>Create a Pet</legend>
+
+    <p class="modal-help" data-bind="visible: pets.list().length == 0">
+        You don't have any pets in your organization yet!  Use the form below to create a new pet.
+    </p>
 
     <form class="form" data-bind="with: createPet">
+
+        <div class="control-group">
+            <label>Gender</label>
+            <label class="radio inline">
+                <input type="radio" name="gender" data-bind="checked: isFemale">
+                <g:message code="label.female" default="Female"/>
+            </label>
+            <label class="radio inline">
+                <input type="radio" name="gender" value="female" data-bind="checked: isMale">
+                <g:message code="label.male" default="Male"/>
+            </label>
+        </div>
 
         <div class="control-group">
             <label>Name</label>
@@ -97,18 +113,6 @@
         <div class="control-group">
             <label>Breed</label>
             <input type="text" name="breed" data-bind="value: breed, typeahead: breedSource">
-        </div>
-
-        <div class="control-group">
-            <label>Gender</label>
-            <label class="radio inline">
-                <input type="radio" name="gender" data-bind="checked: isFemale">
-                <g:message code="label.female" default="Female"/>
-            </label>
-            <label class="radio inline">
-                <input type="radio" name="gender" value="female" data-bind="checked: isMale">
-                <g:message code="label.male" default="Male"/>
-            </label>
         </div>
 
         <hr>
@@ -581,7 +585,8 @@
                             self.pets.list( pets );
 
                             if( pets.length == 0 ) {
-                                alert( 'You have no pets. Create one now.' );
+                                //display the pet creation modal
+                                self.pets.showCreateModal();
                             }
                         }
                     );
