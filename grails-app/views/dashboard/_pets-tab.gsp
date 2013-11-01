@@ -45,59 +45,21 @@
     <form id="status-info-form" data-bind="attr: { action: url }" method="post">
 
         <div class="row">
-            <div class="span9">
-                <legend class="caps">
-                    <small class="pull-right" id="pet-status-label"
-                            data-bind="html: statusLabel"></small>
-                    <small class="pull-right" id="pet-type-label"
-                           data-bind="text: typeLabel"></small>
-                    <span class="editable"
-                        data-bind="text: name"></span>
-                </legend>
-
-            </div>
+            <legend class="caps">
+                <small class="pull-right" id="pet-status-label"
+                       data-bind="html: statusLabel"></small>
+                <small class="pull-right" id="pet-type-label"
+                       data-bind="text: typeLabel"></small>
+                <span class="editable"
+                      data-bind="text: name"></span>
+            </legend>
 
         </div>
 
         <div class="row">
-
-            <ul class="nav nav-pills pull-right">
-                <li class="dropdown">
-                    <a class="" id="change-status-menu-toggle"
-                       role="button" data-toggle="dropdown" href="#">Actions <i class="icon-reorder"></i></a>
-                    <ul class="dropdown-menu">
-                        <li role="presentation">
-                            <a role="menuitem" href="#" data-bind="click: $root.pets.showPhotoUpload">Upload Photo</a>
-                        </li>
-                        <li role="presentation">
-                            <a role="menuitem" href="#"
-                               data-bind="text: status() != 'adopted' ? 'Adopt' : 'Re-Adopt', click: $root.pets.adopt"
-                            >Adopt</a>
-                        </li>
-                        <li role="presentation">
-                            <a role="menuitem" href="#"
-                               data-bind="text: status() != 'fostered' ? 'Foster' : 'Re-Foster', click: $root.pets.foster"
-                            >Foster</a>
-                        </li>
-                        <li role="presentation" data-bind="visible: status() != 'available'">
-                            <a role="menuitem"
-                               data-bind="visible: status() != 'available', click: $root.pets.reclaim"
-                               href="#">Reclaim</a>
-                        </li>
-                        <li role="presentation">
-                            <a role="menuitem" href="#" data-bind="click: $root.pets.hold">Hold</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li role="presentation">
-                            <a role="menuitem" href="#"
-                               data-bind="attr: { href: publicUrl }">
-                                View Public Page
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+            <g:render template="/pet/pet-nav"/>
         </div>
+
 
         <div class="row">
             <!-- Image and Description -->
@@ -284,6 +246,29 @@
         </form>
     </div>
 
+
+    <!-- Add Document Modal -->
+
+    <div id="pet-adopt-modal" class="reveal-modal">
+        <form class="form-horizontal" method="post"
+              data-bind="attr: { action: url + '/adopt' }">
+            <fieldset>
+                <legend data-bind="text: 'Add documents for ' + name()">Add Documents</legend>
+
+                <label></label>
+                <input type="file" name="file"/>
+
+                <label>File Label</label>
+                <input type="text" name="name"/>
+
+                <hr/>
+
+                <button class="btn btn-primary">Upload Document</button>
+            </fieldset>
+        </form>
+    </div>
+
+
     <div id="pet-foster-modal" class="reveal-modal">
         <form class="form-horizontal" method="post"
               data-bind="attr: { action: url + '/foster' }">
@@ -307,18 +292,40 @@
         </form>
     </div>
 
+    <!-- Photo Upload Modal -->
     <div id="pet-photo-modal" class="reveal-modal">
         <form data-bind="attr: { action: url + '/photos?callback=dashboard.pets.completePhotoUpload' }"
                 target="pet_photo_upload"
                 action="" method="post" enctype="multipart/form-data">
             <fieldset>
                 <legend data-bind="text: 'Upload Photos of ' + name()">Upload Photos</legend>
-                <input id="fileupload" type="file" name="photos" multiple>
+                <input id="fileupload-photo" type="file" name="photos" multiple>
                 <input type="hidden" name="petId" value="" data-bind="value: id()"/>
                 <button type="submit" class="btn btn-primary">Upload</button>
             </fieldset>
         </form>
         <iframe id="pet_photo_upload" width="0px" height="0px" style="display:none;"></iframe>
+    </div>
+
+    <!-- Document Upload Modal -->
+    <div id="pet-doc-modal" class="reveal-modal">
+        <form data-bind="attr: { action: url + '/docs?callback=dashboard.pets.completeDocUpload' }"
+              target="pet_doc_upload"
+              action="" method="post" enctype="multipart/form-data">
+
+            <label>Document Label</label>
+            <input type="text" name="title"/>
+
+            <label>Choose Your Document</label>
+            <input id="fileupload-doc" type="file" name="docs">
+
+            <input type="hidden" name="petId" value="" data-bind="value: id()"/>
+
+            <hr>
+            <button type="submit" class="btn btn-primary">Upload</button>
+
+        </form>
+        <iframe id="pet_doc_upload" width="0px" height="0px" style="display:none;"></iframe>
     </div>
 
 </section>

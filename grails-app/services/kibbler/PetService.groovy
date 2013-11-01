@@ -224,8 +224,17 @@ class PetService {
         def saved = pet.save()
         if( saved ) {
             eventService.create( EventType.PET_ADD_PHOTO, pet, creator, [photos] )
-            return saved.photos
         }
+        saved?.photos
+    }
+
+    def addFiles( Pet pet, List<Document> files, User creator = null ) {
+        files.each{ pet.addToDocuments( it ) }
+        def saved = pet.save()
+        if( saved ) {
+            eventService.create( EventType.PET_ADD_DOC, pet, creator, [files] )
+        }
+        saved?.documents
     }
 
     /**

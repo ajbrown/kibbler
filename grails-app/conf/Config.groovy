@@ -119,8 +119,8 @@ awsAccessKey = 'AKIAIQUABNVCDHLXZHGA'
 awsSecretKey = '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'
 
 petphotos.uploadBucket = 'kibblerpics'
+petfiles.uploadBucket  = 'kibblerfiles'
 contractsBucket = 'kibbler-data'
-
 
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'kibbler.User'

@@ -495,6 +495,10 @@
            $('#pet-photo-modal').reveal();
         }
 
+        this.showDocUpload = function( pet, event ) {
+           $('#pet-doc-modal').reveal();
+        }
+
         this.completePhotoUpload = function( data ) {
             var photos = [];
             for( var i in data.data ) {
@@ -503,6 +507,10 @@
             self.active().photos( photos );
            $('#pet-photo-modal').trigger('reveal:close');
 
+        }
+
+        this.completeDocUpload = function( data ) {
+            console.log( "Upload completed" );
         }
 
         this.showCreateModal = function() {

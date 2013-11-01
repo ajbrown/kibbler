@@ -59,22 +59,22 @@ grails.project.dependency.resolution = {
         runtime ":yui-minify-resources:0.1.5"
         runtime ":zipped-resources:1.0"
 
-        build ":improx:0.3"
-        build ":tomcat:$grailsVersion"
+        build( ":improx:0.3" ) {
+            export = false
+        }
+
+        build( ":tomcat:$grailsVersion" ) {
+            export = false
+        }
 
         compile ":ajax-uploader:1.1"
         compile ":cache-headers:1.1.5"
         compile ":fields:1.3"
-        compile (":font-awesome-resources:3.2.1.1") {
-            exclude "resources"
-        }
         compile ":jquery-ui:1.8.24"
         compile ":mail:1.0.1"
         compile ":mongodb:1.3.0"
         compile ":rendering:0.4.4"
         compile ':cache:1.1.1'
-        compile ':cloud-support:1.0.11'
-        compile ':heroku:1.0.1'
         compile ":spring-security-core:1.2.7.3"
 
         test(":spock:0.7") {

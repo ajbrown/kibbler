@@ -30,6 +30,7 @@ class Pet {
     Person foster
 
     Set photos
+    Set documents
 
     //Vitals
     Boolean heartworm
@@ -50,7 +51,12 @@ class Pet {
     User lastUpdatedBy
 
     static belongsTo = [ organization: Organization ]
-    static hasMany = [ photos: Photo, adoptions: AdoptionRecord, fosterings: FosterRecord ]
+    static hasMany = [
+            documents: Document,
+            photos: Photo,
+            adoptions: AdoptionRecord,
+            fosterings: FosterRecord
+    ]
 
     static mapping = {
         organization index: true

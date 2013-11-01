@@ -1,8 +1,13 @@
 modules = {
+
     knockout {
         dependsOn 'jquery'
         resource url: 'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.0.js'
         resource url: '/js/sammy.js'
+    }
+
+    'font-awesome' {
+        resource url: 'https://netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css'
     }
 
     'styling' {

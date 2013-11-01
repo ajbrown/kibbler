@@ -306,10 +306,54 @@ class PetsController {
         }
     }
 
-    def photos() {
-        def par = params
+    def docs() {
         def jsonResponse = new JSONResponseEnvelope()
-        def req = request
+        def files = request.multipartFiles["docs"]
+        def bucket = grailsApplication.config.petfiles.uploadBucket.toString()
+
+        def docs = files.collect{ CommonsMultipartFile file ->
+
+            def document = new Document()
+
+            document.s3key = "${params.pet.organization.id.toString()}/${params.pet.id.toString()}/files/${file.name}"
+            document.contentType = file.contentType
+            document.fileName = file.name
+
+            def meta = new ObjectMetadata()
+            meta.cacheControl = 'max-age=31536000'
+            meta.contentType  = document.contentType
+            meta.setHeader( 'X-Kibbler-Org-Id', params.pet.organization.id.toString() )
+            meta.setHeader( 'X-Kibbler-Pet-Id', params.pet.id.toString() )
+
+            //upload the file to s3
+            def s3resp = amazonS3Client.putObject( bucket, document.s3key, file.inputStream, meta )
+
+            log.debug "Uploaded File for document #${document.id} to AWS Key ${document.s3key}"
+
+        }
+
+        def resp
+        if( docs ) {
+            resp = petService.addFiles( params.pet, docs, springSecurityService.currentUser )
+        }
+
+        withFormat{
+            javascript {
+
+                params.callback = params.callback ?: 'console.log'
+
+                jsonResponse.status = response.status
+                jsonResponse.data = docs
+                def text = jsonResponse as JSON
+
+                render "<script>window.parent.${params.callback}(${text});</script>"
+            }
+        }
+
+    }
+
+    def photos() {
+        def jsonResponse = new JSONResponseEnvelope()
 
         def files = request.multipartFiles["photos"]
         def bucket = grailsApplication.config.petphotos.uploadBucket.toString()
@@ -346,8 +390,8 @@ class PetsController {
             def meta = new ObjectMetadata()
             meta.cacheControl = 'max-age=31536000'
             meta.contentType  = 'image/jpg'
-            meta.setHeader( 'X-Kibbler-Org-Id', params.pet.id.toString() )
-            meta.setHeader( 'X-Kibbler-Pet-Id', params.pet.organization.id.toString() )
+            meta.setHeader( 'X-Kibbler-Org-Id', params.pet.organization.id.toString() )
+            meta.setHeader( 'X-Kibbler-Pet-Id', params.pet.id.toString() )
 
             //Upload the photo to the S3 bucket
             def s3resp = amazonS3Client.putObject( bucket, photo.s3key, inStream, meta )

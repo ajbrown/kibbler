@@ -481,7 +481,16 @@
             self.active().photos( photos );
            $('#pet-photo-modal').trigger('reveal:close');
 
-        }
+        };
+
+        this.completeDocUpload = function( data ) {
+            var docs = [];
+            for( var i in data.data ) {
+                docs.push( ko.mapping.fromJS( data.data[i] ) );
+            }
+            self.active().documents( docs );
+           $('#pet-doc-modal').trigger('reveal:close');
+        };
 
         this.showCreateModal = function() {
             self.createName('');
