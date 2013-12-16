@@ -1,13 +1,12 @@
 package kibbler
 
 import grails.util.Environment
-import org.bson.types.ObjectId
+
 
 class Organization {
 
     def slugGeneratorService
 
-    ObjectId id
     String name
     String slug
     String description

@@ -1,8 +1,8 @@
-@artifact.package@import static org.junit.Assert.*
+@artifact.package
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
 
-import grails.test.mixin.*
-import grails.test.mixin.support.*
-import org.junit.*
+@import static org.junit.Assert.*
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions

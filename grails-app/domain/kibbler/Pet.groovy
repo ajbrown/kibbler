@@ -1,7 +1,7 @@
 package kibbler
 
 import grails.util.Environment
-import org.bson.types.ObjectId
+
 
 class Pet {
 
@@ -10,8 +10,6 @@ class Pet {
     def slugGeneratorService
 
     static final STATUS_OPTIONS = [ 'available','hold','fostered','adopted','deceased' ]
-
-    ObjectId id
 
     String assignedId
     String slug

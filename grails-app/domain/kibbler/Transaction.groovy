@@ -1,10 +1,7 @@
 package kibbler
 
-import org.bson.types.ObjectId
-
 class Transaction {
 
-    ObjectId id
     Organization organization
     String category
     Integer amountCents

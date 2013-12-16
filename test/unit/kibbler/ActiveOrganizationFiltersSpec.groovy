@@ -1,8 +1,6 @@
 package kibbler
 
-
-
-import grails.test.mixin.*
+import grails.test.mixin.Mock
 
 @Mock(ActiveOrganizationFilters)
 class ActiveOrganizationFiltersSpec {

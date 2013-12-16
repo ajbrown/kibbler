@@ -1,8 +1,8 @@
 package kibbler
 
 import grails.plugin.spock.IntegrationSpec
-import kibbler.Organization
-import org.bson.types.ObjectId /**
+
+/**
  * Created by ajbrown on 7/23/13.
  */
 
@@ -54,7 +54,7 @@ class OrganizationServiceIntegrationSpec extends IntegrationSpec {
     def "users can be added and removed from an org, and existing ones can be updated"() {
         def user    = new User( email: 'aj@kibblerapp.com', name: 'A.J.' )
         def newUser = new User( email: 'david@kibblerapp.com', name: 'Day Day' )
-        def org     = new Organization( name: 'Kibbler', id: new ObjectId() )
+        def org     = new Organization( name: 'Kibbler' )
 
         expect: 'The user doesnt exist as a member of the organization'
         !org.members.find{ it.user == newUser }
@@ -87,7 +87,7 @@ class OrganizationServiceIntegrationSpec extends IntegrationSpec {
 
     def "transactions can be added and listed"() {
         def user    = new User( email: 'aj@kibblerapp.com', name: 'A.J.' )
-        def org     = new Organization( name: 'kibbler', id: new ObjectId() )
+        def org     = new Organization( name: 'kibbler' )
         org.addToMembers( new OrgRole( user: user, role: 'admin' ) )
         org.save( flush: true )
 

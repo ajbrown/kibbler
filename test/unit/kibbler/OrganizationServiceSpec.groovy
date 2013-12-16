@@ -1,11 +1,7 @@
 package kibbler
 
-import grails.plugins.SlugGeneratorService
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import grails.test.mixin.TestMixin
-import grails.test.mixin.domain.DomainClassUnitTestMixin
-import org.bson.types.ObjectId
 import spock.lang.Specification
 
 /**

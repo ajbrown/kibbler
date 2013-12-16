@@ -1,20 +1,15 @@
 package kibbler
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.mongodb.WriteConcern
-import grails.converters.JSON
-import org.bson.types.ObjectId
 
 /**
  */
 class Event {
-    ObjectId id
     Organization organization
     Pet pet
     Person person
     EventType type
     User actor
-    List args
+    List<Object> args
 
     Boolean hidden = false
 
@@ -22,16 +17,12 @@ class Event {
 
     static mapping = {
         version false
-        stateless true
         pet index: true
         person index: true
         organization index: true
         dateCreated: index: true
 
-        sort "dateCreated"
-        order "desc"
-
-        writeConcern WriteConcern.ERRORS_IGNORED
+        sort dateCreated : 'desc'
     }
 
     static constraints = {

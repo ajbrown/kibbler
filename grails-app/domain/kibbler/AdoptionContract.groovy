@@ -1,12 +1,9 @@
 package kibbler
 
-import org.bson.types.ObjectId
-
 /**
  * Capture all of
  */
 class AdoptionContract {
-    ObjectId id
     Integer adoptionFeeCents
     String adopterSignature
     String adopterSignatureUrl
@@ -18,7 +15,6 @@ class AdoptionContract {
 
     static mapping = {
         version false
-        stateless true
     }
 
     static constraints = {

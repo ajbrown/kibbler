@@ -1,18 +1,9 @@
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import grails.converters.JSON
 import grails.util.Environment
-import kibbler.AdoptionContractTemplate
-import kibbler.EventType
-import kibbler.Organization
-import kibbler.Person
-import kibbler.Pet
-import kibbler.Role
-import kibbler.Species
-import kibbler.User
-import com.fasterxml.jackson.databind.ObjectMapper
-
-import org.bson.types.ObjectId
+import kibbler.*
 
 class BootStrap {
 
@@ -122,7 +113,6 @@ class BootStrap {
     }
 
     def void configureJSONMarshaller() {
-        JSON.registerObjectMarshaller( ObjectId, { it.toString() } )
         JSON.registerObjectMarshaller( Species, { it.label } )
         JSON.registerObjectMarshaller( EventType ) { it.toString() }
     }

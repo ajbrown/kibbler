@@ -2,7 +2,6 @@ package kibbler
 
 import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
-import org.bson.types.ObjectId
 import org.springframework.web.servlet.support.RequestContextUtils
 
 import javax.servlet.http.HttpServletRequest
@@ -88,7 +87,6 @@ class EventService {
 
         def newArgs = [subject.id, subject.class, userPerson?.id] + args
         def event = new Event(
-                id: new ObjectId(),
                 organization: subject,
                 actor: actor,
                 args: newArgs,

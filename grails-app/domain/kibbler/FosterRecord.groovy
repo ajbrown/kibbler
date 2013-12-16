@@ -1,10 +1,6 @@
 package kibbler
 
-import org.bson.types.ObjectId
-
 class FosterRecord {
-    ObjectId id
-
     Organization organization
     Person foster
     Pet pet
@@ -18,7 +14,6 @@ class FosterRecord {
 
     static mapping = {
         version false
-        stateless true
     }
 
     static constraints = {

@@ -2,8 +2,8 @@ grails.servlet.version = "3.0" // Change depending on target container complianc
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 // uncomment (and adjust settings) to fork the JVM to isolate classpaths
@@ -42,6 +42,8 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
+        runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
+
         compile 'org.imgscalr:imgscalr-lib:4.2'
         compile 'com.amazonaws:aws-java-sdk:1.4.3'
         compile 'com.cloudinary:cloudinary:1.0.2'
@@ -53,26 +55,28 @@ grails.project.dependency.resolution = {
 
     plugins {
         runtime ":cached-resources:1.0"
-        runtime ":jquery:1.8.3"
+        runtime ":jquery:1.10.2"
         runtime ":resources:1.2.RC2"
         runtime ":twitter-bootstrap:2.3.2"
         runtime ":yui-minify-resources:0.1.5"
         runtime ":zipped-resources:1.0"
 
+        build ":hibernate:3.6.10.6"
+        build ":database-migration:1.3.8"
+
         build( ":improx:0.3" ) {
             export = false
         }
 
-        build( ":tomcat:$grailsVersion" ) {
+        build( ":tomcat:7.0.47" ) {
             export = false
         }
 
         compile ":ajax-uploader:1.1"
         compile ":cache-headers:1.1.5"
-        compile ":fields:1.3"
-        compile ":jquery-ui:1.8.24"
+        //compile ":fields:1.3"
+        compile ":jquery-ui:1.10.3"
         compile ":mail:1.0.1"
-        compile ":mongodb:1.3.0"
         compile ":rendering:0.4.4"
         compile ':cache:1.1.1'
         compile ":spring-security-core:1.2.7.3"

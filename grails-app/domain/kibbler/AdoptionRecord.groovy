@@ -1,13 +1,9 @@
 package kibbler
 
-import org.bson.types.ObjectId
-
 /**
  * Domain class represting an adoption record.
  */
 class AdoptionRecord {
-    ObjectId id
-
     Organization organization
     Person adopter
     Pet pet
@@ -22,7 +18,6 @@ class AdoptionRecord {
 
     static mapping = {
         version false
-        stateless true
     }
 
     static constraints = {

@@ -1,15 +1,12 @@
 package kibbler
 
 import com.amazonaws.services.s3.AmazonS3Client
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.cloudinary.Cloudinary
 import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
 import org.imgscalr.Scalr
-import org.springframework.context.MessageSourceResolvable
-import org.springframework.context.i18n.LocaleContextHolder
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
 import javax.imageio.ImageIO

@@ -2,7 +2,6 @@ package kibbler
 
 import grails.test.mixin.Mock
 import grails.test.mixin.TestFor
-import org.bson.types.ObjectId
 import spock.lang.Specification
 
 /**

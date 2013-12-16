@@ -5,12 +5,6 @@ import com.amazonaws.services.s3.model.CannedAccessControlList
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.amazonaws.services.s3.model.StorageClass
-import grails.plugin.cache.CacheEvict
-import grails.plugin.cache.CacheEvict
-import grails.plugin.cache.CachePut
-import grails.plugin.cache.Cacheable
-import org.bson.types.ObjectId
-import org.springframework.cache.CacheManager
 
 class PetService {
 
@@ -29,7 +23,7 @@ class PetService {
      */
     static determineCacheKey( obj ) {
         def key
-        if( obj instanceof ObjectId ) {
+        if( obj instanceof Number ) {
             key = obj.toString()
         } else if( obj instanceof String ) {
             key = obj
@@ -40,7 +34,7 @@ class PetService {
     }
 
     def Pet read( String id ) {
-        Pet.read( new ObjectId( id ) )
+        Pet.read( id )
     }
 
     def readAllForOrg( Organization org ) {
@@ -113,7 +107,6 @@ class PetService {
     def createContract( Pet pet, Person adopter, Map signatures, User creator = null ) {
         def saved
         def contract = new AdoptionContract(
-                id: new ObjectId(),
                 adopterSignature: new String( signatures.svg )
         )
 

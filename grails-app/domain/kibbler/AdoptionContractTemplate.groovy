@@ -1,10 +1,6 @@
 package kibbler
 
-import org.bson.types.ObjectId
-
 class AdoptionContractTemplate {
-
-    ObjectId id
     Organization organization
     Set<String> terms
 

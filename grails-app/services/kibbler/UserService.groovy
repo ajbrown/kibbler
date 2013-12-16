@@ -3,13 +3,10 @@ package kibbler
 import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
-import org.bson.types.ObjectId
 import org.springframework.dao.DataAccessException
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.transaction.TransactionStatus
 
 class UserService implements UserDetailsService {
 
@@ -20,8 +17,7 @@ class UserService implements UserDetailsService {
     def grailsLinkGenerator
 
     def read( id ) {
-        def key = id instanceof ObjectId ? id : new ObjectId( id )
-        User.read( key )
+        User.read( id )
     }
 
     /**

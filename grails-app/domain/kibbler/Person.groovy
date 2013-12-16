@@ -1,15 +1,13 @@
 package kibbler
 
 import grails.util.Environment
-import org.bson.types.ObjectId
+
 
 class Person {
 
     def slugGeneratorService
 
-    ObjectId id
     String slug
-
     String name
     String company
     String address
@@ -35,9 +33,7 @@ class Person {
 
     static mappedBy = [ fostering: "foster", adopted: "adopter" ]
 
-    static belongsTo = [
-            organization: Organization
-    ]
+    static belongsTo = [ organization: Organization ]
 
     static mapping = {
         organization index: true

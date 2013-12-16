@@ -1,8 +1,5 @@
 package kibbler
 
-import grails.plugin.cache.Cacheable
-import org.bson.types.ObjectId
-
 class PersonService {
 
     def eventService
@@ -41,9 +38,7 @@ class PersonService {
      */
     def Person read( id ) {
         if( !id ) { return }
-
-        def key = id instanceof ObjectId ? id : new ObjectId( id )
-        Person.read( key )
+        Person.read( id )
     }
 
     /**

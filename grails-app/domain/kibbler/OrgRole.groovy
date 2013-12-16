@@ -1,10 +1,8 @@
 package kibbler
 
-import org.bson.types.ObjectId
+
 
 class OrgRole {
-
-    ObjectId id
     User user
     String role
     Organization organization

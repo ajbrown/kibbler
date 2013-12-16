@@ -65,6 +65,11 @@ grails.converters.json.default.deep = true
 
 cloudinary.url = System.getenv( 'CLOUDINARY_URL' ) ?: "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
 
+
+grails.plugin.databasemigration.updateOnStart = false
+grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
+
+
 environments {
     development {
         grails.logging.jul.usebridge = true
@@ -77,6 +82,8 @@ environments {
     production {
         grails.logging.jul.usebridge = false
         // TODO: grails.serverURL = "http://www.changeme.com"
+
+        grails.plugin.databasemigration.updateOnStart = true
     }
 }
 
@@ -150,6 +157,7 @@ grails {
                 "mail.smtp.socketFactory.fallback":"false"]
     }
 }
+
 
 
 // Uncomment and edit the following lines to start using Grails encoding & escaping improvements

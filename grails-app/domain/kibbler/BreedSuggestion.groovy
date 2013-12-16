@@ -1,7 +1,6 @@
 package kibbler
 
 import org.apache.commons.codec.language.Soundex
-import org.bson.types.ObjectId
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +11,6 @@ import org.bson.types.ObjectId
  */
 class BreedSuggestion {
 
-    ObjectId id
     Species species
     String name
     String soundex

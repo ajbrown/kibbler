@@ -1,6 +1,6 @@
 package kibbler
 
-import org.bson.types.ObjectId
+
 
 class OrganizationService {
 
@@ -14,15 +14,8 @@ class OrganizationService {
      * @return
      */
     def Organization read( id ) {
-
-        def isString   = id instanceof String
-        def isObjectId = id instanceof ObjectId
-        if( !isString && !isObjectId ) {
-            throw new IllegalArgumentException( '`id` must be a String or ObjectId' )
-        }
-
         if( !id ) { return null }
-        Organization.findById( id instanceof String ? new ObjectId( id ) : id )
+        Organization.findById( id )
     }
 
     /**

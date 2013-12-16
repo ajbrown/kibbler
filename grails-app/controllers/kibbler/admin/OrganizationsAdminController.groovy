@@ -2,7 +2,7 @@ package kibbler.admin
 
 import grails.plugins.springsecurity.Secured
 import kibbler.Organization
-import org.bson.types.ObjectId
+
 
 @Secured(['ROLE_ADMIN'])
 class OrganizationsAdminController {

@@ -1,6 +1,6 @@
 package kibbler
 
-import org.bson.types.ObjectId
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,6 +10,6 @@ import org.bson.types.ObjectId
  * To change this template use File | Settings | File Templates.
  */
 public interface EventSubject {
-    ObjectId getId()
+    Long getId()
     Organization getOrganization()
 }

@@ -1,6 +1,5 @@
 package kibbler
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
 import grails.plugins.springsecurity.Secured
 

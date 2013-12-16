@@ -1,9 +1,6 @@
 package kibbler
 
-import org.bson.types.ObjectId
-
 class Photo {
-    ObjectId id
     Pet pet
     String s3key
     String standardUrl
@@ -14,6 +11,10 @@ class Photo {
     User uploadedBy
 
     static belongsTo = Pet
+
+    static mapping = {
+        primary column: 'is_primary'
+    }
 
     static constraints = {
         uploadedBy nullable: true
