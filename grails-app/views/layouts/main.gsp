@@ -4,100 +4,25 @@
 <!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
-<head>
-    <meta charset="utf-8">
-    <title><g:layoutTitle default="Kibbler"/></title>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <style>
-    body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-    }
-    </style>
-
-    <script>
-        var SERVER_URL = '<g:createLink absolute="true" uri=""/>';
-        var SERVER_PATH = '<g:createLink uri=""/>'
-    </script>
-    <r:require modules="bootstrap,styling,knockout"/>
-
-    <r:layoutResources />
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <g:javascript src="/jSignature/jSignature.min.js"/>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-
-    <!-- Fav and touch icons -->
-
-    <g:layoutHead/>
-</head>
-
-<body>
-
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container-fluid">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <a class="brand" href="#">Kibbler</a>
-
-            <sec:ifLoggedIn>
-
-            <div class="nav-collapse collapse">
-                <p class="navbar-text pull-right">
-                    Logged in as <a href="#" class="navbar-link"><sec:username/></a>
-                </p>
-                <ul class="nav pull-right">
-                    <li><g:link controller="dashboard" action="index">Dashboard</g:link></li>
-                    <sec:ifAllGranted roles="ROLE_ADMIN">
-                        <li><g:link controller="indexAdmin">Administration</g:link></li>
-                    </sec:ifAllGranted>
-                    <li><a href="#help">Help</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-            <div class="navbar-text dropdown pull-right" id="org-options">
-                <a href="#" data-toggle="dropdown" data-bind="visible: orgs.active()">
-                    <i class="icon-group"></i>
-                    <span id="org-label"></span>
-                    <i class="icon-double-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" data-bind="foreach: orgs.list()">
-                    <li data-bind="css: { disabled : $data == $root.orgs.active }">
-                        <a tabindex="-1" href="#"
-                           data-bind="text: name, attr: { href: '#organization/' + id() }"></a>
-                    </li>
-                </ul>
-            </div>
-
-            </sec:ifLoggedIn>
-
-        </div>
-    </div>
-</div>
-
-
-
-<div class="container">
-
-    <g:layoutBody/>
-
-</div> <!-- /container -->
-
-
-
-
-<g:javascript library="application"/>
-<r:layoutResources/>
-
-</body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title><g:layoutTitle default="Grails"/></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon">
+		<link rel="apple-touch-icon" href="${resource(dir: 'images', file: 'apple-touch-icon.png')}">
+		<link rel="apple-touch-icon" sizes="114x114" href="${resource(dir: 'images', file: 'apple-touch-icon-retina.png')}">
+		<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}" type="text/css">
+		<link rel="stylesheet" href="${resource(dir: 'css', file: 'mobile.css')}" type="text/css">
+		<g:layoutHead/>
+		<g:javascript library="application"/>		
+		<r:layoutResources />
+	</head>
+	<body>
+		<div id="grailsLogo" role="banner"><a href="http://grails.org"><img src="${resource(dir: 'images', file: 'grails_logo.png')}" alt="Grails"/></a></div>
+		<g:layoutBody/>
+		<div class="footer" role="contentinfo"></div>
+		<div id="spinner" class="spinner" style="display:none;"><g:message code="spinner.alt" default="Loading&hellip;"/></div>
+		<r:layoutResources />
+	</body>
 </html>

@@ -12,8 +12,9 @@
 // }
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
-grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
-grails.mime.use.accept.header = true
+
+// The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
+grails.mime.disable.accept.header.userAgents = ['Gecko', 'WebKit', 'Presto', 'Trident']
 grails.mime.types = [
     all:           '*/*',
     atom:          'application/atom+xml',
@@ -26,6 +27,7 @@ grails.mime.types = [
     multipartForm: 'multipart/form-data',
     rss:           'application/rss+xml',
     text:          'text/plain',
+    hal:           ['application/hal+json','application/hal+xml'],
     xml:           ['text/xml', 'application/xml']
 ]
 
@@ -33,15 +35,36 @@ grails.mime.types = [
 //grails.urlmapping.cache.maxsize = 1000
 
 // What URL patterns should be processed by the resources plugin
-grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/less/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
 
-// The default codec used to encode data with ${}
-grails.views.default.codec = "none" // none, html, base64
-grails.views.gsp.encoding = "UTF-8"
+// Legacy setting for codec used to encode data with ${}
+grails.views.default.codec = "html"
+
+// The default scope for controllers. May be prototype, session or singleton.
+// If unspecified, controllers are prototype scoped.
+grails.controllers.defaultScope = 'singleton'
+
+// GSP settings
+grails {
+    views {
+        gsp {
+            encoding = 'UTF-8'
+            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+            codecs {
+                expression = 'html' // escapes values inside ${}
+                scriptlet = 'html' // escapes output from scriptlets in GSPs
+                taglib = 'none' // escapes output from taglibs
+                staticparts = 'none' // escapes output from static template parts
+            }
+        }
+        // escapes all not-encoded output at final stage of outputting
+        filteringCodecForContentType {
+            //'text/html' = 'html'
+        }
+    }
+}
+ 
 grails.converters.encoding = "UTF-8"
-
-// enable Sitemesh preprocessing of GSP pages
-grails.views.gsp.sitemesh.preprocess = true
 // scaffolding templates configuration
 grails.scaffolding.templates.domainSuffix = 'Instance'
 
@@ -55,35 +78,18 @@ grails.spring.bean.packages = []
 grails.web.disable.multipart=false
 
 // request parameters to mask when logging exceptions
-grails.exceptionresolver.params.exclude = ['password','j_password']
+grails.exceptionresolver.params.exclude = ['password']
 
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
 
-
-grails.converters.json.default.deep = true
-
-cloudinary.url = System.getenv( 'CLOUDINARY_URL' ) ?: "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
-
-
-grails.plugin.databasemigration.updateOnStart = false
-grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
-
-
 environments {
     development {
         grails.logging.jul.usebridge = true
-        //grails.resources.debug = true
-        cache.headers.enabled = false
-
-        cloudinary.url = "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
     }
-
     production {
         grails.logging.jul.usebridge = false
         // TODO: grails.serverURL = "http://www.changeme.com"
-
-        grails.plugin.databasemigration.updateOnStart = true
     }
 }
 
@@ -95,91 +101,15 @@ log4j = {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
 
-    error  'org.codehaus.groovy.grails.commons',            // core / classloading
+    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
+           'org.codehaus.groovy.grails.web.pages',          // GSP
+           'org.codehaus.groovy.grails.web.sitemesh',       // layouts
+           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+           'org.codehaus.groovy.grails.web.mapping',        // URL mapping
+           'org.codehaus.groovy.grails.commons',            // core / classloading
            'org.codehaus.groovy.grails.plugins',            // plugins
            'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
-
-    info 'grails.app',                 // Logging warnings and higher for all of the app
-            'org.codehaus.groovy.grails.web.servlet',        //  controllers
-            'org.codehaus.groovy.grails.web.pages',          //  GSP
-            'org.codehaus.groovy.grails.web.sitemesh',       //  layouts
-            'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-            'org.codehaus.groovy.grails.web.mapping'
-
-    debug 'org.codehaus.groovy.grails.orm',
-          'org.grails.datastore.gorm.mongo'
-
-    environments {
-        production {
-            root { info "stdout" }
-        }
-    }
 }
-
-//Resources configuration
-grails.resources.mappers.yuijsminify.js.noMunge = true
-
-awsAccessKey = 'AKIAIQUABNVCDHLXZHGA'
-awsSecretKey = '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'
-
-petphotos.uploadBucket = 'kibblerpics'
-petfiles.uploadBucket  = 'kibblerfiles'
-contractsBucket = 'kibbler-data'
-
-// Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
-grails.plugins.springsecurity.userLookup.usernamePropertyName = "email"
-grails.plugins.springsecurity.authority.className = 'kibbler.Role'
-grails.plugins.springsecurity.securityConfigType = "Annotation"
-
-
-//DatabaseSession plugin does not work correctly with Mongo
-grails.plugin.databasesession.enabled = false
-
-imageUpload {
-    temporaryFile = '/tmp/uploaded.file'
-}
-
-
-grails {
-    mail {
-        host = "smtp.mandrillapp.com"
-        port = 587
-        username = "aj@intypica.com"
-        password = "McNEQPuGNCk5C5bKnm01IA"
-        props = ["mail.smtp.auth":"true",
-                "mail.smtp.socketFactory.port":"465",
-                "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
-                "mail.smtp.socketFactory.fallback":"false"]
-    }
-}
-
-
-
-// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
-
-/* remove this line
-// GSP settings
-grails {
-    views {
-        gsp {
-            encoding = 'UTF-8'
-            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
-            codecs {
-                expression = 'html' // escapes values inside null
-                scriptlet = 'none' // escapes output from scriptlets in GSPs
-                taglib = 'none' // escapes output from taglibs
-                staticparts = 'none' // escapes output from static template parts
-            }
-        }
-        // escapes all not-encoded output at final stage of outputting
-        filteringCodecForContentType {
-            //'text/html' = 'html'
-        }
-    }
-}
-remove this line */
