@@ -3,8 +3,8 @@ grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 grails.project.work.dir = "target/work"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.project.fork = [
@@ -44,11 +44,13 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+
+        mavenRepo 'http://repo.spring.io/milestone'
     }
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
-        // runtime 'mysql:mysql-connector-java:5.1.24'
+        runtime 'org.postgresql:postgresql:9.3-1100-jdbc4'
     }
 
     plugins {
@@ -56,8 +58,10 @@ grails.project.dependency.resolution = {
         build ":tomcat:7.0.47"
 
         // plugins for the compile step
-        compile ":scaffolding:2.0.1"
         compile ':cache:1.1.1'
+        compile ":scaffolding:2.0.1"
+        compile ":seed-me:0.4.3"
+        compile ":spring-security-core:2.0-RC2"
 
         // plugins needed at runtime but not for compilation
         runtime ":hibernate:3.6.10.6" // or ":hibernate4:4.1.11.6"
