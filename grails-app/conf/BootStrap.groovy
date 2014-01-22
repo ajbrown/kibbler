@@ -69,7 +69,7 @@ class BootStrap {
         }
     }
 
-    def void createMockAdoptionContracts() {
+    def void createMockContractTemplates() {
 
         def loremIpsum = [
 
@@ -99,8 +99,8 @@ class BootStrap {
 
 
         Organization.list().each {
-            if( AdoptionContractTemplate.countByOrganization(it) > 0 ) { return }
-            def contract = new AdoptionContractTemplate( organization: it )
+            if( ContractTemplate.countByOrganization(it) > 0 ) { return }
+            def contract = new ContractTemplate( organization: it )
             contract.terms = loremIpsum
             contract.save()
         }

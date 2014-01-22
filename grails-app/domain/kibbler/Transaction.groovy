@@ -17,7 +17,7 @@ class Transaction {
     static belongsTo = Organization
 
     static constraints = {
-        enteredBy nullable: true, validator: { val, obj ->
+        enteredBy nullable: true, validator: { val, obj, errors ->
             ( !val || val.belongsTo( obj.organization ) ) ?: ['organization.mismatch']
         }
         createdBy nullable: true, validator: { val, obj ->

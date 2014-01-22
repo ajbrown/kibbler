@@ -9,11 +9,12 @@ class OrgRole {
 
     User createdBy
     Date dateCreated
+    Date lastUpdated
 
-    static belongsTo = Organization
+    static belongsTo = [organization: Organization, user: User]
 
     static mapping = {
-        version false
+        organization index: "user"
     }
 
     static constraints = {

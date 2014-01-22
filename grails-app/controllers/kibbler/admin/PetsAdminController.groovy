@@ -1,6 +1,6 @@
 package kibbler.admin
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 import kibbler.Pet
 
 @Secured(['ROLE_ADMIN'])

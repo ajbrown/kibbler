@@ -19,9 +19,15 @@ class User implements UserDetails {
 	boolean passwordExpired = false
 
     User invitedBy
-    Date dateCreated
+    Date lastLogin
 
-    Set<String> roles = []
+    Date dateCreated
+    Date lastUpdated
+
+    static hasMany = [
+            roles: Role,
+            profiles: Person
+    ]
 
 	static constraints = {
         email blank: false, unique: true, email: true, index: [unique: true]
@@ -33,6 +39,7 @@ class User implements UserDetails {
 
 	static mapping = {
         email unique: true, index: true, indexAttributes: [ unique:true ]
+        lastLogin formula: "(SELECT MAX(ul.date_created) FROM user_login ul WHERE ul.user_id = id)"
 	}
 
     /**
@@ -63,6 +70,7 @@ class User implements UserDetails {
 
 	def beforeInsert() {
 		encodePassword()
+        activationCode = generateActivationCode()
 	}
 
 	def beforeUpdate() {
@@ -70,7 +78,7 @@ class User implements UserDetails {
         //if the password doesn't appear to be encoded, it was probably changed.
         //TODO obviously a user that creates a 64 character password would have their password exposed and wouldn't
         // be able to log in.  We should make this method smarter.
-        if( password && password.size() != 64 ) {
+        if( isDirty('password') ) {
             encodePassword()
         }
 	}

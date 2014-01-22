@@ -3,24 +3,25 @@ package kibbler
 /**
  * Capture all of
  */
-class AdoptionContract {
-    Integer adoptionFeeCents
-    String adopterSignature
-    String adopterSignatureUrl
+class Contract {
+    Integer feeCents
+    String signature
+    String signatureUrl
     String repSignature
     String pdfS3key
     Date dateCreated
+    Date lastUpdated
 
-    static belongsTo = [ adoptionRecord: AdoptionRecord ]
+    static belongsTo = [ placement: Placement ]
 
     static mapping = {
-        version false
+        sort dateCreated: "desc"
     }
 
     static constraints = {
-        adoptionFeeCents nullable: true
+        feeCents nullable: true
         pdfS3key nullable: true
         repSignature nullable: true
-        adopterSignatureUrl nullable: true
+        signatureUrl nullable: true
     }
 }

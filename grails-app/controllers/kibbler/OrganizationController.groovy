@@ -2,7 +2,7 @@ package kibbler
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class OrganizationController {

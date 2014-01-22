@@ -1,34 +1,24 @@
 package kibbler
 
-import grails.util.Environment
-
-
 class Pet {
+
+    enum Status { AVAILABLE, HOLD, PLACED, DECEASED }
 
     static THUMBNAIL_PREFIX = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_150,h_150,c_thumb,g_faces,r_6'
 
-    def slugGeneratorService
-
-    static final STATUS_OPTIONS = [ 'available','hold','fostered','adopted','deceased' ]
-
-    String assignedId
-    String slug
-
     String name
     String description
-    Species type
+    Species species
     String breed
     String sex
     Integer age
     Integer weight
     String markings
 
-    //TODO these could probably be consildated. Think about it once we get further along in the prototype.
-    Person adopter
-    Person foster
-
-    Set photos
-    Set documents
+    Placement placement
+    List photos
+    List documents
+    List notes
 
     //Vitals
     Boolean heartworm
@@ -40,8 +30,7 @@ class Pet {
     Boolean neutered
     Boolean specialNeeds
 
-    String status = 'available'
-    String notes
+    Status status = Status.AVAILABLE
 
     Date dateCreated
     Date lastUpdated
@@ -52,40 +41,30 @@ class Pet {
     static hasMany = [
             documents: Document,
             photos: Photo,
-            adoptions: AdoptionRecord,
-            fosterings: FosterRecord
+            placements: Placement,
+            notes: Note,
+            labels: String
     ]
 
     static mapping = {
         organization index: true
-        slug index: true
         sort "name"
     }
 
     static constraints = {
         id()
         organization()
-        type()
+        species()
 
         breed nullable: true
         sex   nullable: true, inList: [ 'male','female' ]
 
-        status inList: STATUS_OPTIONS
         name blank: false
 
         age nullable: true
         markings nullable: true
         weight nullable: true
         color nullable: true
-
-        adopter nullable: true, validator:  { Person val, Pet obj ->
-            if( !val ) { return true }
-            val.organization == obj.organization ?: ['organization.mismatch']
-        }
-        foster  nullable: true, validator: { Person val, Pet obj ->
-            if( !val ) { return true }
-            val.organization == obj.organization ?: ['organization.mismatch']
-        }
 
         heartworm nullable: true
         housebroken nullable: true
@@ -100,39 +79,22 @@ class Pet {
         description nullable: true
         notes nullable: true
         photos nullable: true
-
-        assignedId nullable: true
     }
 
-    /**
-     * Returns the current contract for the pet's adoption.  If the Pet is not currently adopted,
-     * or there was no contract for the latest adoption,  no contract will be returned.
-     *
-     * @return
-     */
-    def AdoptionContract getCurrentContract() {
-        if( !status == 'adopted' || !adopter ) {
-            return null
-        }
 
-        def adoptionRecord = AdoptionRecord.createCriteria().get {
-            eq "adopter", adopter
-            eq "pet", this
-            order "dateCreated", "desc"
-        }
 
-        adoptionRecord?.contract
+    def beforeInsert() {
+        //Pets must have an initial placement.
+        placement = placement ?: new Placement( type: Placement.Type.RECEIVED, createdBy: createdBy )
     }
 
     def beforeValidate() {
-        //Nasty hack to allow tests to run
-        if( Environment.current == Environment.TEST ) {
-            slug = name.toLowerCase().replace( " ", "-" )
+
+        //Make sure the status is reflective of placement.
+        if( placement?.type in [Placement.Type.ADOPTED, Placement.Type.FOSTERED] ) {
+            status = Status.PLACED
         }
 
-        if( !slug ) {
-            generateSlug()
-        }
     }
 
     def getThumbnail() {
@@ -149,9 +111,5 @@ class Pet {
         }
 
         url
-    }
-
-    def generateSlug() {
-        slug = slugGeneratorService.generateSlug( this.class, "slug", "${breed ?: ''} ${name ?: ''}".trim(), true )
     }
 }

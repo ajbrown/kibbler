@@ -5,10 +5,10 @@ class DocumentService {
     def pdfRenderingService
 
     def loadContractTemplate( Organization org ) {
-        AdoptionContractTemplate.findByOrganization( org )
+        ContractTemplate.findByOrganization( org )
     }
 
-    def saveContractTemplate( Organization org, AdoptionContractTemplate template ) {
+    def saveContractTemplate( Organization org, ContractTemplate template ) {
         template.organization = org
         template.save()
     }

@@ -146,6 +146,6 @@ class OrganizationService {
     }
 
     def readAdoptionContractTemplate( Organization org ) {
-        AdoptionContractTemplate.findByOrganization( org )
+        ContractTemplate.findByOrganization( org )
     }
 }

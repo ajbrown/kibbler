@@ -1,6 +1,6 @@
 package kibbler
 
-class AdoptionContractTemplate {
+class ContractTemplate {
     Organization organization
     Set<String> terms
 

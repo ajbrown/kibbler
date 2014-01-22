@@ -1,43 +1,37 @@
 package kibbler
 
-import grails.util.Environment
-
-
 class Person {
 
-    def slugGeneratorService
-
-    String slug
     String name
+    String email
     String company
     String address
-    String notes
-
     String phone
-    String email
 
     Boolean adopter = false
     Boolean foster = false
     Boolean available = true
-
     Boolean doNotAdopt = false
 
     User linkedAccount
+    Boolean teamMember
 
     Date dateCreated
     User createdBy
     Date lastUpdated
     User lastUpdatedBy
 
-    static hasMany = [ fostering: Pet, adopted: Pet ]
-
-    static mappedBy = [ fostering: "foster", adopted: "adopter" ]
+    static hasMany = [
+            placements: Placement,
+            notes: Note,
+            labels: String
+    ]
 
     static belongsTo = [ organization: Organization ]
 
     static mapping = {
         organization index: true
-
+        teamMember formula: "(select count(id) from org_role r where r.organization_id = organization_id and r.user_id = linked_account_id) > 0"
         sort "name"
         linkedAccount cascade: 'none'
     }
@@ -72,15 +66,6 @@ class Person {
     }
 
     /**
-     * If there's a linked account for this person, and the linked account belongs to this person's organization,
-     * they are a team member.
-     * @return
-     */
-    boolean isTeamMember() {
-        return this.linkedAccount?.belongsTo( this.organization )
-    }
-
-    /**
      * When a person is set to do not adopt, they're also removed as an available foster or adopter.
      * @param doNotAdopt
      */
@@ -94,17 +79,5 @@ class Person {
     }
 
     def beforeValidate() {
-        //Nasty hack to allow tests to run
-        if( Environment.current == Environment.TEST ) {
-            slug = name?.toLowerCase().replace( " ", "-" )
-        }
-
-        if( !slug ) {
-            generateSlug()
-        }
-    }
-
-    def generateSlug() {
-        slug = slugGeneratorService.generateSlug( this.class, "slug", name )
     }
 }

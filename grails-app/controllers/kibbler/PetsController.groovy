@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata
 import com.cloudinary.Cloudinary
 import com.fasterxml.jackson.databind.ObjectMapper
 import grails.converters.JSON
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 import org.imgscalr.Scalr
 import org.springframework.web.multipart.commons.CommonsMultipartFile
 
@@ -263,7 +263,7 @@ class PetsController {
         def jsonResponse = new JSONResponseEnvelope( status: 200 )
 
         //TODO allow specifying of a contract id
-        def contract = params.pet.currentContract as AdoptionContract
+        def contract = params.pet.placement?.contract as Contract
         if( !contract ) {
             jsonResponse.status = 404
             render jsonResponse as JSON

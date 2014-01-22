@@ -1,7 +1,7 @@
 package kibbler
 
 import grails.converters.JSON
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 @Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class UserController {

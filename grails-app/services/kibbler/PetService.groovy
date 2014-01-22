@@ -45,7 +45,7 @@ class PetService {
         pet.organization = org
         pet.createdBy = creator
 
-        def saved = pet.insert( failOnError: true )
+        def saved = pet.save()
         if( saved ) {
             eventService.create( EventType.PET_ADD, pet, creator )
         }
@@ -77,40 +77,34 @@ class PetService {
      * @param adopter
      * @param creator
      */
-    def adopt( Pet pet, Person adopter, AdoptionContract contract = null, User creator = null ) {
+    def adopt( Pet pet, Person adopter, Contract contract = null, User creator = null ) {
 
-        def record = new AdoptionRecord(
-                organization: pet.organization,
-                pet: pet,
-                adopter: adopter,
-                contract: contract,
-                createdBy: creator
+        def placement = new Placement(
+                createdBy: creator,
+                type: Placement.Type.ADOPTED,
+                with: adopter,
+                contract: contract
         )
 
-        if( !record.insert( failOnError: true ) ) {
-            //TODO better exception handling
-            throw new Exception( 'Could not create adoption record, aborting adoption' )
-        }
-
-        pet.adopter = adopter
-        pet.foster = null
-        pet.status = 'adopted'
+        pet.addToPlacements( placement )
+        pet.placement = placement
+        pet.status = Pet.Status.PLACED
         pet.lastUpdatedBy = creator
 
         def saved = pet.save()
         if( saved ) {
-            eventService.create( EventType.PET_ADOPT, pet, creator, [adopter, record] )
+            eventService.create( EventType.PET_ADOPT, pet, creator, [adopter, placement] )
         }
         saved
     }
 
     def createContract( Pet pet, Person adopter, Map signatures, User creator = null ) {
         def saved
-        def contract = new AdoptionContract(
-                adopterSignature: new String( signatures.svg )
+        def contract = new Contract(
+                signature: new String( signatures.svg )
         )
 
-        contract.adopterSignatureUrl = uploadSignature( contract )
+        contract.signatureUrl = uploadSignature( contract )
 
         //generate the contract's pdf
         def pdfModel = [
@@ -127,7 +121,7 @@ class PetService {
         pdfRenderingService.render( [ model: pdfModel, template: '/pdf/adoption' ], outputStream )
         def inputStream = new ByteArrayInputStream( outputStream.toByteArray() )
 
-        contract.pdfS3key = "contracts/${pet.organization.slug.encodeAsURL()}/${contract.id}.pdf"
+        contract.pdfS3key = "contracts/${pet.organization.id}/${contract.id}.pdf"
 
         def meta = new ObjectMetadata()
         meta.cacheControl = 'max-age=31536000'
@@ -143,7 +137,7 @@ class PetService {
 
         contract.insert( failOnError:  true )
 
-        adopt( pet, adopter, creator, contract )
+        adopt( pet, adopter, contract, creator )
     }
 
     /**
@@ -155,20 +149,21 @@ class PetService {
      * @return
      */
     def foster( Pet pet, Person foster, User creator = null ) {
-        def record = new FosterRecord( pet: pet, foster: foster, createdBy: creator, organization: pet.organization )
-        if( !record.insert( failOnError: true ) ) {
-            //TODO better exception handling
-            throw new Exception( 'Could not create fostering record, aborting fostering' )
-        }
 
-        pet.adopter = null
-        pet.foster = foster
-        pet.status = 'fostered'
+        def placement = new Placement(
+                createdBy: creator,
+                type: Placement.Type.FOSTERED,
+                with: foster
+        )
+
+        pet.addToPlacements( placement )
+        pet.placement = placement
+        pet.status = Pet.Status.PLACED
         pet.lastUpdatedBy = creator
 
         def saved = pet.save()
         if( saved ) {
-            eventService.create( EventType.PET_FOSTER, pet, creator, [foster, record] )
+            eventService.create( EventType.PET_FOSTER, pet, creator, [foster, placement] )
         }
         saved
     }
@@ -181,9 +176,13 @@ class PetService {
      */
     def reclaim( Pet pet, User updater = null ) {
 
-        pet.adopter = null
-        pet.foster  = null
-        pet.status  = 'available'
+        def placement = new Placement(
+                type: Placement.Type.RECEIVED,
+                createdBy: updater
+        )
+        pet.placement = placement
+        pet.addToPlacements( placement )
+        pet.status  = Pet.Status.AVAILABLE
         pet.lastUpdatedBy = updater
 
         def saved = pet.save()
@@ -200,9 +199,7 @@ class PetService {
      * @return
      */
     def hold( Pet pet, User creator = null ) {
-        pet.adopter = null
-        pet.foster  = null
-        pet.status  = 'hold'
+        pet.status  = Pet.Status.HOLD
         pet.lastUpdatedBy = creator
 
         def saved = pet.save()
@@ -250,16 +247,17 @@ class PetService {
         saved
     }
 
-    private String uploadSignature( AdoptionContract contract ) {
+    private String uploadSignature( Contract contract ) {
         def bucket = grailsApplication.config.contractsBucket
         def meta = new ObjectMetadata()
         meta.cacheControl = 'max-age=31536000'
         meta.contentType  = 'image/svg+xml'
         meta.expirationTime = new Date() + 365
-        meta.contentLength = contract.adopterSignature.bytes.length
+        meta.contentLength = contract.signature.bytes.length
 
-        def key = "contracts/${contract.pet.organization.slug}/${contract.id}-signature.svg"
-        def inputStream = new ByteArrayInputStream( contract.adopterSignature.getBytes() )
+        //TODO
+        def key = "contracts/${contract.placement.organization.id}/${contract.id}-signature.svg"
+        def inputStream = new ByteArrayInputStream( contract.signature.getBytes() )
         def request = new PutObjectRequest( bucket, key, inputStream, meta )
                 .withCannedAcl( CannedAccessControlList.PublicRead )
                 .withStorageClass( StorageClass.Standard )

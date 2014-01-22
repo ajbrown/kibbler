@@ -68,7 +68,7 @@ cloudinary.url = System.getenv( 'CLOUDINARY_URL' ) ?: "cloudinary://361482238469
 
 grails.plugin.databasemigration.updateOnStart = false
 grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
-
+grails.plugin.databasemigration.changelogFileName = 'changelog.groovy'
 
 environments {
     development {
@@ -109,9 +109,6 @@ log4j = {
             'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
             'org.codehaus.groovy.grails.web.mapping'
 
-    debug 'org.codehaus.groovy.grails.orm',
-          'org.grails.datastore.gorm.mongo'
-
     environments {
         production {
             root { info "stdout" }
@@ -130,11 +127,12 @@ petfiles.uploadBucket  = 'kibblerfiles'
 contractsBucket = 'kibbler-data'
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
-grails.plugins.springsecurity.userLookup.usernamePropertyName = "email"
-grails.plugins.springsecurity.authority.className = 'kibbler.Role'
-grails.plugins.springsecurity.securityConfigType = "Annotation"
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
+grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
+grails.plugin.springsecurity.userLookup.usernamePropertyName = "email"
+grails.plugin.springsecurity.authority.className = 'kibbler.Role'
+grails.plugin.springsecurity.securityConfigType = "Annotation"
+grails.plugin.springsecurity.dao.reflectionSaltSourceProperty = 'username'
 
 
 //DatabaseSession plugin does not work correctly with Mongo
