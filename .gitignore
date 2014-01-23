@@ -1,7 +1,8 @@
 #IntelliJ
 *.iws
-*.iml
-*.ipr
+.idea/workspace.xml
+.idea/tasks.xml
+
 
 *Db.properties
 *Db.script
