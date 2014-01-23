@@ -13,17 +13,13 @@ class BootStrap {
 
         //Configure object marshalling
         configureObjectMapper()
-        configureJSONMarshaller()
 
         setupAdminAccounts()
 
 
-        if( Environment.DEVELOPMENT == Environment.currentEnvironment ) {
-            createMockAdoptionContracts()
+        if( Environment.isDevelopmentMode() ) {
+            createMockContractTemplates()
         }
-
-
-        populateMissingSlugs()
     }
 
     def destroy = {
@@ -49,25 +45,6 @@ class BootStrap {
         }
     }
 
-    def populateMissingSlugs() {
-
-        log.info "Populating missing slugs"
-
-        Organization.findAllBySlugIsNull().each{
-            it.generateSlug()
-            it.save( failOnError: true )
-        }
-
-        Pet.findAllBySlugIsNull().each{
-            it.generateSlug()
-            it.save( failOnError: true )
-        }
-
-        Person.findAllBySlugIsNull().each {
-            it.generateSlug()
-            it.save( failOnError:  true )
-        }
-    }
 
     def void createMockContractTemplates() {
 
@@ -110,10 +87,5 @@ class BootStrap {
     def void configureObjectMapper() {
         objectMapper.disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
         objectMapper.enable( SerializationFeature.WRITE_DATES_AS_TIMESTAMPS )
-    }
-
-    def void configureJSONMarshaller() {
-        JSON.registerObjectMarshaller( Species, { it.label } )
-        JSON.registerObjectMarshaller( EventType ) { it.toString() }
     }
 }

@@ -4,8 +4,6 @@ package kibbler
 
 class OrganizationService {
 
-    static transactional = 'mongo'
-
     def eventService
 
     /**

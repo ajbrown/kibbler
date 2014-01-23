@@ -10,7 +10,7 @@ modules = {
         resource url: 'https://netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css'
     }
 
-    'styling' {
+    styling {
         resource url:'less/styles.less',attrs:[rel: "stylesheet/less", type:'css'], bundle: 'bundle_styling'
         resource url:'css/styles.css'
     }

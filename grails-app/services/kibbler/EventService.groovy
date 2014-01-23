@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 
 class EventService {
 
-    def messageSource
+    //def messageSource
 
     /**
      *

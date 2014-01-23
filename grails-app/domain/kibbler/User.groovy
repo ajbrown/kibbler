@@ -29,6 +29,10 @@ class User implements UserDetails {
             profiles: Person
     ]
 
+    static mappedBy = [
+            profiles: 'linkedAccount'
+    ]
+
 	static constraints = {
         email blank: false, unique: true, email: true, index: [unique: true]
         password nullable: true

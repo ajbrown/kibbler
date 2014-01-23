@@ -1,10 +1,16 @@
 package kibbler
 
+import grails.converters.JSON
+
 class Pet {
 
     enum Status { AVAILABLE, HOLD, PLACED, DECEASED }
 
     static THUMBNAIL_PREFIX = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_150,h_150,c_thumb,g_faces,r_6'
+
+    static {
+        JSON.registerObjectMarshaller( Species, { it.label } )
+    }
 
     String name
     String description

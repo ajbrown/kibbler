@@ -1,9 +1,16 @@
 package kibbler
 
+import grails.converters.JSON
+
 
 /**
  */
 class Event {
+
+    static {
+        JSON.registerObjectMarshaller( EventType ) { it.toString() }
+    }
+
     Organization organization
     Pet pet
     Person person

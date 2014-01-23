@@ -10,8 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 class UserService implements UserDetailsService {
 
-    static transactional = 'mongo'
-
     def mailService
 
     def grailsLinkGenerator
