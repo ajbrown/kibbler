@@ -53,7 +53,7 @@ class Pet {
     ]
 
     static mapping = {
-        organization index: true
+        organization index: 'pet_organization_id_idx'
         sort "name"
     }
 

@@ -25,7 +25,11 @@ class Placement {
     static hasOne = [ contract: Contract ]
 
     static mapping = {
+        organization index: 'placement_organization_id_idx'
+        pet index: 'idx_placement_pet_created'
+        with index: 'idx_placement_person_created'
         sort dateCreated: "desc"
+        dateCreated index: 'idx_placement_pet_created, idx_placement_person_created'
     }
 
     static constraints = {

@@ -14,7 +14,8 @@ class OrgRole {
     static belongsTo = [organization: Organization, user: User]
 
     static mapping = {
-        organization index: "user"
+        organization index: "idx_orgrole_org_user"
+        user index: "idx_orgrole_org_user"
     }
 
     static constraints = {

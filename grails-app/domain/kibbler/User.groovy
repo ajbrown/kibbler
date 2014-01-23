@@ -34,7 +34,7 @@ class User implements UserDetails {
     ]
 
 	static constraints = {
-        email blank: false, unique: true, email: true, index: [unique: true]
+        email blank: false, unique: true, email: true
         password nullable: true
         activated nullable: true
         activationCode nullable: true
@@ -42,7 +42,8 @@ class User implements UserDetails {
 	}
 
 	static mapping = {
-        email unique: true, index: true, indexAttributes: [ unique:true ]
+        table 'users'
+        email unique: true
         lastLogin formula: "(SELECT MAX(ul.date_created) FROM user_login ul WHERE ul.user_id = id)"
 	}
 

@@ -14,6 +14,9 @@ class ContractTemplate {
     static constraints = {
         createdBy nullable: true
         updatedBy nullable: true
+    }
 
+    static mapping = {
+        organization index: true
     }
 }

@@ -14,6 +14,7 @@ class Photo {
 
     static mapping = {
         primary column: 'is_primary'
+        pet index: true
     }
 
     static constraints = {

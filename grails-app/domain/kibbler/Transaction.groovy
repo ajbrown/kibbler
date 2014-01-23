@@ -29,8 +29,8 @@ class Transaction {
     }
 
     static mapping = {
-        organization index: true
-        dateCreated index: true
+        organization index: 'idx_transaction_organization_date_created'
+        dateCreated index: 'idx_transaction_organization_date_created'
 
         sort "dateCreated"
         order "desc"

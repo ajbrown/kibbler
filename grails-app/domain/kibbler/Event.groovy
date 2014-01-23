@@ -24,10 +24,11 @@ class Event {
 
     static mapping = {
         version false
-        pet index: true
-        person index: true
-        organization index: true
-        dateCreated: index: true
+        pet     index: 'idx_event_pet_date_created'
+        person  index: 'idx_event_person_date_created'
+        organization index: 'idx_event_organization_date_created'
+
+        dateCreated index: 'idx_event_organization_date_created,idx_event_pet_date_created,idx_event_person_date_created'
 
         sort dateCreated : 'desc'
     }

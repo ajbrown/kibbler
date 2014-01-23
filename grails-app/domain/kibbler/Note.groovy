@@ -13,6 +13,7 @@ class Note {
     }
 
     static mapping = {
+        content length: 4000
         sort dateCreated: "desc"
     }
 }

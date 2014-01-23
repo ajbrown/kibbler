@@ -21,6 +21,12 @@ class BreedSuggestion {
         soundex = new Soundex().encode( name )
     }
 
+    static mapping = {
+        soundex index: 'idx_suggestion_soundex_weight'
+        weight  index: 'idx_suggestion_soundex_weight'
+    }
+
     static constraints = {
+
     }
 }

@@ -30,10 +30,10 @@ class Person {
     static belongsTo = [ organization: Organization ]
 
     static mapping = {
-        organization index: true
+        organization index: 'person_organization_id_idx'
         teamMember formula: "(select count(id) from org_role r where r.organization_id = organization_id and r.user_id = linked_account_id) > 0"
         sort "name"
-        linkedAccount cascade: 'none'
+        linkedAccount cascade: 'none', index: true
     }
 
     static constraints = {

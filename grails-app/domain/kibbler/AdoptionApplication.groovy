@@ -11,6 +11,12 @@ class AdoptionApplication {
 
     static belongsTo = Pet
 
+    static mapping = {
+        pet index: 'idx_adoptapp_pet_created'
+        dateCreated index: 'idx_adoptapp_pet_created'
+        sort dateCreated: 'desc'
+    }
+
     static constraints = {
     }
 }

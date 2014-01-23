@@ -15,6 +15,7 @@ class Contract {
     static belongsTo = [ placement: Placement ]
 
     static mapping = {
+        placement index: true
         sort dateCreated: "desc"
     }
 
