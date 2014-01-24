@@ -57,6 +57,7 @@ class Pet {
         sort "name"
         labels index: 'pet_labels_idx'
         notes  index: 'pet_notes_idx'
+        documents index: 'pet_documents_idx'
     }
 
     static constraints = {

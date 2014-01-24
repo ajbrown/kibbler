@@ -94,4 +94,10 @@ databaseChangeLog = {
             column(name: "pet_notes_id")
         }
     }
+
+    changeSet(author: "ajbrown (generated)", id: "1390553068523-7") {
+        createIndex(indexName: "pet_documents_idx", tableName: "pet_document") {
+            column(name: "pet_documents_id")
+        }
+    }
 }
