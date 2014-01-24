@@ -29,7 +29,7 @@ class Placement {
         pet index: 'idx_placement_pet_created'
         with index: 'idx_placement_person_created'
         sort dateCreated: "desc"
-        dateCreated index: 'idx_placement_pet_created, idx_placement_person_created'
+        dateCreated index: 'idx_placement_pet_created,idx_placement_person_created'
     }
 
     static constraints = {

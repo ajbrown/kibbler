@@ -3,17 +3,10 @@ package kibbler
 import org.apache.commons.codec.language.Metaphone
 import org.apache.commons.codec.language.Soundex
 
-/**
- * Created with IntelliJ IDEA.
- * User: ajbrown
- * Date: 6/5/13
- * Time: 1:41 PM
- * To change this template use File | Settings | File Templates.
- */
-class BreedSuggestion {
+class NameSuggestion {
 
-    String species
     String name
+    String sex
     String soundex
     String metaphone
     Set<String> hints
@@ -33,14 +26,14 @@ class BreedSuggestion {
 
     static mapping = {
         cache true
-        soundex index: 'idx_suggestion_soundex_weight'
-        weight  index: 'idx_suggestion_soundex_weight'
+        soundex     index: 'idx_name_suggestion_soundex'
+        metaphone   index: 'idx_name_suggestion_metaphone'
     }
 
     static constraints = {
-        name unique: 'species'
-        species inList: [ 'DOG', 'CAT' ]
-        metaphone nullable: true
+        sex inList: ['male','female']
+        name unique: 'sex'
         soundex nullable: true
+        metaphone nullable: true
     }
 }

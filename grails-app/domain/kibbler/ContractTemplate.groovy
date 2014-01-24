@@ -2,14 +2,15 @@ package kibbler
 
 class ContractTemplate {
     Organization organization
-    Set<String> terms
+    List<String> terms
 
     Date dateCreated
     User createdBy
     Date lastUpdated
     User updatedBy
 
-    static belongsTo = [organization: Organization]
+    static belongsTo = [ organization: Organization ]
+    static hasMany = [ terms: String ]
 
     static constraints = {
         createdBy nullable: true
@@ -18,5 +19,6 @@ class ContractTemplate {
 
     static mapping = {
         organization index: true
+        terms joinTable: [ column: 'term' ], indexColumn: [ name: 'list_order' ], index: true
     }
 }

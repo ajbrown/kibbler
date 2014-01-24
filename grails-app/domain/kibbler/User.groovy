@@ -44,7 +44,7 @@ class User implements UserDetails {
 	static mapping = {
         table 'users'
         email unique: true
-        lastLogin formula: "(SELECT MAX(ul.date_created) FROM user_login ul WHERE ul.user_id = id)"
+        lastLogin formula: "(SELECT MAX(ul.date_created) FROM users_login ul WHERE ul.user_id = id)"
 	}
 
     /**
@@ -73,16 +73,21 @@ class User implements UserDetails {
         roles.collect{ role -> [getAuthority: {-> role} ] as GrantedAuthority }
 	}
 
+    def beforeValidate() {
+    }
+
 	def beforeInsert() {
 		encodePassword()
         activationCode = generateActivationCode()
+
+        //make sure they're at least a user
+        if( !roles?.find{ it.authority == 'ROLE_USER'} ) {
+            addToRoles( new Role( authority: 'ROLE_USER' ).save() )
+        }
 	}
 
 	def beforeUpdate() {
 
-        //if the password doesn't appear to be encoded, it was probably changed.
-        //TODO obviously a user that creates a 64 character password would have their password exposed and wouldn't
-        // be able to log in.  We should make this method smarter.
         if( isDirty('password') ) {
             encodePassword()
         }

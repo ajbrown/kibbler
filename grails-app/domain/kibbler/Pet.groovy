@@ -55,6 +55,8 @@ class Pet {
     static mapping = {
         organization index: 'pet_organization_id_idx'
         sort "name"
+        labels index: 'pet_labels_idx'
+        notes  index: 'pet_notes_idx'
     }
 
     static constraints = {

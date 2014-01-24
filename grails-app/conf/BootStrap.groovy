@@ -13,74 +13,10 @@ class BootStrap {
 
         //Configure object marshalling
         configureObjectMapper()
-
-        setupAdminAccounts()
-
-
-        if( Environment.isDevelopmentMode() ) {
-            createMockContractTemplates()
-        }
     }
 
     def destroy = {
 
-    }
-
-    def private setupAdminAccounts() {
-        //setup roles for aj and david
-        def userRole = Role.findOrCreateByAuthority( 'ROLE_USER' ).save()
-        def adminRole = Role.findOrCreateByAuthority( 'ROLE_ADMIN' ).save()
-
-        [ 'A.J.':'aj@synklabs.com', 'David' : 'david@synklabs.com' ].each{
-
-            def user = User.findByEmail( it.value )
-            if( !user ) {
-                user = new User( email: it.value, password: '123456' )
-            }
-            user.name = it.key
-            user.roles = user.roles ?: []
-            user.roles << userRole.authority
-            user.roles << adminRole.authority
-            user.save( failOnError: true )
-        }
-    }
-
-
-    def void createMockContractTemplates() {
-
-        def loremIpsum = [
-
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, ' +
-                'mauris non pulvinar ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. ' +
-                'Pellentesque tincidunt, sapien eget\n' +
-                'porttitor rhoncus, elit eros pulvinar mauris, at pharetra lectus ante.',
-
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, ' +
-                        'mauris non pulvinar' +
-                        'ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. ' +
-                        'Pellentesque tincidunt, sapien eget.',
-
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, ' +
-                        'mauris non pulvinar' +
-                        'ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. ' +
-                        'Pellentesque tincidunt, sapien eget\n' +
-                        'porttitor rhoncus, elit eros pulvinar mauris, at pharetra lectus.',
-
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed semper, ' +
-                        'mauris non pulvinar' +
-                        'ullamcorper, felis leo aliquet velit, vitae facilisis mi arcu eu elit. ' +
-                        'Pellentesque tincidunt, sapien eget\n' +
-                        'porttitor rhoncus, elit eros pulvinar mauris.',
-
-        ]
-
-
-        Organization.list().each {
-            if( ContractTemplate.countByOrganization(it) > 0 ) { return }
-            def contract = new ContractTemplate( organization: it )
-            contract.terms = loremIpsum
-            contract.save()
-        }
     }
 
 

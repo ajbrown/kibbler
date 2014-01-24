@@ -1,43 +1,16 @@
 package kibbler
 
+import grails.plugin.cache.Cacheable
 import org.apache.commons.codec.language.Metaphone
 
 class SuggestionService {
 
-
     private dogBreedSuggestions = []
     private catBreedSuggestions = []
-    private dogNameSuggestions = [:]
-    private catNameSuggestions = [:]
+    private nameSuggestions = []
 
     private metaphone = new Metaphone()
     private random = new Random()
-
-
-    /**
-     * Populates the initial suggested breeds.
-     * TODO this needs a better home.
-     */
-    def void populateBreedSuggestions() {
-        def transform = { name -> [ metaphone: metaphone.encode( name ), name: name ] }
-
-        dogBreedSuggestions = getDataFromListFile( 'dog_breeds.txt' ).collect transform
-        catBreedSuggestions = getDataFromListFile( 'cat_breeds.txt' ).collect transform
-    }
-
-    /**
-     * Populate our name suggestions
-     * @return
-     */
-    def populateNameSuggestions() {
-        Species.values().each{ species ->
-            def list = species == Species.CAT ? catNameSuggestions : dogNameSuggestions
-            ['male','female'].each{ sex ->
-                list[ sex ] = getDataFromListFile( "${species}_names_${sex}.txt" )
-            }
-        }
-    }
-
 
     /**
      * Provides a list of suggested breed names based on the provided hint.  This can be used for autocompletion
@@ -46,9 +19,17 @@ class SuggestionService {
      * @param query
      * @return
      */
+    @Cacheable('breed-suggestions')
     def List<String> suggestBreeds( Species species, String hint = '' ) {
+        catBreedSuggestions = catBreedSuggestions ?: BreedSuggestion.findAllBySpecies( 'CAT' )
+        dogBreedSuggestions = dogBreedSuggestions ?: BreedSuggestion.findAllBySpecies( 'DOG' )
+
         hint = hint?.trim() ?: ''
-        def breedMatcher = { breed ->
+
+
+        def list = species == Species.DOG ? dogBreedSuggestions : catBreedSuggestions
+
+        def breedMatcher = { BreedSuggestion breed ->
 
             def lower = breed.name.toLowerCase()
             def hintLower = hint.toLowerCase()
@@ -76,12 +57,6 @@ class SuggestionService {
             return null
         }
 
-        if( !dogBreedSuggestions || !catBreedSuggestions ) {
-            populateBreedSuggestions()
-        }
-
-        def list = species == Species.DOG ? dogBreedSuggestions : catBreedSuggestions
-
         list.collect( breedMatcher )
                 .findAll{ it }
                 .sort{ a, b ->
@@ -96,26 +71,9 @@ class SuggestionService {
      * @param num
      * @return
      */
-    def String suggestName( Species species, String sex ) {
-        if( !dogNameSuggestions || !catNameSuggestions ) {
-            populateNameSuggestions()
-        }
-        def list = species == Species.CAT ? catNameSuggestions : dogNameSuggestions
-        def r = random.nextInt( list[sex].size()+1 )
-        list[ sex ][ r ]
+    def String suggestName( String sex ) {
+        sex = sex.toLowerCase()
+        nameSuggestions[sex] = nameSuggestions[sex] ?: NameSuggestion.findAllBySex( sex )
+        nameSuggestions[sex]?.getAt( random.nextInt( nameSuggestions[sex].size() + 1 ) )
     }
-
-
-    /**
-     * Load all of the data from a list file in our configuration.  Lines that are blank or are a comment will be
-     * ignoerd.
-     * @param filename
-     * @return
-     */
-    def private getDataFromListFile( String filename ) {
-        def lines = this.class.classLoader.getResourceAsStream(filename).readLines()
-
-        lines.findAll{ !it.startsWith( "#" ) && it.trim() }.collect{ it.trim() }
-    }
-
 }
