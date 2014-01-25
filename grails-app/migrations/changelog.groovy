@@ -801,6 +801,7 @@ databaseChangeLog = {
 	changeSet(author: "ajbrown (generated)", id: "1390513012500-89") {
 		createIndex(indexName: "idx_placement_person_created", tableName: "placement") {
 			column(name: "with_id")
+            column(name: "date_created")
 		}
 	}
 

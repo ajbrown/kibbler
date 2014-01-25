@@ -7,7 +7,6 @@ class Role implements GrantedAuthority {
 	String authority
 
 	static mapping = {
-		cache true
 	}
 
 	static constraints = {

@@ -25,7 +25,6 @@ class User implements UserDetails {
     Date lastUpdated
 
     static hasMany = [
-            roles: Role,
             profiles: Person
     ]
 
@@ -69,9 +68,9 @@ class User implements UserDetails {
      * Returns all security authorities this user belongs to.  Most users only belong to ROLE_USER.
      * @return
      */
-	Set<GrantedAuthority> getAuthorities() {
-        roles.collect{ role -> [getAuthority: {-> role} ] as GrantedAuthority }
-	}
+    Set<Role> getAuthorities() {
+        UserRole.findAllByUser(this).collect { it.role } as Set
+    }
 
     def beforeValidate() {
     }
@@ -79,12 +78,15 @@ class User implements UserDetails {
 	def beforeInsert() {
 		encodePassword()
         activationCode = generateActivationCode()
+	}
+
+    def afterInsert() {
 
         //make sure they're at least a user
-        if( !roles?.find{ it.authority == 'ROLE_USER'} ) {
-            addToRoles( new Role( authority: 'ROLE_USER' ).save() )
+        if( !authorities?.find{ it.authority == 'ROLE_USER'} ) {
+            UserRole.create( this, Role.findByAuthority( 'ROLE_USER' ), true )
         }
-	}
+    }
 
 	def beforeUpdate() {
 

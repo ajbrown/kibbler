@@ -61,9 +61,7 @@ databaseChangeLog = {
     changeSet(author: "ajbrown (generated)", id: "1390552724161-1") {
         createTable(tableName: "contract_template_terms") {
             column(name: "contract_template_id", type: "int8")
-
-            column(name: "term", type: "varchar(255)")
-
+            column(name: "term", type: "varchar(2000)")
             column(name: "list_order", type: "int4")
         }
         createIndex(indexName: "contract_template_id_idx", tableName: "contract_template_terms") {
@@ -99,5 +97,41 @@ databaseChangeLog = {
         createIndex(indexName: "pet_documents_idx", tableName: "pet_document") {
             column(name: "pet_documents_id")
         }
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-1") {
+        addColumn(tableName: "users_role") {
+            column(name: "date_created", type: "timestamp") {
+                constraints(nullable: "false")
+            }
+        }
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-2") {
+        addColumn(tableName: "users_role") {
+            column(name: "user_id", type: "int8") {
+                constraints(nullable: "false")
+            }
+        }
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-3") {
+        addNotNullConstraint(columnDataType: "int8", columnName: "role_id", tableName: "users_role")
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-4") {
+        addPrimaryKey(columnNames: "role_id, user_id", constraintName: "users_rolePK", tableName: "users_role")
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-5") {
+        dropForeignKeyConstraint(baseTableName: "users_role", baseTableSchemaName: "public", constraintName: "fk9459304df998028f")
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-7") {
+        dropColumn(columnName: "user_roles_id", tableName: "users_role")
+    }
+
+    changeSet(author: "ajbrown (generated)", id: "1390635252241-6") {
+        addForeignKeyConstraint(baseColumnNames: "user_id", baseTableName: "users_role", constraintName: "FK9459304DFDA588CD", deferrable: "false", initiallyDeferred: "false", referencedColumnNames: "id", referencedTableName: "users", referencesUniqueColumn: "false")
     }
 }
