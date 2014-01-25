@@ -102,7 +102,7 @@ class User implements UserDetails {
 	}
 
     static generateActivationCode() {
-        System.currentTimeMillis().encodeAsMD5().substring(4).toLowerCase()
+        System.currentTimeMillis().encodeAsMD5().substring(0,4).toLowerCase()
     }
 
     String getUsername() {
