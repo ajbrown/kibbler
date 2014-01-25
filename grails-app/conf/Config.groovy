@@ -108,6 +108,8 @@ grails.converters.json.default.deep = true
 
 cloudinary.url = System.getenv( 'CLOUDINARY_URL' ) ?: "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
 
+mandrill.apikey = "McNEQPuGNCk5C5bKnm01IA"
+mandrill.templates.resetPassword = 'kibbler-forgot-password'
 
 grails {
     mail {

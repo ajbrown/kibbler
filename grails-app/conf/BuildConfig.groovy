@@ -14,12 +14,15 @@ grails.project.fork = [
     // configure settings for the test-app JVM, uses the daemon by default
     test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
     // configure settings for the run-app JVM
-    run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+    //run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+    run: false,
     // configure settings for the run-war JVM
     war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
     // configure settings for the Console UI JVM
     console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
+
+grails.project.
 
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
@@ -54,6 +57,7 @@ grails.project.dependency.resolution = {
         compile 'com.amazonaws:aws-java-sdk:1.4.3'
         compile 'com.cloudinary:cloudinary:1.0.2'
         compile 'com.fasterxml.jackson.core:jackson-databind:2.1.2'
+        compile "com.mandrillapp.wrapper.lutung:lutung:0.0.3"
         compile 'org.imgscalr:imgscalr-lib:4.2'
         compile 'org.xhtmlrenderer:core-renderer:R8'
 

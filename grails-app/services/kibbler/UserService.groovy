@@ -1,5 +1,8 @@
 package kibbler
 
+import com.microtripit.mandrillapp.lutung.MandrillApi
+import com.microtripit.mandrillapp.lutung.view.MandrillMessage
+import com.microtripit.mandrillapp.lutung.view.MandrillTemplate
 import grails.plugin.cache.CacheEvict
 import grails.plugin.cache.CachePut
 import grails.plugin.cache.Cacheable
@@ -11,11 +14,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 class UserService implements UserDetailsService {
 
     def mailService
+    def MandrillApi mandrillApi
+    def grailsApplication
 
     def grailsLinkGenerator
 
     def read( id ) {
-        User.read( id )
+        User.get( id )
     }
 
     /**
@@ -32,12 +37,57 @@ class UserService implements UserDetailsService {
         user.save( flush: true )
     }
 
+    def initiatResetPassword( User user ) {
+        user.activationCode = User.generateActivationCode()
+        if( !save( user ) ) {
+            return false
+        }
+
+        def resetLink = grailsLinkGenerator.link(
+                controller: 'user',
+                action: 'reset',
+                params: [code: user.activationCode, email: user.email],
+                absolute: true
+        )
+
+        //send the reset password verification email
+        def message = new MandrillMessage()
+        message.to = [ [ email: user.email, name: user.name ] as MandrillMessage.Recipient ]
+        message.globalMergeVars = [
+                new MandrillMessage.MergeVar( 'RESET_CODE', user.activationCode ),
+                new MandrillMessage.MergeVar( 'RESET_LINK', resetLink )
+        ]
+        mandrillApi.messages().sendTemplate( "kibbler-forgot-password", null, message, true )
+
+        user
+    }
+
+    /**
+     * Complete the process of resetting a user's password, and notify the user that their password has been changed successfully
+     * @param user
+     * @return
+     */
+    def finalizeResetPassword( User user, String password ) {
+        user.activationCode = null
+        user.password = password
+        user.activated = true
+
+        if( !save( user ) ) {
+            return false
+        }
+
+        def message = new MandrillMessage()
+        message.to = [ [ email: user.email, name: user.name ] as MandrillMessage.Recipient ]
+        mandrillApi.messages().sendTemplate( "kibbler-notify-password-reset", null, message, true )
+
+        user
+    }
+
     /**
      * Create a new user by email address.  If an organization is specified, they will be added to that org.
      * @param emailAddress
      * @param org
      */
-    @CachePut(value='users-by-email', key='#email.toLowerCase()')
     def create( String email, String name ) {
         email = email.toLowerCase()
 
@@ -52,21 +102,10 @@ class UserService implements UserDetailsService {
         saved
     }
 
-    @CacheEvict(value='users-by-email',key='#user.email.toLowerCase()')
     def save( User user ) {
         user.save()
     }
 
-    /**
-     * Find a user with the specified activation code.
-     * @param code
-     * @return
-     */
-    def findByActivationCode( String code ) {
-        User.findByActivationCode( code )
-    }
-
-    @Cacheable('users-by-email')
     def findByEmail( String email ) {
         email?.trim() ? User.findByEmailLike( email.toLowerCase( ) ) : null
     }

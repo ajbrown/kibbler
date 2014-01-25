@@ -1,5 +1,6 @@
 package kibbler
 
+import org.apache.commons.lang.RandomStringUtils
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
@@ -102,7 +103,7 @@ class User implements UserDetails {
 	}
 
     static generateActivationCode() {
-        System.currentTimeMillis().encodeAsMD5().substring(0,4).toLowerCase()
+        RandomStringUtils.random( 4, true, true )
     }
 
     String getUsername() {

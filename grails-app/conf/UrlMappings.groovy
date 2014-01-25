@@ -13,6 +13,7 @@ class UrlMappings {
         }
 
         "/activate"( controller: 'user', action: 'activate' )
+        "/reset-password" ( controller: 'user', action: 'reset' )
 
         "/user/switchTo"( controller: 'user', action: 'switchTo' )
 

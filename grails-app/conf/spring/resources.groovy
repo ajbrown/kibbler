@@ -2,6 +2,7 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.AmazonS3Client
 import com.cloudinary.Cloudinary
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.microtripit.mandrillapp.lutung.MandrillApi
 import kibbler.UserService
 
 // Place your Spring DSL code here
@@ -13,4 +14,5 @@ beans = {
     amazonS3Client( AmazonS3Client, ref('awsCredentials') )
 
     cloudinary( Cloudinary, application.config.cloudinary.url )
+    mandrillApi( MandrillApi, application.config.mandrill.apikey )
 }
