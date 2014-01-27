@@ -2,6 +2,7 @@ package kibbler
 
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.core.userdetails.UserDetails
 
 class User implements UserDetails {
@@ -70,7 +71,11 @@ class User implements UserDetails {
      * @return
      */
     Set<Role> getAuthorities() {
-        UserRole.findAllByUser(this).collect { it.role } as Set
+        def authorities
+        User.withTransaction{
+            authorities = UserRole.findAllByUser(this)*.role as Set
+        }
+        authorities
     }
 
     def beforeValidate() {
@@ -98,7 +103,7 @@ class User implements UserDetails {
 
 	protected void encodePassword() {
 		if( password ) {
-            password = springSecurityService.encodePassword(password)
+            password = springSecurityService.encodePassword(password, username)
         }
 	}
 

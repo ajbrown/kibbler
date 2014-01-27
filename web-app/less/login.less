@@ -1,0 +1,77 @@
+@import "elements";
+@import "colors";
+
+body {
+  padding: 0;
+  margin: 0 auto;
+
+  background-color: @darkdarkgreen;
+}
+
+.vertical-offset-100{
+  padding-top:100px;
+}
+
+@media only screen and (min-width:1601px)
+{
+    body {
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      background: url(../images/bg/retreiver_laying_2000e.jpg) no-repeat center center fixed;
+      background-size: cover;
+      background-color: @darkdarkgreen;
+    }
+}
+
+@media only screen and (max-width:1600px) and (min-width:1025px)
+{
+  body {
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+    background: url(../images/bg/retreiver_laying_1600e.jpg) no-repeat center center fixed;
+    background-size: cover;
+    background-color: @darkdarkgreen;
+  }
+}
+
+@media only screen and (max-width:1024px) {
+  body {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background: url(../images/bg/retreiver_laying_1024e.jpg) no-repeat center center fixed;
+    background-size: cover;
+    background-color: @darkdarkgreen;
+  }
+}
+
+
+/** 1050 **/
+
+/* iPad 3 */
+@media only screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-min-device-pixel-ratio: 1)
+{
+
+}
+
+/* For general iPad layouts */
+@media only screen and (device-width: 768px) {
+
+}
+
+/** iPad Retina **/
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+
+  @media only screen and (orientation : landscape) {
+    // Your landscape Retina specific rules here
+  }
+
+  @media only screen and (orientation : portait) {
+    //Your portait Retina specific rules here
+  }
+}

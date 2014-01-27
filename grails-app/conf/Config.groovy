@@ -35,7 +35,7 @@ grails.mime.types = [ // the first one is the default format
 //grails.urlmapping.cache.maxsize = 1000
 
 // What URL patterns should be processed by the resources plugin
-grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/less/*', '/plugins/*']
 
 // Legacy setting for codec used to encode data with ${}
 grails.views.default.codec = "html"
@@ -92,7 +92,8 @@ grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRo
 grails.plugin.springsecurity.userLookup.usernamePropertyName = "email"
 grails.plugin.springsecurity.authority.className = 'kibbler.Role'
 grails.plugin.springsecurity.securityConfigType = "Annotation"
-grails.plugin.springsecurity.dao.reflectionSaltSourceProperty = 'username'
+grails.plugin.springsecurity.password.algorithm='bcrypt'
+grails.plugin.springsecurity.password.bcrypt.logrounds = 10
 
 //Resources configuration
 grails.resources.mappers.yuijsminify.js.noMunge = true
@@ -131,6 +132,8 @@ environments {
         grails.logging.jul.usebridge = true
         //grails.resources.debug = true
         cache.headers.enabled = false
+
+        grails.resources.mapper.hashandcache.excludes = ['**/*']
 
         cloudinary.url = "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
     }

@@ -85,11 +85,12 @@ grails.project.dependency.resolution = {
 
         // resources related
         runtime ":resources:1.2.1"
-        runtime ":zipped-resources:1.0.1"
         runtime ":cached-resources:1.1"
-        runtime ":yui-minify-resources:0.1.5"
+        runtime ":less-resources:1.3.3.2"
+        //runtime ":yui-minify-resources:0.1.5"
+        runtime ":zipped-resources:1.0.1"
 
-        runtime ":jquery:1.10.2.2"
+        runtime ":jquery:1.11.0"
         runtime ":twitter-bootstrap:3.0.3"
 
         test(":spock:0.7") {

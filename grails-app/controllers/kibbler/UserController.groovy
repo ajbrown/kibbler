@@ -4,8 +4,6 @@ import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import kibbler.request.ResetPassword
 
-import static grails.async.Promises.*
-
 @Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class UserController {
 
@@ -123,7 +121,7 @@ class UserController {
         } else if( request.post && cmd.email ) {
             user = userService.findByEmail( cmd.email )
             if( user ) {
-                userService.initiatResetPassword( user )
+                userService.initiateResetPassword( user )
             }
         }
 

@@ -15,6 +15,7 @@ class UserRole implements Serializable {
 
         user joinTable: [ column: 'user_id' ], cascade: 'none'
         role cascade: 'none'
+        cache true
     }
 
 

@@ -1,9 +1,7 @@
 modules = {
 
-    knockout {
-        dependsOn 'jquery'
-        resource url: 'http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.0.js'
-        resource url: '/js/sammy.js'
+    angularjs {
+        resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js'
     }
 
     'font-awesome' {
@@ -71,13 +69,21 @@ modules = {
         resource url: 'js/jSignature/jSignature.min.js'
     }
 
+    login{
+        dependsOn 'styling,jquery,bootstrap,externalJs'
+        resource url:'less/login.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_login_style'
+    }
+
     application {
-        dependsOn 'jquery,knockout,sammy,jStorage,jQueryTimeAgo'
-        resource url:'js/knockout.mapping.js'
-        resource url:'js/knockout.bindings.js'
+        dependsOn 'jquery,jStorage,jQueryTimeAgo'
         resource url:'js/pretty.js'
         resource url:'js/application.js'
         resource url:'js/viewmodels.js'
+    }
+
+    externalJs {
+        dependsOn 'angularjs'
+        resource url: 'js/external.js'
     }
 
     petPages {

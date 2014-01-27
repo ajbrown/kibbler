@@ -37,7 +37,7 @@ class UserService implements UserDetailsService {
         user.save( flush: true )
     }
 
-    def initiatResetPassword( User user ) {
+    def initiateResetPassword( User user ) {
         user.activationCode = User.generateActivationCode()
         if( !save( user ) ) {
             return false

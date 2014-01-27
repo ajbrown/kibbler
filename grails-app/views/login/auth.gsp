@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="kibblerExternal">
 <head>
     <meta charset="utf-8">
     <title>Sign in &middot; Kibbler</title>
@@ -7,77 +7,56 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Le styles -->
-    <r:require modules="bootstrap,styling"/>
+    <r:script disposition="head">
+    window.basePath = '${g.createLink( uri: '')}';
+    </r:script>
 
-    <style type="text/css">
-    body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-    }
-
-    .form-signin {
-        max-width: 300px;
-        padding: 19px 29px 29px;
-        margin: 0 auto 20px;
-        background-color: #fff;
-        border: 1px solid #e5e5e5;
-        -webkit-border-radius: 5px;
-        -moz-border-radius: 5px;
-        border-radius: 5px;
-        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-        -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-        box-shadow: 0 1px 2px rgba(0,0,0,.05);
-    }
-    .form-signin .form-signin-heading,
-    .form-signin .checkbox {
-        margin-bottom: 10px;
-
-    }
-    .form-signin input[type="text"],
-    .form-signin input[type="password"] {
-        font-size: 16px;
-        height: auto;
-        margin-bottom: 15px;
-        padding: 7px 9px;
-    }
-
-    </style>
+    <r:require modules="login"/>
 
     <r:layoutResources />
 </head>
 
-<body class="simple">
+<body>
 
 <div class="container">
+    <div class="row vertical-offset-100">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-body" id="loginPanel" ng-controller="LoginCtrl">
+                    <div class="alert alert-danger" ng-show="loginFailure">{{loginFailure}}</div>
+                    <form accept-charset="UTF-8" role="form" name="loginForm" novalidate>
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="E-mail"
+                                       kb-focus="loginFailure" autofocus
+                                       ng-model="user.email" name="j_username" type="email" required>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Password"
+                                       ng-model="user.password" name="j_password" type="password" required>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    <input ng-model="user.rememberMe" type="checkbox" value="Remember Me" checked="${rememberMe ?: false}"> Remember Me
+                                </label>
+                            </div>
+                            <button class="btn btn-lg btn-success btn-block"
+                                    ng-disabled="loginForm.$invalid"
+                                    ng-click="login(user)">Login</button>
+                        </fieldset>
+                    </form>
+                    <div class="row">
+                        <a href="${g.createLink( controller: 'user', action: 'reset')}">I forgot my password.</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <form class="form-signin" action="${postUrl}" method="post" id="loginForm">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level"
-               name="j_username"
-               placeholder="<g:message code="springSecurity.login.username.label"/>">
-        <input type="password" class="input-block-level"
-               name="j_password"
-               placeholder="<g:message code="springSecurity.login.password.label"/>">
-        <label class="checkbox">
-            <input type="checkbox" name="${rememberMeParameter}" value="remember-me" <g:if test='${hasCookie}'>checked='checked'</g:if>>
-            <g:message code="springSecurity.login.remember.me.label"/>
-        </label>
-        <button class="btn btn-large btn-primary" type="submit">${message(code: "springSecurity.login.button")}</button>
-    </form>
-
-</div> <!-- /container -->
+<r:require module="angularjs"/>
 
 <r:layoutResources/>
-
-<script type='text/javascript'>
-    <!--
-    (function() {
-        document.forms['loginForm'].elements['j_username'].focus();
-    })();
-    // -->
-</script>
 </body>
 </html>
 
