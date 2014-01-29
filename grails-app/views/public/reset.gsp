@@ -1,11 +1,11 @@
 <div class="row vertical-offset-100" >
     <div class="col-md-4 col-md-offset-4">
-        <div class="panel panel-default panel-3d">
+        <div class="panel panel-default">
             <div class="panel-body" ng-controller="ResetCtrl">
                 <div class="" style="padding:0 0 10px;text-align: center;">
                     <img src="${g.resource( file: 'images/KibblerLogo.png')}" alt="" style="display: block; margin: 0 auto"/>
                     <h3>Let's Reset Your Password.</h3>
-                    <div class="alert alert-{{resetAlert.type}}"
+                    <div class="alert alert-{{resetAlert.type}} animated bounceIn"
                          ng-if="resetAlert.message">{{resetAlert.message}}</div>
                 </div>
                 <form accept-charset="UTF-8" role="form" name="recoverForm" novalidate>

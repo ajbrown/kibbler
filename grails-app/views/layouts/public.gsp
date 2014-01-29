@@ -25,12 +25,23 @@
     -->
 </head>
 
-<body>
+<body class="">
     <div class="container animated fadeIn" id="main" ng-cloak ng-view>
 
         <g:layoutBody/>
 
     </div> <!-- ./container-->
+
+<r:require module="jquery"/>
+<r:script>
+    (function() {
+        //choose a random bg
+        var bgClasses = ['bg1', 'bg2'];
+        var c = bgClasses[Math.floor((Math.random()*bgClasses.length)+1)-1];
+        console.log('adding class', c);
+        $('body').addClass( c );
+    })();
+</r:script>
 
 <r:layoutResources/>
 

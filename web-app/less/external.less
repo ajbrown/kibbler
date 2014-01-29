@@ -1,3 +1,4 @@
+@import "styles";
 @import "elements";
 @import "colors";
 @import "../css/animate.css";
@@ -9,7 +10,11 @@ html {
 body {
   padding: 0;
   margin: 0 auto;
-  background-color: @darkdarkgreen;
+  background-color: darken( @darkdarkgreen, 50%);
+}
+
+.panel.panel-thick {
+  padding: 22px;
 }
 
 .navbar {
@@ -94,9 +99,16 @@ body {
       -moz-background-size: cover;
       -o-background-size: cover;
       background-size: cover;
-      background: url(../images/bg/retreiver_laying_2000e.jpg) no-repeat center center fixed;
+      background: no-repeat center center fixed;
       background-size: cover;
-      background-color: @darkdarkgreen;
+    }
+
+    body.bg1 {
+      background-image: url(../images/bg/dog_grass_1_1980.jpg);
+    }
+
+    body.bg2 {
+      background-image: url(../images/bg/dog_running_1_1980.jpg)
     }
 }
 
@@ -107,9 +119,16 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-    background: url(../images/bg/retreiver_laying_1600e.jpg) no-repeat center center fixed;
+    background: no-repeat center center fixed;
     background-size: cover;
-    background-color: @darkdarkgreen;
+  }
+
+  body.bg1 {
+    background-image: url(../images/bg/dog_grass_1_1600.jpg);
+  }
+
+  body.bg2 {
+    background-image: url(../images/bg/dog_running_1_1600.jpg)
   }
 }
 
@@ -119,9 +138,16 @@ body {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    background: url(../images/bg/retreiver_laying_1024e.jpg) no-repeat center center fixed;
+    background: no-repeat center center fixed;
     background-size: cover;
-    background-color: @darkdarkgreen;
+  }
+
+  body.bg1 {
+    background-image: url(../images/bg/dog_grass_1_1024.jpg);
+  }
+
+  body.bg2 {
+    background-image: url(../images/bg/dog_running_1_1024.jpg)
   }
 }
 
@@ -136,7 +162,13 @@ body {
 /* iPad 3 */
 @media only screen and (device-width: 768px) and (device-height: 1024px) and (-webkit-min-device-pixel-ratio: 1)
 {
-
+  body {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background: url(../images/bg/dog_grass_1_portrait_920.jpg) no-repeat center center fixed;
+  }
 }
 
 /** iPad Retina **/
@@ -144,9 +176,25 @@ body {
 
   @media only screen and (orientation : landscape) {
     // Your landscape Retina specific rules here
+    body {
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      background: url(../images/bg/dog_grass_1_portrait_920.jpg) no-repeat center center fixed;
+      background-size: cover;
+    }
   }
 
   @media only screen and (orientation : portait) {
     //Your portait Retina specific rules here
+    body {
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      background: url(../images/bg/dog_grass_1_portrait_920.jpg) no-repeat center center fixed;
+      background-size: cover;
+    }
   }
 }

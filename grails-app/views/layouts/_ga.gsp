@@ -5,9 +5,6 @@
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
     ga('create', 'UA-47553730-2', 'kibbler.org');
-    <sec:ifLoggedIn>
-    ga('set', '&uid', <sec:loggedInUserInfo field="id"/>);
-    </sec:ifLoggedIn>
     ga('send', 'pageview');
 
 </script>
