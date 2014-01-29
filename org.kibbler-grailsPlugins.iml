@@ -10,13 +10,10 @@
           <root url="file://$MODULE_DIR$/target/work/plugins/mail-1.0.1/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.3.8/grails-app/views" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/cache-headers-1.1.5/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/twitter-bootstrap-3.0.3/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/resources-1.2.1/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/zipped-resources-1.0.1/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/zipped-resources-1.0.1/grails-app/views" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/jquery-ui-1.10.3/web-app" relative="/" />
           <root url="file://$MODULE_DIR$/target/work/plugins/seed-me-0.4.3/grails-app/views" relative="/" />
-          <root url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.0/web-app" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -56,18 +53,13 @@
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.3.8/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/database-migration-1.3.8/grails-app/controllers" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/target/work/plugins/global-json-settings-0.1.1">
+      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/global-json-settings-0.1.1/src/groovy" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/hibernate-3.6.10.7">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/hibernate-3.6.10.7/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/hibernate-3.6.10.7/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/hibernate-3.6.10.7/grails-app/i18n" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.0">
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.0/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.0/grails-app/services" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jquery-1.11.0/grails-app/taglib" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/target/work/plugins/jquery-ui-1.10.3">
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/jquery-ui-1.10.3/grails-app/taglib" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/less-resources-1.3.3.2">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/less-resources-1.3.3.2/src/java" isTestSource="false" />
@@ -113,10 +105,6 @@
     <content url="file://$MODULE_DIR$/target/work/plugins/tomcat-7.0.50">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/tomcat-7.0.50/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/tomcat-7.0.50/src/groovy" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/target/work/plugins/twitter-bootstrap-3.0.3">
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/twitter-bootstrap-3.0.3/grails-app/i18n" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/twitter-bootstrap-3.0.3/grails-app/taglib" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/target/work/plugins/webxml-1.4.1">
       <sourceFolder url="file://$MODULE_DIR$/target/work/plugins/webxml-1.4.1/src/groovy" isTestSource="false" />

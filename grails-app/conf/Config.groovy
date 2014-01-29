@@ -91,9 +91,16 @@ grails.plugin.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
 grails.plugin.springsecurity.userLookup.usernamePropertyName = "email"
 grails.plugin.springsecurity.authority.className = 'kibbler.Role'
+grails.plugin.springsecurity.auth.loginFormUrl = "/login"
 grails.plugin.springsecurity.securityConfigType = "Annotation"
 grails.plugin.springsecurity.password.algorithm='bcrypt'
 grails.plugin.springsecurity.password.bcrypt.logrounds = 10
+grails.plugin.springsecurity.controllerAnnotations.staticRules = [
+        '/**/favicon.ico':  ['permitAll']
+]
+
+grails.plugin.globalJsonSettings.includeVersion = false
+grails.plugin.globalJsonSettings.exclusions = "class, password, activationCode, passwordConfirm"
 
 //Resources configuration
 grails.resources.mappers.yuijsminify.js.noMunge = true

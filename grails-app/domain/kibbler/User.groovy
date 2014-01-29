@@ -1,5 +1,6 @@
 package kibbler
 
+import grails.converters.JSON
 import org.apache.commons.lang.RandomStringUtils
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.GrantedAuthorityImpl
@@ -25,14 +26,6 @@ class User implements UserDetails {
 
     Date dateCreated
     Date lastUpdated
-
-    static hasMany = [
-            profiles: Person
-    ]
-
-    static mappedBy = [
-            profiles: 'linkedAccount'
-    ]
 
 	static constraints = {
         email blank: false, unique: true, email: true
@@ -108,7 +101,7 @@ class User implements UserDetails {
 	}
 
     static generateActivationCode() {
-        RandomStringUtils.random( 4, true, true )
+        RandomStringUtils.random( 4, true, true ).toLowerCase()
     }
 
     String getUsername() {

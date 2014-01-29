@@ -2,39 +2,16 @@ class UrlMappings {
 
 	static mappings = {
 
-        "/" ( controller: "dashboard", action: "index" )
         "/contract" ( controller: "dashboard", action: "contract" )
 
-        "/login/$action?"( controller: "login" )
 
         "/upload/photo" {
             controller = "upload"
             action = "photo"
         }
 
-        "/activate"( controller: 'user', action: 'activate' )
-        "/reset-password" ( controller: 'user', action: 'reset' )
+        "/ng/external/$ngview" ( controller: 'ng', action: 'kibblerExternal')
 
-        "/user/switchTo"( controller: 'user', action: 'switchTo' )
-
-        "/suggestions/$action"( controller: "suggestion" )
-
-        "/pets/$id/$action" ( controller: 'pets' )
-        "/people/$id/$action" ( controller: 'people' )
-        "/organization/$id/transactions" {
-            controller = "organization"
-            action = [POST: "addTransaction", GET: "listTransactions"]
-        }
-        "/organization/$id/$action" ( controller: 'organization' )
-
-        "/organization/$id/terms-text" {
-            controller = "organization"
-            action = "termsText"
-        }
-
-        "/organization/$orgId/documents/$action" {
-            controller = 'documents'
-        }
 
         "/pages/$action/$slug" {
             controller = "pages"
@@ -46,6 +23,7 @@ class UrlMappings {
         "/$controller" ( action: "index" )
         "/$controller/index" ( action: "index" )
 
+
         "/$controller/$id" {
             action = [GET: "read", POST: "update", PUT: "create", DELETE: "delete"]
         }
@@ -55,6 +33,9 @@ class UrlMappings {
         "/admin/pets/$action?"( controller: "petsAdmin")
         "/admin/persons/$action?"( controller: "personsAdmin")
         "/admin/organizations/$action?"( controller: "organizationsAdmin")
+
+        "/_view/$ngview" ( controller: "public", action: "view" )
+        "/**" ( controller: "public" )
 
 		"500"(view:'/error')
 	}

@@ -72,7 +72,6 @@ grails.project.dependency.resolution = {
         compile ":ajax-uploader:1.1"
         compile ':cache:1.1.1'
         compile ":cache-headers:1.1.5"
-        compile ":jquery-ui:1.10.3"
         compile ":mail:1.0.1"
         compile ":rendering:0.4.4"
         compile ":scaffolding:2.0.1"
@@ -83,15 +82,14 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:3.6.10.7" // or ":hibernate4:4.1.11.6"
         runtime ":database-migration:1.3.8"
 
+        runtime ":global-json-settings:0.1.1"
+
         // resources related
         runtime ":resources:1.2.1"
         runtime ":cached-resources:1.1"
         runtime ":less-resources:1.3.3.2"
         //runtime ":yui-minify-resources:0.1.5"
         runtime ":zipped-resources:1.0.1"
-
-        runtime ":jquery:1.11.0"
-        runtime ":twitter-bootstrap:3.0.3"
 
         test(":spock:0.7") {
             exclude "spock-grails-support"

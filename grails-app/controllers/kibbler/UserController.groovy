@@ -2,7 +2,7 @@ package kibbler
 
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
-import kibbler.request.ResetPassword
+import kibbler.request.ResetPasswordCommand
 
 @Secured(['IS_AUTHENTICATED_REMEMBERED'])
 class UserController {
@@ -15,7 +15,7 @@ class UserController {
         def user = springSecurityService.getCurrentUser() as User
         def organizations = user.organizations
 
-        withFormat{
+        request.withFormat{
             json {
                 def data = [:]
                 data.id = user.id.toString()
@@ -81,57 +81,59 @@ class UserController {
 
 
     @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
-    def reset( ResetPassword cmd ) {
-        def user
-        def correctCode = false
+    def reset( ResetPasswordCommand cmd ) {
+        def model = [:]
+        model << cmd.properties
 
         //TODO we need to prevent the number of times this can be called.  Essentially, we've given an easy way for
         //a hacker to brute force simpler passwords.  Since the activation code is significantly shorter than the password
         //and doesn't actually expire.  If we expire tokens, or make sure the same account can't spam reset attempts with a different
         //code, we'd be good.
 
-        //if the user has entered an activation code, validate it
-        if( cmd.code && cmd.email ) {
-            user = User.findByEmailAndActivationCodeIlike( cmd.email, cmd.code )
-            if( !user ) {
-                log.warn "No use found with email ${cmd.email} and activation code ${cmd.code}"
-                redirect controller: 'user', action: 'reset'
-                return
-            }
+        if( request.post ) {
 
-            correctCode = true
+            //Attempting to update the password.  We much have a valid email and confirmation code.
+            if( cmd.password && cmd.code && cmd.email ) {
 
-            //If they've entered a password, finalize the reset process
-            if( request.post && cmd.password ) {
-                def done = userService.finalizeResetPassword( user, cmd.password )
-                if( done ) {
-                    flash.message = "Your password has been successfully reset."
-                    springSecurityService.reauthenticate( user.email, cmd.password )
-                    redirect controller: 'dashboard', action: 'index'
-                    return
-                } else {
-                    log.warn "There was an issue resetting the password for user ${user.email}"
-                    flash.message = "There was an issue resetting your password.  Please try again, and contact us at support@kibbler.org if you continue having problems"
-                    redirect action: "reset"
-                    return
+                model.user = User.findByEmailAndActivationCode( cmd.email.toLowerCase(), cmd.code.toLowerCase() )
+                model.success = model.user && userService.finalizeResetPassword( model.user, cmd.password )
+                model.action = 'update-password'
+
+                if( model.success ) {
+                    //Mark the user as logged in so they're not prompted for their password when we redirect.
+                    springSecurityService.reauthenticate( model.user.email, cmd.password )
                 }
-            }
 
-        //The request is a post, and the email address was supplied
-        } else if( request.post && cmd.email ) {
-            user = userService.findByEmail( cmd.email )
-            if( user ) {
-                userService.initiateResetPassword( user )
+            } else if( cmd.code && cmd.email ) {
+
+                //Validating a confirmation code
+
+                model.user = User.findByEmailAndActivationCodeIlike( cmd.email, cmd.code )
+                model.success = model.user ? true : false
+                model.action = 'check-confirmation-code'
+
+            } else if( cmd.email ) {
+
+                //Requesting a new confirmation code be sent.
+                model.user = userService.findByEmail( cmd.email )
+                model.success = model.user && userService.initiateResetPassword( model.user )
+                model.action = 'send-confirmation-code'
+
             }
         }
 
-        def model = [ cmd: cmd, correctCode: correctCode ]
+        request.withFormat {
+            html {
+                return model
+            }
 
-
-        withFormat{
-            html{ return model }
-            json { render model as JSON }
+            json {
+                //don't spit out the password
+                model.remove( 'password' )
+                render model as JSON
+            }
         }
+
     }
 
 }

@@ -37,6 +37,14 @@ class UserService implements UserDetailsService {
         user.save( flush: true )
     }
 
+    /**
+     * Initiate the reset password sequence, and send the user a confirmation code.
+     * @todo This does not support multiple confirmation codes to exist at once.  If a user spams the "resend" button, and
+     * gets their codes out of order, they could be frustrated.
+     *
+     * @param user
+     * @return
+     */
     def initiateResetPassword( User user ) {
         user.activationCode = User.generateActivationCode()
         if( !save( user ) ) {

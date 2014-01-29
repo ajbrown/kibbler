@@ -1,7 +1,28 @@
 modules = {
 
+    jquery {
+        resource url: 'https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
+    }
+
+    bootstrap {
+        resource url: 'https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css'
+        resource url: 'https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'
+    }
+
     angularjs {
         resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js'
+    }
+
+    'angularjs-route' {
+        resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js'
+    }
+
+    'angularjs-animate' {
+        resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-animate.min.js'
+    }
+
+    modernizr {
+        resource url: 'https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js'
     }
 
     'font-awesome' {
@@ -44,6 +65,12 @@ modules = {
         resource url: '/js/signature-pad/jquery.signaturepad.css'
     }
 
+    jQueryVegas {
+        dependsOn 'jquery'
+        resource url: '/js/jquery.vegas/jquery.vegas.min.js'
+        resource url: '/js/jquery.vegas/jquery.vegas.min.js'
+    }
+
     jStorage {
         dependsOn 'jquery'
         resource url: '/js/jstorage.min.js'
@@ -69,9 +96,10 @@ modules = {
         resource url: 'js/jSignature/jSignature.min.js'
     }
 
-    login{
-        dependsOn 'styling,jquery,bootstrap,externalJs'
-        resource url:'less/login.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_login_style'
+    slicknav {
+        dependsOn 'jquery'
+        resource url: 'js/sliknav/jquery.slicknav.min.js'
+        resource url: 'js/sliknav/slicknav.css'
     }
 
     application {
@@ -81,9 +109,14 @@ modules = {
         resource url:'js/viewmodels.js'
     }
 
-    externalJs {
-        dependsOn 'angularjs'
-        resource url: 'js/external.js'
+    externalStyles {
+        dependsOn 'styling,bootstrap'
+        resource url:'less/external.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_external_style'
+    }
+
+    externalApp {
+        dependsOn 'angularjs,angularjs-route,angularjs-animate'
+        resource url: 'js/external/app.js', bundle: 'bundle_external_angular'
     }
 
     petPages {

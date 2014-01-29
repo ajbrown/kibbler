@@ -1,9 +1,6 @@
 @import "elements";
 @import "colors";
-
-
-
-
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400);
 
 .subnav {
   background: #cccccc;
@@ -18,6 +15,10 @@
   height: 100%;
 }
 
+.panel.panel-3d {
+  .drop-shadow();
+}
+
 /** Angular Form Validation **/
 
 input.ng-invalid.ng-dirty {
@@ -29,6 +30,15 @@ input.ng-valid.ng-dirty {
   border-color: darken(@bsGreen,15%);
 }
 
+.wizard-help {
+  font-family: 'Source Sans Pro', sans-serif;
+  padding: 10px;
+  font-weight: 400;
+
+  .opacity(0.9);
+  .rounded(3px);
+  .bordered();
+}
 
 
 

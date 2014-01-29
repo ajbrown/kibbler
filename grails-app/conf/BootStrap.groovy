@@ -19,7 +19,6 @@ class BootStrap {
 
     }
 
-
     def void configureObjectMapper() {
         objectMapper.disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
         objectMapper.enable( SerializationFeature.WRITE_DATES_AS_TIMESTAMPS )
