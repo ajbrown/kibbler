@@ -1,103 +1,52 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
-<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
-<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
-<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"><!--<![endif]-->
+<html lang="en" ng-app="kibbler">
 <head>
     <meta charset="utf-8">
-    <title><g:layoutTitle default="Kibbler"/></title>
-
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <style>
-    body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-    }
-    </style>
+    <title><g:layoutTitle default="Kibbler"/></title>
+    <meta name="description" content="Kibbler is animal adoption software made simpler.">
+    <meta name="author" content="Kibbler, LLC">
+    <base href="${g.createLink( uri: '/dashboard/')}'"
 
-    <script>
-        var SERVER_URL = '<g:createLink absolute="true" uri=""/>';
-        var SERVER_PATH = '<g:createLink uri=""/>'
-    </script>
-    <r:require modules="bootstrap,styling"/>
+    <r:require modules="kibblerJs,externalStyles,slicknav"/>
+
+    <r:script disposition="head">
+    window.basePath = '${g.createLink( uri: '')}';
+        <g:if env="development">
+            window.developmentMode = true;
+        </g:if>
+    </r:script>
 
     <r:layoutResources />
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <g:javascript src="/jSignature/jSignature.min.js"/>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-
-    <!-- Fav and touch icons -->
-
-    <g:layoutHead/>
+<!-- Hey There!  Want a treat?  Send us an email at treat AT kibbler DOT org with your feedback about
+     our user interface, and we'll send you a reward!
+    -->
 </head>
 
-<body>
+<body class="">
+<g:render template="/layouts/navbar"/>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container-fluid">
-            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </a>
-            <a class="brand" href="#">Kibbler</a>
-
-            <sec:ifLoggedIn>
-
-            <div class="nav-collapse collapse">
-                <p class="navbar-text pull-right">
-                    Logged in as <a href="#" class="navbar-link"><sec:username/></a>
-                </p>
-                <ul class="nav pull-right">
-                    <li><g:link controller="dashboard" action="index">Dashboard</g:link></li>
-                    <sec:ifAllGranted roles="ROLE_ADMIN">
-                        <li><g:link controller="indexAdmin">Administration</g:link></li>
-                    </sec:ifAllGranted>
-                    <li><a href="#help">Help</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-            <div class="navbar-text dropdown pull-right" id="org-options">
-                <a href="#" data-toggle="dropdown" data-bind="visible: orgs.active()">
-                    <i class="icon-group"></i>
-                    <span id="org-label"></span>
-                    <i class="icon-double-angle-down"></i>
-                </a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel" data-bind="foreach: orgs.list()">
-                    <li data-bind="css: { disabled : $data == $root.orgs.active }">
-                        <a tabindex="-1" href="#"
-                           data-bind="text: name, attr: { href: '#organization/' + id() }"></a>
-                    </li>
-                </ul>
-            </div>
-
-            </sec:ifLoggedIn>
-
-        </div>
-    </div>
-</div>
-
-
-
-<div class="container">
+<div class="container animated fadeIn" id="main" style="background:#222">
 
     <g:layoutBody/>
 
-</div> <!-- /container -->
+</div> <!-- ./container-->
 
+<r:script>
+    (function() {
+        //choose a random bg
+        var bgClasses = ['bg1', 'bg2'];
+        var c = bgClasses[Math.floor((Math.random()*bgClasses.length)+1)-1];
+        console.log('adding class', c);
+        $('body').addClass( c );
+    })();
+</r:script>
 
-
-
-<g:javascript library="application"/>
 <r:layoutResources/>
 
+<g:render template="/layouts/uservoice"/>
+<g:render template="/layouts/ga"/>
 </body>
 </html>

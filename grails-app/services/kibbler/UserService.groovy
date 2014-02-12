@@ -15,7 +15,6 @@ class UserService implements UserDetailsService {
 
     def mailService
     def MandrillApi mandrillApi
-    def grailsApplication
 
     def grailsLinkGenerator
 

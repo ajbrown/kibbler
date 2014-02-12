@@ -114,6 +114,11 @@ modules = {
         resource url:'less/external.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_external_style'
     }
 
+    kibblerJs {
+        dependsOn 'angularjs,angularjs-route,angularjs-animate'
+        resource url: 'js/kibbler.js'
+    }
+
     externalApp {
         dependsOn 'angularjs,angularjs-route,angularjs-animate'
         resource url: 'js/external/app.js', bundle: 'bundle_external_angular'

@@ -2,6 +2,15 @@ class UrlMappings {
 
 	static mappings = {
 
+        "/dashboard/_view/$ngview"( controller: "dashboard", action: "view" )
+        "/dashboard"( controller: "dashboard", action: "index" )
+
+        "/reset-password"( controller: "user", action: "reset")
+
+        "/login/authfail"( controller: "login", action: "authfail" )
+        "/login/authAjax"( controller: "login", action: "authAjax" )
+        "/login/ajaxSuccess"( controller: "login", action: "ajaxSuccess" )
+
         "/contract" ( controller: "dashboard", action: "contract" )
 
 

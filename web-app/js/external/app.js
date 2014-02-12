@@ -10,18 +10,18 @@ app.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
             when('/', {
-                redirectTo: '/login'
+                redirectTo: '/sign-in'
             }).
             when('/reset-password', {
                 templateUrl: '_view/reset',
                 controller: 'ResetCtrl'
             }).
-            when('/login', {
+            when('/sign-in', {
                 templateUrl: '_view/login',
                 controller: 'LoginCtrl'
             }).
             otherwise({
-                redirectTo: '/login'
+                redirectTo: '/sign-in'
             });
 }]);
 

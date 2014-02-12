@@ -7,18 +7,15 @@ class DashboardController {
 
     def index() {
         cache validFor: 60 * 15
-
-        [
-                createPet: new CreatePetCommand(),
-                config: [ ]
-        ]
     }
 
-    def config() {
+    /**
+     * Renders angular views for the hero application
+     * @return
+     */
+    def view() {
+        def view = params.ngview
 
-    }
-
-    def contract() {
-
+        render view: "/dashboard/${view}", layout: null
     }
 }
