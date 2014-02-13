@@ -187,7 +187,7 @@
                 return;
             }
 
-            $.post( '<g:createLink controller="organization" action="create"/>', { 'name': name }, function( data ) {
+            $.post( '<g:createLink controller="oldOrganization" action="create"/>', { 'name': name }, function( data ) {
                 if( data ) {
                     self.setActive( data );
                     createModalElem.trigger('reveal:close');

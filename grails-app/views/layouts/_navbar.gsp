@@ -30,9 +30,14 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="../navbar/">Default</a></li>
-                <li><a href="../navbar-static-top/">Static top</a></li>
-                <li class="active"><a href="./">Fixed top</a></li>
+                <li class="dropdown" ng-if="user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"> </i> {{user.name}} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="dashboard#/profile">My Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href="dashboard#/logout"><i class="glyphicon glyphicon-off"> </i> Logout</a></li>
+                    </ul>
+                </li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

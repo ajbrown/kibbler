@@ -99,8 +99,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
         '/**/favicon.ico':  ['permitAll']
 ]
 
-grails.plugin.globalJsonSettings.includeVersion = false
-grails.plugin.globalJsonSettings.exclusions = "class, password, activationCode, passwordConfirm"
+//grails.plugin.globalJsonSettings.includeVersion = false
+//grails.plugin.globalJsonSettings.exclusions = "class, password, activationCode, passwordConfirm"
 
 //Resources configuration
 grails.resources.mappers.yuijsminify.js.noMunge = true

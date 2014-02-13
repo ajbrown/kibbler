@@ -11,6 +11,15 @@ class UrlMappings {
         "/login/authAjax"( controller: "login", action: "authAjax" )
         "/login/ajaxSuccess"( controller: "login", action: "ajaxSuccess" )
 
+        "/api/v1/organizations"( resources: 'organization') {
+            "/pets"( resources: 'pet' )
+            "/people"( resources: 'person' )
+        }
+
+        "/api/v1/users"( resources: 'user' ) {
+            "/organizations"( resources: 'organization' )
+        }
+
         "/contract" ( controller: "dashboard", action: "contract" )
 
 

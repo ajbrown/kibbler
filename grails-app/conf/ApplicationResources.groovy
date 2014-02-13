@@ -115,8 +115,9 @@ modules = {
     }
 
     kibblerJs {
-        dependsOn 'angularjs,angularjs-route,angularjs-animate'
-        resource url: 'js/kibbler.js'
+        dependsOn 'angularjs,angularjs-route'
+        resource url: 'js/kibbler/app.js', bundle: 'kibbler_js'
+        resource url: 'js/kibbler/services.js', bundle: 'kibbler_js'
     }
 
     externalApp {

@@ -31,7 +31,7 @@ class Person {
 
     static mapping = {
         organization index: 'person_organization_id_idx'
-        teamMember formula: "(select count(id) from org_role r where r.organization_id = organization_id and r.user_id = linked_account_id) > 0"
+        teamMember formula: "(select count(r.id) from org_role r where r.organization_id = organization_id and r.user_id = linked_account_id) > 0"
         sort "name"
         linkedAccount cascade: 'none', index: true
         labels index: 'person_labels_idx'

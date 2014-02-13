@@ -25,7 +25,7 @@ class ActiveOrganizationFilters {
             }
         }
 
-        people( controller: 'people', action: '*' ) {
+        people( controller: 'oldPeople', action: '*' ) {
             before = {
                 checkActiveOrg( session )
             }

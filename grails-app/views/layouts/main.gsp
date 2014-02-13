@@ -7,12 +7,11 @@
     <title><g:layoutTitle default="Kibbler"/></title>
     <meta name="description" content="Kibbler is animal adoption software made simpler.">
     <meta name="author" content="Kibbler, LLC">
-    <base href="${g.createLink( uri: '/dashboard/')}'"
+    <base href="${g.createLink( uri: '/')}'"
 
     <r:require modules="kibblerJs,externalStyles,slicknav"/>
 
     <r:script disposition="head">
-    window.basePath = '${g.createLink( uri: '')}';
         <g:if env="development">
             window.developmentMode = true;
         </g:if>
@@ -25,10 +24,10 @@
     -->
 </head>
 
-<body class="">
+<body class="" ng-controller="DashboardCtrl">
 <g:render template="/layouts/navbar"/>
 
-<div class="container animated fadeIn" id="main" style="background:#222">
+<div class="container animated fadeIn" id="main">
 
     <g:layoutBody/>
 
