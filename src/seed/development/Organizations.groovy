@@ -3,7 +3,7 @@
  */
 
 seed = {
-    dependsOn = [ 'AdminAccounts', 'Users' ]
+    dependsOn = [ 'DevelopmentUsers' ]
 
     organization( meta: [ key: 'name', update: false ],
         name: 'Kibbler',

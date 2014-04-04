@@ -13,7 +13,8 @@ class Note {
     }
 
     static mapping = {
-        content length: 4000
+        content length: 4000, sqlType: 'text'
+        author index: 'note_author_idx'
         sort dateCreated: "desc"
     }
 }

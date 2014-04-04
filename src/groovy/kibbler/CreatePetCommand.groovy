@@ -12,7 +12,7 @@ class CreatePetCommand {
     String orgId
     String name
     String sex
-    Species species
+    Pet.Species species
     String breed
 
     static constraints = {

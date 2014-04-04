@@ -4,24 +4,25 @@ import grails.converters.JSON
 
 class Pet {
 
-    enum Status { AVAILABLE, HOLD, PLACED, DECEASED }
+    static enum Status { AVAILABLE, HOLD, PLACED, DECEASED }
+    static enum Species { DOG, CAT }
 
     static THUMBNAIL_PREFIX = 'http://res.cloudinary.com/hikkwdvwy/image/upload/w_150,h_150,c_thumb,g_faces,r_6'
 
     static {
-        JSON.registerObjectMarshaller( Species, { it.label } )
+        JSON.registerObjectMarshaller( Species, { it.toString().toLowerCase() } )
+        JSON.registerObjectMarshaller( Status, { it.toString().toLowerCase() } )
     }
 
     String name
     String description
     Species species
     String breed
-    String sex
+    String gender
     Integer age
     Integer weight
     String markings
 
-    Placement placement
     List photos
     List documents
     List notes
@@ -37,6 +38,7 @@ class Pet {
     Boolean specialNeeds
 
     Status status = Status.AVAILABLE
+    Placement.Type lastPlacementType
 
     Date dateCreated
     Date lastUpdated
@@ -53,6 +55,7 @@ class Pet {
     ]
 
     static mapping = {
+        lastPlacementType formula: '(select p.type from placement_type p where p.pet_id = id order by date_created limit 1)'
         organization index: 'pet_organization_id_idx'
         sort "name"
         labels index: 'pet_labels_idx'
@@ -66,7 +69,7 @@ class Pet {
         species()
 
         breed nullable: true
-        sex   nullable: true, inList: [ 'male','female' ]
+        gender nullable: true, inList: [ 'male','female' ]
 
         name blank: false
 
@@ -88,22 +91,6 @@ class Pet {
         description nullable: true
         notes nullable: true
         photos nullable: true
-    }
-
-
-
-    def beforeInsert() {
-        //Pets must have an initial placement.
-        placement = placement ?: new Placement( type: Placement.Type.RECEIVED, createdBy: createdBy )
-    }
-
-    def beforeValidate() {
-
-        //Make sure the status is reflective of placement.
-        if( placement?.type in [Placement.Type.ADOPTED, Placement.Type.FOSTERED] ) {
-            status = Status.PLACED
-        }
-
     }
 
     def getThumbnail() {

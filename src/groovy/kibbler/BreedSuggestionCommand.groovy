@@ -11,6 +11,6 @@ import grails.validation.Validateable
  */
 @Validateable
 class BreedSuggestionCommand {
-    Species species
+    Pet.Species species
     String query
 }

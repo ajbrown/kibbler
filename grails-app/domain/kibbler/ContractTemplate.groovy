@@ -19,6 +19,6 @@ class ContractTemplate {
 
     static mapping = {
         organization index: true
-        terms joinTable: [ column: 'term' ], indexColumn: [ name: 'list_order' ], index: true
+        terms joinTable: [ column: 'term', sqlType: 'text'], indexColumn: [ name: 'list_order' ]
     }
 }

@@ -20,7 +20,7 @@ class SuggestionService {
      * @return
      */
     @Cacheable('breed-suggestions')
-    def List<String> suggestBreeds( Species species, String hint = '' ) {
+    def List<String> suggestBreeds( Pet.Species species, String hint = '' ) {
         catBreedSuggestions = catBreedSuggestions ?: BreedSuggestion.findAllBySpecies( 'CAT' )
         dogBreedSuggestions = dogBreedSuggestions ?: BreedSuggestion.findAllBySpecies( 'DOG' )
 
