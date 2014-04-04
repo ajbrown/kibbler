@@ -14,9 +14,8 @@ hibernate {
 environments {
     development {
         dataSource {
-            url = "jdbc:postgresql://localhost:5432/kibbler"
-            username = "kibbler"
-            password = "kibbler"
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
+            driverClassName = "org.h2.Driver"
 
             // Turn this on if you need to debug, but make sure you turn it back off when you're done
             logSql = true
