@@ -216,15 +216,16 @@ log4j = {
     environments {
         development{
             info    'grails.plugin.springsecurity.web.filter.DebugFilter'
-            debug   'org.hibernate.SQL',
-                    'org.apache.http.wire',
+            debug   'org.apache.http.wire',
 
-                    //SpringSecurity REST
+                    //Spring Security Rest
                     'com.odobo',
                     'grails.app.controllers.com.odobo',
                     'grails.app.services.com.odobo',
                     'org.pac4j',
                     'org.springframework.security'
+
+                    //'org.hibernate.SQL'
         }
     }
 

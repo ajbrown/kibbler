@@ -13,6 +13,7 @@ class Pet {
         JSON.registerObjectMarshaller( Species, { it.toString().toLowerCase() } )
         JSON.registerObjectMarshaller( Status, { it.toString().toLowerCase() } )
     }
+    Organization organization
 
     String name
     String description
@@ -38,7 +39,6 @@ class Pet {
     Boolean specialNeeds
 
     Status status = Status.AVAILABLE
-    Placement.Type lastPlacementType
 
     Date dateCreated
     Date lastUpdated
@@ -55,7 +55,6 @@ class Pet {
     ]
 
     static mapping = {
-        lastPlacementType formula: '(select p.type from placement_type p where p.pet_id = id order by date_created limit 1)'
         organization index: 'pet_organization_id_idx'
         sort "name"
         labels index: 'pet_labels_idx'
@@ -91,6 +90,13 @@ class Pet {
         description nullable: true
         notes nullable: true
         photos nullable: true
+
+
+    }
+
+    def getCurrentPlacement() {
+        //TODO we could just use a SortedSet here.
+        placements?.sort{ -it.dateCreated }?.first()
     }
 
     def getThumbnail() {

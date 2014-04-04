@@ -2,7 +2,7 @@
  * Created by ajbrown on 1/24/14.
  */
 seed = {
-    dependsOn = [ 'Roles' ]
+    dependsOn( ['Roles' ] )
 
     user( meta: [ key: 'email', update: false],
             email: 'aj@ajbrown.org',

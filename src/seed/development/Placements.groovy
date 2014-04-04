@@ -1,4 +1,4 @@
 seed = {
-    dependsOn = [ 'DevelopmentUsers', 'Pets' ]
+    dependsOn( [ 'DevelopmentUsers', 'Pets' ] )
 
 }

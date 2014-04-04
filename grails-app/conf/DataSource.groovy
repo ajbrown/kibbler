@@ -24,7 +24,7 @@ environments {
             password = ""
 
             // Turn this on if you need to debug, but make sure you turn it back off when you're done
-            logSql = true
+            //logSql = true
         }
     }
     test {
