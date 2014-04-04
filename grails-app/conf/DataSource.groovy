@@ -7,15 +7,21 @@ hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = false
     cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory' // Hibernate 3
-//    cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory' // Hibernate 4
+//  cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory' // Hibernate 4
+
+    id.new_generator_mappings=true
+
 }
 
 // environment specific settings
 environments {
     development {
         dataSource {
+            dbCreate = "create-drop"
             url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
             driverClassName = "org.h2.Driver"
+            username = "sa"
+            password = ""
 
             // Turn this on if you need to debug, but make sure you turn it back off when you're done
             logSql = true

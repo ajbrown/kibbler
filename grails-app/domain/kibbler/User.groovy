@@ -79,14 +79,6 @@ class User implements UserDetails {
         activationCode = generateActivationCode()
 	}
 
-    def afterInsert() {
-
-        //make sure they're at least a user
-        if( !authorities?.find{ it.authority == 'ROLE_USER'} ) {
-            UserRole.create( this, Role.findByAuthority( 'ROLE_USER' ), true )
-        }
-    }
-
 	def beforeUpdate() {
 
         if( isDirty('password') ) {

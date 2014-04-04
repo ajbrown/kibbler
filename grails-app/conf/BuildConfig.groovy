@@ -22,8 +22,6 @@ grails.project.fork = [
     console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-grails.project.
-
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -48,7 +46,8 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
 
-        mavenRepo 'http://repo.spring.io/milestone'
+        mavenRepo 'http://repo.spring.io/milestone' //Needed for spring-security-core
+        mavenRepo 'https://oss.sonatype.org/content/repositories/snapshots' //Needed for spring-security-rest
     }
 
     dependencies {
@@ -76,7 +75,11 @@ grails.project.dependency.resolution = {
         compile ":rendering:0.4.4"
         compile ":scaffolding:2.0.1"
         compile ":seed-me:0.4.3"
-        compile ":spring-security-core:2.0-RC2"
+        compile ":spring-security-acl:2.0-RC1"
+        compile ':spring-security-core:2.0-RC2'
+        compile ":spring-security-rest:1.3.1", {
+            excludes: 'spring-security-core'
+        }
 
         // plugins needed at runtime but not for compilation
         runtime ":hibernate:3.6.10.7" // or ":hibernate4:4.1.11.6"

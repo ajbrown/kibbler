@@ -11,13 +11,16 @@ class UrlMappings {
         "/login/authAjax"( controller: "login", action: "authAjax" )
         "/login/ajaxSuccess"( controller: "login", action: "ajaxSuccess" )
 
-        "/api/v1/organizations"( resources: 'organization') {
-            "/pets"( resources: 'pet' )
-            "/people"( resources: 'person' )
-        }
+        group( "/api/v1" ) {
 
-        "/api/v1/users"( resources: 'user' ) {
-            "/organizations"( resources: 'organization' )
+            "/organizations"( resources: 'organization') {
+                "/pets"( resources: 'pet' )
+                "/people"( resources: 'person' )
+            }
+
+            "/users"( resources: 'user' ) {
+                "/organizations"( resources: 'organization' )
+            }
         }
 
         "/contract" ( controller: "dashboard", action: "contract" )
@@ -37,14 +40,6 @@ class UrlMappings {
 
         "/pdf/$action?"( controller: "pdf" )
 
-        "/$controller/create"( action: "create" )
-        "/$controller" ( action: "index" )
-        "/$controller/index" ( action: "index" )
-
-
-        "/$controller/$id" {
-            action = [GET: "read", POST: "update", PUT: "create", DELETE: "delete"]
-        }
 
         "/admin" ( controller: "indexAdmin" )
         "/admin/users/$action?"( controller: "usersAdmin")
@@ -53,7 +48,6 @@ class UrlMappings {
         "/admin/organizations/$action?"( controller: "organizationsAdmin")
 
         "/_view/$ngview" ( controller: "public", action: "view" )
-        "/**" ( controller: "public" )
 
 		"500"(view:'/error')
 	}

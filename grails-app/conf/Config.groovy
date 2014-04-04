@@ -82,10 +82,32 @@ grails.exceptionresolver.params.exclude = ['password', 'j_password']
 
 // configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
 grails.hibernate.cache.queries = false
+grails.hibernate.pass.readonly = false
+// configure passing read-only to OSIV session by default, requires "singleSession = false" OSIV mode
+grails.hibernate.osiv.readonly = false
 
-grails.plugin.databasemigration.updateOnStart = false
-grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
-grails.plugin.databasemigration.changelogFileName = 'changelog.groovy'
+grails.hibernate.id.new_generator_mappings = true
+
+grails.gorm.default.mapping = {
+    id( generator: "seqhilo", length: 16,
+            allocationSize: 50,
+            initialValue: 2014,
+            params: [
+                    allocationSize: 50,
+                    initialValue: 2014,
+        ]
+    )
+}
+
+grails.plugin.springsecurity.rest.token.storage.gorm.tokenDomainClassName   = 'kibbler.AuthenticationToken'
+grails.plugin.springsecurity.rest.token.storage.gorm.tokenValuePropertyName	= 'tokenValue'
+grails.plugin.springsecurity.rest.token.storage.gorm.usernamePropertyName   = 'username'
+grails.plugin.springsecurity.rest.login.useRequestParamsCredentials = false
+grails.plugin.springsecurity.rest.login.useJsonCredentials = true
+grails.plugin.springsecurity.rest.login.usernameParameter = 'email'
+grails.plugin.springsecurity.rest.token.storage.useGorm = true
+//how many minutes do authentication tokens expire after they're created.  null = never expires.
+grails.plugin.springsecurity.rest.token.expiry = 60 * 24
 
 grails.plugin.springsecurity.userLookup.userDomainClassName = 'kibbler.User'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'kibbler.UserRole'
@@ -96,8 +118,22 @@ grails.plugin.springsecurity.securityConfigType = "Annotation"
 grails.plugin.springsecurity.password.algorithm='bcrypt'
 grails.plugin.springsecurity.password.bcrypt.logrounds = 10
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
-        '/**/favicon.ico':  ['permitAll']
+        '/':                              ['permitAll'],
+        '/index':                         ['permitAll'],
+        '/index.gsp':                     ['permitAll'],
+        '/**/js/**':                      ['permitAll'],
+        '/**/css/**':                     ['permitAll'],
+        '/**/images/**':                  ['permitAll'],
+        '/**/favicon.ico':                ['permitAll'],
+        '/api/login':                     ['permitAll'],
+        '/api/logout':                    ['permitAll'],
+        '/dbconsole/**':                  ['permitAll'],
 ]
+
+grails.plugin.databasemigration.updateOnStart = false
+grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
+grails.plugin.databasemigration.changelogFileName = 'changelog.groovy'
+
 
 //grails.plugin.globalJsonSettings.includeVersion = false
 //grails.plugin.globalJsonSettings.exclusions = "class, password, activationCode, passwordConfirm"
@@ -140,6 +176,10 @@ environments {
         //grails.resources.debug = true
         cache.headers.enabled = false
 
+        grails.plugin.seed.autoSeed = true
+
+        grails.plugin.springsecurity.rest.token.expiry = null
+
         grails.resources.mapper.hashandcache.excludes = ['**/*']
 
         cloudinary.url = "cloudinary://361482238469464:8DWXCCRp12zY2--lXavGOW_fozw@hikkwdvwy"
@@ -172,4 +212,20 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
+
+    environments {
+        development{
+            info    'grails.plugin.springsecurity.web.filter.DebugFilter'
+            debug   'org.hibernate.SQL',
+                    'org.apache.http.wire',
+
+                    //SpringSecurity REST
+                    'com.odobo',
+                    'grails.app.controllers.com.odobo',
+                    'grails.app.services.com.odobo',
+                    'org.pac4j',
+                    'org.springframework.security'
+        }
+    }
+
 }
