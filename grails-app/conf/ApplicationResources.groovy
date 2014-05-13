@@ -1,5 +1,7 @@
 modules = {
 
+    def angularVersion = '1.2.16'
+
     jquery {
         resource url: 'https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
     }
@@ -10,15 +12,29 @@ modules = {
     }
 
     angularjs {
-        resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular.min.js'
+        resource url: "https://ajax.googleapis.com/ajax/libs/angularjs/${angularVersion}/angular.min.js"
+    }
+
+    'angularjs-resource' {
+        resource url: "https://ajax.googleapis.com/ajax/libs/angularjs/${angularVersion}/angular-resource.min.js"
     }
 
     'angularjs-route' {
-        resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-route.min.js'
+        resource url: "https://ajax.googleapis.com/ajax/libs/angularjs/${angularVersion}/angular-route.min.js"
     }
 
     'angularjs-animate' {
-        resource url: 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.10/angular-animate.min.js'
+        resource url: "https://ajax.googleapis.com/ajax/libs/angularjs/${angularVersion}/angular-animate.min.js"
+    }
+
+    'angularjs-loggly-logger' {
+        dependsOn 'angularjs'
+        resource url: 'https://rawgit.com/ajbrown/angular-loggly-logger/master/angular-loggly-logger.min.js'
+    }
+
+    'angularjs-storage' {
+        dependsOn 'angularjs'
+        resource url: 'js/ngStorage.min.js'
     }
 
     modernizr {
@@ -44,10 +60,6 @@ modules = {
         resource url: '/js/reveal/reveal.css'
     }
 
-    sammy {
-        dependsOn 'jquery'
-        url: '/js/sammy.js'
-    }
 
     'bootstrap-editable' {
         dependsOn 'jquery'
@@ -69,11 +81,6 @@ modules = {
         dependsOn 'jquery'
         resource url: '/js/jquery.vegas/jquery.vegas.min.js'
         resource url: '/js/jquery.vegas/jquery.vegas.min.js'
-    }
-
-    jStorage {
-        dependsOn 'jquery'
-        resource url: '/js/jstorage.min.js'
     }
 
     jQueryTimeAgo {
@@ -102,27 +109,26 @@ modules = {
         resource url: 'js/sliknav/slicknav.css'
     }
 
-    application {
-        dependsOn 'jquery,jStorage,jQueryTimeAgo'
-        resource url:'js/pretty.js'
-        resource url:'js/application.js'
-        resource url:'js/viewmodels.js'
-    }
-
     externalStyles {
         dependsOn 'styling,bootstrap'
         resource url:'less/external.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_external_style'
     }
 
-    kibblerJs {
-        dependsOn 'angularjs,angularjs-route'
-        resource url: 'js/kibbler/app.js', bundle: 'kibbler_js'
-        resource url: 'js/kibbler/services.js', bundle: 'kibbler_js'
+    'kibblerjs-core' {
+        dependsOn 'angularjs, angularjs-storage, angularjs-resource'
+        resource url: 'js/kibbler/config.js',         bundle: 'kibblerjs_core'
+        resource url: 'js/kibbler/resources.js',      bundle: 'kibblerjs_core'
+        resource url: 'js/kibbler/services.js',       bundle: 'kibblerjs_core'
     }
 
-    externalApp {
-        dependsOn 'angularjs,angularjs-route,angularjs-animate'
-        resource url: 'js/external/app.js', bundle: 'bundle_external_angular'
+    kibblerExternalJs {
+        dependsOn 'kibblerjs-core, angularjs-route, angularjs-animate'
+        resource url: 'js/kibbler/kibbler.external.js'
+    }
+
+    kibblerJs {
+        dependsOn 'kibblerjs-core, angularjs-route, angularjs-animate'
+        resource url: 'js/kibbler/kibbler.js'
     }
 
     petPages {
