@@ -3,8 +3,9 @@ package kibbler
 import grails.converters.JSON
 import grails.plugin.springsecurity.annotation.Secured
 import kibbler.request.ResetPasswordCommand
+import org.springframework.http.HttpStatus
 
-@Secured(['IS_AUTHENTICATED_REMEMBERED'])
+@Secured(['isAuthenticated()'])
 class UserController extends RestfulController<User> {
 
     UserController() {
@@ -15,7 +16,7 @@ class UserController extends RestfulController<User> {
     def organizationService
     def userService
 
-    @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+    @Secured(['permitAll'])
     def activate( ActivateUserCommand cmd ) {
         cmd.clearErrors()
 
@@ -42,7 +43,7 @@ class UserController extends RestfulController<User> {
     }
 
 
-    @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
+    @Secured(['permitAll'])
     def reset( ResetPasswordCommand cmd ) {
         def model = [:]
         model << cmd.properties
@@ -95,7 +96,6 @@ class UserController extends RestfulController<User> {
                 render model as JSON
             }
         }
-
     }
 
     /**

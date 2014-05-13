@@ -28,8 +28,8 @@
                             </label>
                         </div>
                         <button class="btn btn-lg btn-success btn-block"
-                                ng-disabled="loginForm.$invalid"
-                                ng-click="login(user)">Login</button>
+                                ng-disabled="loginForm.$invalid || loginForm.$pristine"
+                                ng-click="login(user.email, user.password)">Login</button>
                     </fieldset>
 
                 </form>

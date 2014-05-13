@@ -1,9 +1,11 @@
 package kibbler
 
+import grails.plugin.restfulCacheHeaders.CacheableRestfulController
+
 /**
  * Created by ajbrown on 2/12/14.
  */
-abstract class RestfulController<T> extends grails.rest.RestfulController<T> {
+abstract class RestfulController<T> extends CacheableRestfulController<T> {
 
     static responseFormats = ['json']
 
@@ -11,10 +13,6 @@ abstract class RestfulController<T> extends grails.rest.RestfulController<T> {
         super( resource )
     }
 
-    @Override
-    def index( Integer max ) {
-        super.index( max ?: 100 )
-    }
 
     @Override
     protected List<T> listAllResources( Map params ) {

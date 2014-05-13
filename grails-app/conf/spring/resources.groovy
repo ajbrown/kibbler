@@ -26,11 +26,4 @@ beans = {
     cloudinary( Cloudinary, application.config.cloudinary.url )
     mandrillApi( MandrillApi, application.config.mandrill.apikey )
 
-    organizationJsonRenderer( JsonRenderer, Organization ) {
-        excludes = ['members']
-    }
-
-    userJsonRenderer( JsonRenderer, User ) {
-        excludes = ['password', 'activationCode', 'accountActivated', 'accountExpired', 'accountLocked', 'passwordExpired']
-    }
 }

@@ -3,7 +3,7 @@
  */
 
 seed = {
-    dependsOn( [ 'Organizations' ] )
+    dependsOn( [ 'Organizations', 'DevelopmentUsers' ] )
 
     pet( meta: [ key: 'name', update: false ],
             name: 'Mikka', species: 'DOG', breed: 'Rottweiler', gender: 'female',

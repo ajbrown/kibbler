@@ -27,6 +27,8 @@ class User implements UserDetails {
     Date dateCreated
     Date lastUpdated
 
+    static hasMany = [ roles: OrgRole ]
+
 	static constraints = {
         email blank: false, unique: true, email: true
         password nullable: true
@@ -40,6 +42,20 @@ class User implements UserDetails {
         email unique: true
         lastLogin formula: "(SELECT MAX(ul.date_created) FROM users_login ul WHERE ul.user_id = id)"
 	}
+
+    static marshalling = {
+        shouldOutputClass false
+        shouldOutputVersion false
+
+        ignore 'password', 'activationCode', 'activated', 'enabled', 'accountExpired', 'accountLocked',
+               'passwordExpired'
+
+        virtual {
+            organizations { value, json ->
+                json.value( value.organizations?.collect{ [ id: it.id, name: it.name ] } )
+            }
+        }
+    }
 
     /**
      * Determines if a user belongs to the specified organization.

@@ -26,7 +26,7 @@ class Pet {
 
     List photos
     List documents
-    List notes
+    List<Note> notes
 
     //Vitals
     Boolean heartworm

@@ -7,6 +7,8 @@ grails.project.target.level = 1.7
 grails.project.source.level = 1.7
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
+grails.plugin.location.'cacheable-rest' = "../restful-cache-headers"
+
 grails.project.fork = [
     // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
     //  compile: [maxMemory: 256, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
@@ -65,30 +67,29 @@ grails.project.dependency.resolution = {
 
     plugins {
         // plugins for the build system only
-        build ":tomcat:7.0.50"
+        build ":tomcat:7.0.52.1"
 
         // plugins for the compile step
         compile ":ajax-uploader:1.1"
-        compile ':cache:1.1.1'
+        compile ':cache:1.1.5'
         compile ":cache-headers:1.1.5"
-        compile ":mail:1.0.1"
+        compile ":mail:1.0.5"
+        compile ":marshallers:0.6"
         compile ":rendering:0.4.4"
         compile ":scaffolding:2.0.1"
-        compile ":seed-me:0.4.3"
+        compile ":seed-me:0.4.5"
         compile ":spring-security-acl:2.0-RC1"
-        compile ':spring-security-core:2.0-RC2'
-        compile ":spring-security-rest:1.3.1", {
-            excludes: 'spring-security-core'
-        }
+        compile ":spring-security-core:2.0-RC2"
+        compile ":spring-security-rest:1.3.4", { excludes: 'spring-security-core' }
 
         // plugins needed at runtime but not for compilation
-        runtime ":hibernate:3.6.10.7" // or ":hibernate4:4.1.11.6"
+        runtime ":hibernate:3.6.10.14" // or ":hibernate4:4.1.11.6"
         runtime ":database-migration:1.3.8"
 
         //runtime ":global-json-settings:0.1.1"
 
         // resources related
-        runtime ":resources:1.2.1"
+        runtime ":resources:1.2.7"
         runtime ":cached-resources:1.1"
         runtime ":less-resources:1.3.3.2"
         //runtime ":yui-minify-resources:0.1.5"

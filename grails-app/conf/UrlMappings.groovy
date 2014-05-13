@@ -49,6 +49,8 @@ class UrlMappings {
 
         "/_view/$ngview" ( controller: "public", action: "view" )
 
+        "/"( view: 'index' )
+
 		"500"(view:'/error')
 	}
 }

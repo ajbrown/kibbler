@@ -62,7 +62,7 @@
           var loginSuccess = function( token ) {
             $log.debug( 'Logged in successfully!' );
             $scope.processing = false;
-            $window.location( '/dashboard' );
+            $window.location = '/dashboard';
           };
 
           var loginFailure = function( response ) {
@@ -71,7 +71,8 @@
             $scope.failLogin( response.data.error );
           };
 
-          AuthService.login( username, password, !!remember, loginSuccess, loginFailure );
+          AuthService.login( username, password, !!remember)
+                     .then( loginSuccess, loginFailure );
         };
       }]);
 
