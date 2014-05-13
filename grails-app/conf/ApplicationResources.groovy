@@ -109,9 +109,9 @@ modules = {
         resource url: 'js/sliknav/slicknav.css'
     }
 
-    externalStyles {
+    kibblerStyles {
         dependsOn 'styling,bootstrap'
-        resource url:'less/external.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_external_style'
+        resource url:'less/external.less',attrs:[rel: "stylesheet/less", type:'css'], bundle:'bundle_kibbler_style'
     }
 
     'kibblerjs-core' {

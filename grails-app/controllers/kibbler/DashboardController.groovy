@@ -2,7 +2,7 @@ package kibbler
 
 import grails.plugin.springsecurity.annotation.Secured
 
-@Secured('IS_AUTHENTICATED_REMEMBERED')
+@Secured('isAuthenticated()')
 class DashboardController {
 
     def index() {

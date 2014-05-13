@@ -9,7 +9,7 @@
     <meta name="author" content="Kibbler, LLC">
     <base href="${g.createLink( uri: '/')}'"
 
-    <r:require modules="externalStyles,slicknav"/>
+    <r:require modules="kibblerStyles,slicknav"/>
 
     <r:script disposition="head">
     window.basePath = '${g.createLink( uri: '')}';
