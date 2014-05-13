@@ -2,8 +2,6 @@ class UrlMappings {
 
 	static mappings = {
 
-        "/dashboard/_view/$ngview"( controller: "dashboard", action: "view" )
-        "/dashboard"( controller: "dashboard", action: "index" )
 
         "/reset-password"( controller: "user", action: "reset")
 
@@ -49,7 +47,7 @@ class UrlMappings {
 
         "/_view/$ngview" ( controller: "public", action: "view" )
 
-        "/"( view: 'index' )
+        "/**"( view: 'index' )
 
 		"500"(view:'/error')
 	}

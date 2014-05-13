@@ -26,7 +26,7 @@
 
             //If remembered, store the token in local storage.
             $localStorage.token = remember? response.data.authToken : null;
-            $sessionStorage.user = null;
+            $sessionStorage.user = User.current( null );
             $sessionStorage.token = response.data.token;
             $http.defaults.headers.common['X-Auth-Token'] = response.data.authToken;
             return response.data;
@@ -44,8 +44,8 @@
         var loginRemembered = function(successCallback, failureCallback ) {
 
             var successValidate = function( token ) {
-              $http.defaults.headers.common['X-Auth-Token'] = token.tokenValue;
-              $sessionStorage.token = token.tokenValue;
+              $http.defaults.headers.common['X-Auth-Token'] = token.token;
+              $sessionStorage.token = token.token;
               successCallback( token );
             };
 
@@ -96,7 +96,7 @@
          * Validate a token.  If no token is specified, the token that's currently attached to the $http service will be validated.
          */
         var validateToken = function( tokenValue ) {
-          tokenValue = tokenValue || $http.defaults.header.common['X-Auth-Token'];
+          tokenValue = tokenValue || $http.defaults.headers.common['X-Auth-Token'];
           return $http.post(
               appConfig.apiEndpoint + '../validate',{},
               {headers: { 'X-Auth-Token' : tokenValue }}

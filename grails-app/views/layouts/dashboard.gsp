@@ -11,11 +11,31 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kibbler</title>
+    <title><g:layoutTitle default="Kibbler"></title>
+
+    <meta name="description" content="Kibbler is animal rescue management software made simpler.">
+    <meta name="author" content="Kibbler, LLC">
+
+    <base href="${g.createLink( uri: '')}">
+
+    <r:require modules="kibblerJs, kibblerStyles"/>
+
+    <r:layoutResources />
+
+    <g:layoutHead/>
+
+    <!-- Hey There!  Want a treat?  Send us an email at treat AT kibbler DOT org with your feedback about
+     our user interface, and we'll send you a reward!
+    -->
 
 </head>
 
-<body>
+<body ng-conroller="MainCtrl">
+    <g:render template="/layouts/navbar"/>
+    <div class="container" id="main-container" class="animated slideInLeft">
 
+
+
+    </div>
 </body>
 </html>

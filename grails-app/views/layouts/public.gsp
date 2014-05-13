@@ -7,7 +7,7 @@
     <title>Kibbler</title>
     <meta name="description" content="Kibbler is animal rescue management software made simpler.">
     <meta name="author" content="Kibbler, LLC">
-    <base href="${g.createLink( uri: '/')}'"
+    <base href="${g.createLink( uri: '/')}'">
 
     <r:require modules="kibblerStyles,slicknav"/>
 

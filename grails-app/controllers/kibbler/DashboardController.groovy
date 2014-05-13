@@ -2,7 +2,7 @@ package kibbler
 
 import grails.plugin.springsecurity.annotation.Secured
 
-@Secured('isAuthenticated()')
+@Secured(['permitAll'])
 class DashboardController {
 
     def index() {

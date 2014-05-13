@@ -32,6 +32,11 @@ modules = {
         resource url: 'https://rawgit.com/ajbrown/angular-loggly-logger/master/angular-loggly-logger.min.js'
     }
 
+    'angularjs-md5' {
+        dependsOn 'angularjs'
+        resource url: 'js/angular.md5.min.js', bundle: 'kibbler_js'
+    }
+
     'angularjs-storage' {
         dependsOn 'angularjs'
         resource url: 'js/ngStorage.min.js'
@@ -127,8 +132,8 @@ modules = {
     }
 
     kibblerJs {
-        dependsOn 'kibblerjs-core, angularjs-route, angularjs-animate'
-        resource url: 'js/kibbler/kibbler.js'
+        dependsOn 'kibblerjs-core, angularjs-route, angularjs-animate, angularjs-md5'
+        resource url: 'js/kibbler/kibbler.js', bundle: 'kibbler_js'
     }
 
     petPages {
