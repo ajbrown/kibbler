@@ -12,6 +12,14 @@
         current: {
           method: 'GET',
           url: appConfig.apiEndpoint + 'users/me'
+        },
+        resetPassword:{
+          method: 'POST',
+          url: appConfig.apiEndpoint + 'users/reset-password'
+        },
+        activate: {
+          method: 'POST',
+          url: appConfig.apiEndpoint + 'users/activate'
         }
       })
     }])
@@ -28,6 +36,12 @@
           method: 'POST',
           url: appConfig.apiEndpoint + 'pets/:id/adopt'
         }
+      });
+    }])
+
+    .factory( 'VerificationToken', [ '$resource', 'appConfig', function( $resource, appConfig ) {
+      return $resource( appConfig.apiEndpoint + 'verification-token/:id', {id: "@id"}, {
+
       });
     }])
 

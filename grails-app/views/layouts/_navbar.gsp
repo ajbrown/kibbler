@@ -1,5 +1,5 @@
 <!-- Fixed navbar -->
-<div ng-show="$storage.user"
+<div ng-show="$session.user"
      class="navbar navbar-inverse navbar-fixed-top animated fadeInDownBig navbar-raised"
      role="navigation">
     <div class="container">
@@ -14,13 +14,16 @@
 
         </div>
         <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+
+            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li class="dropdown" ng-if="$storage.user">
+                <li class="dropdown" ng-if="$session.user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                          <img class="img-circle" alt="" style="margin: 0px 4px;"
-                             src="http://www.gravatar.com/avatar/{{ $storage.user.email | gravatar }}?s=30"/>
+                             src="http://www.gravatar.com/avatar/{{ $session.user.email | gravatar }}?s=30"/>
 
-                         {{$storage.user.name}} <b class="caret"></b>
+                         {{$session.user.name}} <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a ng-href="/profile">My Profile</a></li>

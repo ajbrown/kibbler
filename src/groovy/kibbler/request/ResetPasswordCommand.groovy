@@ -7,7 +7,5 @@ import grails.validation.Validateable
  */
 @Validateable
 class ResetPasswordCommand {
-    String code
     String email
-    String password
 }

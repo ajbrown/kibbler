@@ -6,9 +6,11 @@
 
   angular.module( 'kibbler.services', [ 'ngStorage', 'kibbler.config', 'kibbler.resources'] )
 
-    .service( 'AuthService', [ '$http', 'User', '$sessionStorage', '$localStorage', '$log', 'appConfig',
+    .service( 'AuthService', [
 
-      function( $http, User, $sessionStorage, $localStorage, $log, appConfig ) {
+      '$rootScope', '$http', 'User', 'VerificationToken', '$sessionStorage', '$localStorage', '$log', 'appConfig',
+
+      function( $rootScope, $http, User, VerificationToken, $sessionStorage, $localStorage, $log, appConfig ) {
 
         /**
          * Login with the specified username and password.  The authentication credentials will be stored in the session
@@ -24,11 +26,15 @@
           var loginSuccess = function( response ) {
             $log.debug( 'Auth response was:', response );
 
+            $http.defaults.headers.common['X-Auth-Token'] = response.data.authToken;
+            $sessionStorage.user = User.current( null );
+            $rootScope.$emit( 'user.loggedIn', $sessionStorage.user );
+
             //If remembered, store the token in local storage.
             $localStorage.token = remember? response.data.authToken : null;
-            $sessionStorage.user = User.current( null );
             $sessionStorage.token = response.data.token;
-            $http.defaults.headers.common['X-Auth-Token'] = response.data.authToken;
+
+
             return response.data;
           };
 
@@ -74,6 +80,10 @@
                   )
                 }
             );
+        };
+
+        var checkVerificationToken = function( token ) {
+          return VerificationToken.get( token );
         };
 
         /**

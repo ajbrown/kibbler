@@ -13,7 +13,11 @@
       $locationProvider.html5Mode( true );
 
       $routeProvider
-        .when( 'reset-password', {
+        .when( '/activate/:code', {
+          templateUrl: '_view/activate',
+          controller: 'ActivateCtrl'
+        })
+        .when( '/reset-password', {
           templateUrl: '_view/reset',
           controller: 'ResetCtrl'
         })
@@ -44,7 +48,16 @@
   .run([ '$rootScope', 'AuthService', '$sessionStorage', '$localStorage', '$log', '$location', 'User',
       function( $rootScope, AuthService, $sessionStorage, $localStorage, $log, $location, User ) {
 
-        $rootScope.$storage = $sessionStorage;
+        $rootScope.$session = $sessionStorage;
+        $rootScope.$storage = $localStorage;
+
+        $rootScope.$watch( '$session.user', function( user ) {
+          if( !user ) {
+            return;
+          }
+
+          //get the list of organizations for the user.
+        });
 
         //If we've got cached authentication details, re-use them.
         AuthService.loginRemembered(
@@ -56,10 +69,13 @@
           },
           function() {
             $log.debug( 'User is not logged in -- redirecting.' )
-            $location.path( 'sign-in' );
           }
         );
 
+        //When a user logs in, load thier list of organizations.
+        $rootScope.$on( 'user.login', function( event, user ) {
+          $rootScope.organizations = User
+        });
         $rootScope.isLoggedIn = function() {
           return angular.isObject( $sessionStorage.user );
         }
@@ -80,6 +96,56 @@
       }
   ])
 
+    .controller( 'ActivateCtrl',
+      [ '$scope', 'VerificationToken', 'User', 'AuthService', '$location', '$log', '$routeParams',
+        function( $scope, VerificationToken, User, AuthService, $location, $log, $routeParams ) {
+          $scope.code = $routeParams.code;
+
+          if( !$scope.code ) {
+            $log.warn( 'No activation code detected.' );
+            $location.path( '/reset-password' );
+            return
+          }
+
+          //Check the verification token
+          if( $scope.code ) {
+            $scope.verifyToken = VerificationToken.get( {id: $scope.code} );
+            $scope.tokenChecked = true;
+          }
+
+          var afterActivateLogin = function( data ) {
+            $log.debug( 'Logged in as newly activated user', data );
+            $scope.$emit( 'user.loggedIn', data );
+            $scope.$session.user = data;
+            $location.path('/');
+          };
+
+          var activateLoginFailure = function( data ) {
+            $log.warn( 'Activation Failed:', data );
+            $location.path( '/sign-in' );
+          };
+
+          var activateSuccess = function(  user ) {
+            AuthService.login( user.email, $scope.password )
+              .then( afterActivateLogin, activateLoginFailure )
+          };
+
+          var activateFailure = function( data ) {
+            $scope.alert = {
+              type: 'danger',
+              message: 'There was a problem activating your account.  Please try again.  If you continue to have problems, please contact us immediately.'
+            }
+          };
+
+          //Activate the account
+          $scope.activate = function( code, name, password ) {
+            User.activate( null, { code: code, name: name, password: password },
+              activateSuccess, activateFailure
+            );
+          }
+        }
+      ]
+    )
 
   /**
    * Login Controller
@@ -127,16 +193,13 @@
    * Reset Controller
    */
   .controller( 'ResetCtrl',
-    ['$scope','$http','$log', '$window', '$location', function( $scope, $http, $log, $window, $location ) {
-
-      var httpCfg = { headers: { 'X-Requested-With' : 'XMLHttpRequest' } };
-      var resetUrl = $window.basePath + '/reset-password'
+    ['$scope','$log', 'User', 'VerificationToken', '$location',
+      function( $scope, $log, User, VerificationToken, $location ) {
 
       $scope.resetAlert = {};
       $scope.code = $location.search()['code'];
       $scope.correctCode = false;
-      $scope.email = $location.search()['email'];
-      $scope.confirmSent = $location.search()['email'] && true;
+      $scope.confirmSent = false;
       $scope.user = {};
 
       $scope.resetState = function() {
@@ -154,125 +217,23 @@
       $scope.requestConfirmCode = function( email ) {
         //reset the state variables, since the new confirmation code would have changed.
         $scope.resetState();
-        $scope.email = angular.copy( email );
-        $location.search('email', email );
 
-        $log.debug( "Sending confirmation code to ", email );
-
-        $http.post( resetUrl, { email: email }, httpCfg )
-          .success( function( data, status ) {
-            $scope.confirmSent = data.success && data.action == 'send-confirmation-code';
-
-            if( !$scope.confirmSent ) {
-              var problem = !data.user ? 'We couldn\'t find a user with that email.' : 'There was an error requesting a confirmation code.  Please try again.'
-              $scope.resetAlert = { type: 'warning', message: problem }
-            }
-
-          })
-          .error( function( data, status ) {
-            $scope.confirmSent = false;
-            $scope.resetAlert = {
-              type: 'danger',
-              message: 'There was an error sending your confirmation code.  Please try again, and contact us at support@kibbler.org if you still have problems.'
-            }
-
-            $log.warn( "An error occurred while trying sending confirmation code:", status, data );
-          });
-      };
-
-      /**
-       * Check the confirmation code.
-       * @param email
-       * @param code
-       */
-      $scope.checkConfirmCode = function( email, code ) {
-        $log.debug( "Checking confirmation code with values", { "code": code, "email": email } );
-
-        $location.search('email', email );
-        $location.search('code', code );
-
-        $scope.resetAlert = {};
-
-        if( !email || !code ) {
+        User.resetPassword( {email: email}, function() {
           $scope.resetAlert = {
-            type: 'warning', message: 'You must enter your email and confirmation code.'
-          }
-          return;
-        }
-
-        $http.post( resetUrl, { "code": code, "email": email }, httpCfg )
-          .success( function( data, status ) {
-            $scope.correctCode = data.success && data.action == 'check-confirmation-code';
-            $scope.user = data.user;
-
-            if( !$scope.correctCode ) {
-              $scope.resetAlert = {
-                type: 'warning',
-                message: 'The confirmation code you entered was not correct.  Double check your entry, and click "resend confirmation" if you continue to have problems.'
-              }
-            }
-          })
-          .error( function( data ) {
-            $scope.resetAlert = {
-              type: 'danger', message: 'There was an error confirming your confirmation code.  Please contact support@kibbler.org if this problem continues.'
-            };
-
-            $log.warn( "An error occurred while trying to validate a confirmation code.", status, data );
-          });
-
+            type: 'success',
+            message: 'We just sent you an email with a confirmation link.  Click the link to finish resetting your password.'
+          };
+          $scope.confirmSent = true;
+        });
       };
-
-      $scope.resetPassword = function( email, code, password ) {
-        $log.debug( "Resetting password" );
-
-        $scope.resetAlert = {};
-
-        $location.search( 'email', email );
-        $location.search( 'code', code );
-
-        if( !email || !code || !password ) {
-          $scope.resetAlert = {
-            type: 'warning', message: 'You must enter your email, confirmation code, and password.'
-          }
-          return;
-        }
-
-        var data = { "email": email, "code": code, "password": password };
-
-
-
-        $http.post( resetUrl, data, httpCfg )
-          .success( function( data, status ) {
-            if( data.success && data.action == 'update-password' ) {
-              //The user should be logged in now, so we can redirect them to the login page.
-              $window.location.href = $window.basePath + '/dashboard';
-            } else {
-              $scope.resetAlert = {
-                type: 'warning',
-                message: 'We couldn\'t update your password.  Please try again.'
-              }
-            }
-            //The user should be logged
-          })
-          .error( function( data, status ) {
-            $scope.resetAlert = {
-              type: 'danger', message: 'There was an error contacting the server.  Please contact support@kibbler.org if this problem continues.'
-            };
-
-            $log.warn( "An error occurred while trying to validate a confirmation code.", status, data );
-          });
-      };
-
-
-      //If the email and code are already set (we're following a link in the email), then we should go ahead and check.
-      if( $scope.email && $scope.code ) {
-        $scope.checkConfirmCode( $scope.email, $scope.code );
-      }
 
     }])
 
-    .controller( 'DashboardCtrl', ['$scope', function( $scope ) {
-
+    .controller( 'DashboardCtrl', ['$scope', '$location', function( $scope, $location ) {
+        if( !$scope.isLoggedIn() ) {
+          $location.path( '/sign-in' );
+          return;
+        }
     }])
 
 

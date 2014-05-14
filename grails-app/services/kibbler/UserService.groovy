@@ -38,35 +38,29 @@ class UserService implements UserDetailsService {
 
     /**
      * Initiate the reset password sequence, and send the user a confirmation code.
-     * @todo This does not support multiple confirmation codes to exist at once.  If a user spams the "resend" button, and
      * gets their codes out of order, they could be frustrated.
      *
      * @param user
      * @return
      */
     def initiateResetPassword( User user ) {
-        user.activationCode = User.generateActivationCode()
-        if( !save( user ) ) {
-            return false
+        def token = VerificationToken.generate( user.email ).save()
+        if( !token ) {
+            return
         }
 
-        def resetLink = grailsLinkGenerator.link(
-                controller: 'user',
-                action: 'reset',
-                params: [code: user.activationCode, email: user.email],
-                absolute: true
-        )
+        def link = grailsLinkGenerator.link( absolute: true, uri: '/' ) + 'activate/' + token.token
 
         //send the reset password verification email
         def message = new MandrillMessage()
         message.to = [ [ email: user.email, name: user.name ] as MandrillMessage.Recipient ]
         message.globalMergeVars = [
-                new MandrillMessage.MergeVar( 'RESET_CODE', user.activationCode ),
-                new MandrillMessage.MergeVar( 'RESET_LINK', resetLink )
+                new MandrillMessage.MergeVar( 'RESET_CODE', token.token ),
+                new MandrillMessage.MergeVar( 'RESET_LINK', link )
         ]
         mandrillApi.messages().sendTemplate( "kibbler-forgot-password", null, message, true )
 
-        user
+        token
     }
 
     /**
@@ -74,18 +68,25 @@ class UserService implements UserDetailsService {
      * @param user
      * @return
      */
-    def finalizeResetPassword( User user, String password ) {
-        user.activationCode = null
+    def finalizeResetPassword( VerificationToken token, String password, String name = null ) {
+        def user = findByEmail( token.email )
+        if( !user ) {
+            return
+        }
+
+        user.name = name ?: user.name
         user.password = password
         user.activated = true
 
         if( !save( user ) ) {
-            return false
+            return
         }
 
         def message = new MandrillMessage()
         message.to = [ [ email: user.email, name: user.name ] as MandrillMessage.Recipient ]
         mandrillApi.messages().sendTemplate( "kibbler-notify-password-reset", null, message, true )
+
+        token.delete()
 
         user
     }

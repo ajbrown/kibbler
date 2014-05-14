@@ -13,7 +13,6 @@ class User implements UserDetails {
     String name
 	String email
 	String password
-    String activationCode
 
     boolean activated = true
 	boolean enabled = true
@@ -33,7 +32,6 @@ class User implements UserDetails {
         email blank: false, unique: true, email: true
         password nullable: true
         activated nullable: true
-        activationCode nullable: true
         invitedBy nullable: true
 	}
 
@@ -47,7 +45,7 @@ class User implements UserDetails {
         shouldOutputClass false
         shouldOutputVersion false
 
-        ignore 'password', 'activationCode', 'activated', 'enabled', 'accountExpired', 'accountLocked',
+        ignore 'password', 'activated', 'enabled', 'accountExpired', 'accountLocked',
                'passwordExpired'
 
         virtual {
@@ -92,7 +90,6 @@ class User implements UserDetails {
 
 	def beforeInsert() {
 		encodePassword()
-        activationCode = generateActivationCode()
 	}
 
 	def beforeUpdate() {

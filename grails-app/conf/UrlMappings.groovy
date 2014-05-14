@@ -1,10 +1,6 @@
 class UrlMappings {
 
 	static mappings = {
-
-
-        "/reset-password"( controller: "user", action: "reset")
-
         "/login/authfail"( controller: "login", action: "authfail" )
         "/login/authAjax"( controller: "login", action: "authAjax" )
         "/login/ajaxSuccess"( controller: "login", action: "ajaxSuccess" )
@@ -16,9 +12,14 @@ class UrlMappings {
                 "/people"( resources: 'person' )
             }
 
+            "/users/activate"( method: 'POST', controller: 'user', action: 'activate' )
+            "/users/reset-password"( method: 'POST', controller: 'user', action: 'reset' )
+
             "/users"( resources: 'user' ) {
                 "/organizations"( resources: 'organization' )
             }
+
+            "/verification-token"( resources: 'verificationToken' )
         }
 
         "/contract" ( controller: "dashboard", action: "contract" )
